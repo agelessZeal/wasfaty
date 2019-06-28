@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+
+var lang = getLocale();
+var suffix = (lang == 'ar')?'Ar':'En';
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h4 class="page-title">Add Order</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form method="post" id="order-save-form">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="btn-group" id="check-existing-user">
+                                    <button type="button" data-toggle="modal" data-target="#chooseClient"
+                                            class="btn btn-outline-primary" id="ws-existing-user" onclick="onChangeUserMode('existing')">Existing User</button>
+                                    <button type="button"
+                                            class="btn btn-outline-primary" id="ws-new-user" onclick="onChangeUserMode('new')">New User</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>OrderNo</label>
+                                            <input class="form-control" type="text" name="orderId" value="<%= orderId %>" required disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input class="form-control ws-order-ctl" type="text" name="clientEmail" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Mobile</label>
+                                            <input class="form-control ws-order-ctl" type="text" name="clientPhone" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input class="form-control ws-order-ctl" type="text" name="clientName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Insurance Type</label>
+                                            <select class="form-control floating ws-order-ctl" id="insuranceType" name="insuranceType">
+                                                <% for(i = 0 ; i<ins_types.length; i++) { %>
+                                                    <option value="<%= ins_types[i].name %>"><%= ins_types[i].name %></option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Insurance Grade</label>
+                                            <select class="form-control floating ws-order-ctl" id="insuranceGrade" name="insuranceGrade">
+                                                <% for(i = 0 ; i<ins_grades.length; i++) { %>
+                                                    <option value="<%= ins_grades[i].name %>"><%= ins_grades[i].name %></option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Insurance Company</label>
+                                            <select class="form-control floating ws-order-ctl"  id="insuranceCompany" name="insuranceCompany">
+                                                <% for(i = 0 ; i<ins_companies.length; i++) { %>
+                                                    <option value="<%= ins_companies[i].name %>"><%= ins_companies[i].name %></option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Remark</label>
+                                            <input class="form-control" type="text" name="remark">
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" value="totalPrice" name="totalPrice">
+                                <input type="hidden" value="items" name="items" id="items">
+                                <div class="row">
+                                    <div class="col-12 text-right">
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addItemModal"
+                                                    id="order-item-add-btn">+ Add Item</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="order-item-list">
+                                                <thead>
+                                                <tr>
+                                                    <th>Item Code</th>
+                                                    <th>Item Description</th>
+                                                    <th>Item Dosage</th>
+                                                    <th>QTY</th>
+                                                    <th>Amount</th>
+                                                    <th>Total</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="order-items-body">
+                                                <!--                                                    <tr>-->
+                                                <!--                                                        <td>Item Code</td>-->
+                                                <!--                                                        <td>Item Description</td>-->
+                                                <!--                                                        <td>Item Dosage</td>-->
+                                                <!--                                                        <td>QTY</td>-->
+                                                <!--                                                        <td>Amount</td>-->
+                                                <!--                                                        <td>Total</td>-->
+                                                <!--                                                        <td>Status</td>-->
+                                                <!--                                                        <td>-->
+                                                <!--                                                            <button class="btn btn-danger" type="button">-->
+                                                <!--                                                                <i class="fa fa-close"></i>-->
+                                                <!--                                                            </button>-->
+                                                <!--                                                        </td>-->
+                                                <!--                                                    </tr>-->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-12 text-right">
+                                            <div class="form-group">
+                                                <h4>Total: $<span id="total-item-price">0.00</span></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary submit-btn" id="order-save-btn" >Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="addItemModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add Item Details</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Dosage</label>
+                            <select class="form-control" id="add-item-dosage">
+                                <% for(i=0; i<dosages.length; i++) {%>
+                                    <option value="<%= dosages[i]['name_' + lang] %>"><%= dosages[i]['name_' + lang] %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>QTY</label>
+                            <input type="number" min="1" class="form-control" id="add-item-qty" value="1">
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-border table-striped custom-table my-datatable-item mb-0">
+                        <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for (var i = 0; i<items.length; i++) { %>
+                            <tr
+                                    data-code="<%= items[i].itemId %>"
+                                    data-name="<%= items[i]['name_' + lang] %>"
+                                    data-description="<%= items[i]['description_' + lang] %>"
+                                    data-price="<%= items[i].price %>">
+                                <td><%= items[i].itemId %></td>
+                                <td><%= items[i]['name_' + lang] %></td>
+                                <td><%= items[i]['description_' + lang] %></td>
+                            </tr>
+                        <% }  %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="onAddItem(this)">Add</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="chooseClient">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Please choose one client!</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-border table-striped custom-table my-datatable mb-0">
+                        <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Mobile</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for (var i = 0; i<clients.length; i++) { %>
+                            <tr
+                                    data-email="<%= clients[i].email %>"
+                                    data-name="<%= clients[i]['name' + suffix] %>"
+                                    data-phone="<%= clients[i].phone %>"
+                                    data-type="<%= clients[i].insuranceType %>"
+                                    data-grade="<%= clients[i].insuranceGrade %>"
+                                    data-company="<%= clients[i].insuranceCompany %>">
+                                <td><%= clients[i].email %></td>
+                                <td><%= clients[i]['name' + suffix] %></td>
+                                <td><%= clients[i].phone %></td>
+                            </tr>
+                        <% }  %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="onSelectClient(this)">Done</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+<script src="/assets/js/order.js"></script>
+</body>
+</html>

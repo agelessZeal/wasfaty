@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+var formatTime = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month<10){ month = '0' + month;}
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day<10){ day = '0' + day;}
+    return year+"-"+month + "-"+day;
+}
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-4 col-3">
+                    <h4 class="page-title">Invitation List</h4>
+                </div>
+                <div class="col-sm-8 col-9 text-right m-b-20">
+                    <% if(session.user.role == 'Salesman') { //Salesman Invitation  %>
+                        <a href="/salesman/invite/add" class="btn btn btn-primary btn-rounded float-right">
+                            <i class="fa fa-plus"></i> Invite New User
+                        </a>
+                    <% } else { // Admin Invitation %>
+                        <a href="/admin/member/add?s=all" class="btn btn btn-primary btn-rounded float-right">
+                            <i class="fa fa-plus"></i> Invite New User
+                        </a>
+                    <% } %>
+                </div>
+                <% if(error && error.length > 0) { %>
+                    <div class="col-sm-12">
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Error!</strong> <%= error %>
+                        </div>
+                    </div>
+                <% } %>
+                <% if(success && success.length > 0) { %>
+                    <div class="col-sm-12">
+                        <div class="alert alert-success" role="alert">
+                            <strong>Success!</strong> <%= success %>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-border table-striped custom-table datatable mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Sender Email</th>
+                                    <th>Sender Role</th>
+                                    <th>Receiver Email</th>
+                                    <th>Receiver Role</th>
+                                    <th>Password</th>
+                                    <th>Status</th>
+                                    <th>CreatedAt</th>
+                                    <th>AcceptedAt</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(var i = 0; i<invites.length; i++) {  %>
+                                    <tr>
+                                        <td><%= invites[i].senderEmail %></td>
+                                        <td><%= invites[i].senderRole %></td>
+                                        <td><%= invites[i].receiverEmail %></td>
+                                        <td><%= invites[i].receiverRole %></td>
+                                        <td><%= invites[i].password %></td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm <%= (invites[i].status == "Accepted")?"btn-primary":"btn-secondary" %>"><%= invites[i].status %></button>
+                                        </td>
+                                        <td><%= formatTime(invites[i].createdAt) %></td>
+                                        <td><%= (invites[i].acceptedAt)? formatTime(invites[i].acceptedAt):'N/A' %></td>
+                                        <td>
+                                            <a class="btn btn-primary ws-delete-link" href="#"
+                                               data-msg="Invitation"
+                                               data-url="/invite/delete/<%= invites[i]._id %>"
+                                               data-id="<%= invites[i]._id %>"
+                                               data-toggle="modal" data-target="#delete_box">Delete</a>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+
+</body>
+</html>

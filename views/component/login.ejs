@@ -1,0 +1,40 @@
+<!-- login form -->
+<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="listing-modal-1 modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="onCloseLoinForm()">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"> Login</h4>
+            </div>
+            <div class="modal-body">
+                <div class="listing-login-form">
+                    <form action="#" role="form" id="loginform" name="loginform">
+                        <div class="alert alert-danger" id="login-error-msg">
+                            Indicates a dangerous or potentially negative action.
+                        </div>
+                        <div class="alert alert-success" id="login-success-msg">
+                            Indicates a successful or positive action.
+                        </div>
+                        <div class="listing-form-field"> <i class="fa fa-user blue-1"></i>
+                            <input class="form-field bgwhite" type="text" name="user_name" placeholder="Username" />
+                        </div>
+                        <div class="listing-form-field"> <i class="fa fa-lock blue-1"></i>
+                            <input class="form-field bgwhite" type="password"  name="user_pass" placeholder="Password"  />
+                        </div>
+                        <div class="listing-form-field clearfix margin-top-20 margin-bottom-20">
+                            <input type="checkbox" id="checkbox-1-1" class="regular-checkbox" />
+                            <label for="checkbox-1-1"></label>
+                            <label class="checkbox-lable">Remember Me</label>
+                            <a href="#">Forgot Password?</a> </div>
+                        <div class="listing-form-field">
+                            <input class="submit" name="login_btn" type="button" value="login" onclick="return checkLogin()"/>
+                        </div>
+                    </form>
+                    <div class="bottom-links">
+                        <p>Not a Member?<a href="#" onclick="onClickNewAccount()">Create Account</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

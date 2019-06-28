@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html class="no-js " lang="en">
+
+<%- include ../../frontend/layouts %>
+
+<!-- JQuery DataTable Css -->
+<link rel="stylesheet" href="/assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css">
+
+<body class="theme-blush">
+
+<%- include ../../component/page-loading.ejs %>
+
+<%- include ../../frontend/layouts %>
+<%- include ../../frontend/layouts %>
+<%- include ../../frontend/layouts %>
+
+<%
+var formatTime = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month<10){ month = '0' + month;}
+    // Day part from the timestamp
+    var day = date.getDate();
+    return year+"-"+month + "-"+day;
+}
+%>
+
+<!-- Main Content -->
+<section class="content">
+    <div class="body_scroll">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <h2>Users</h2>
+                    <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-12">
+                    <button class="btn btn-primary btn-icon float-right right_icon_toggle_btn" type="button"><i class="zmdi zmdi-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable ck_table-components">
+                                    <thead>
+                                    <tr>
+                                        <th>Pic</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Office</th>
+                                        <th>Country</th>
+                                        <th>Address</th>
+                                        <th>CreatedAt</th>
+                                        <% if(session.user.role == 'admin') {  %>
+                                            <th>Status</th>
+                                            <th>Subscription</th>
+                                            <th>Action</th>
+                                        <% } %>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%  for(var i = 0; i<users.length; i++) {  %>
+                                        <tr>
+                                            <td><img class="tbl_user_pic" src="<%= users[i].pic %>"> </td>
+                                            <td><%= users[i].username %></td>
+                                            <td><%= users[i].email %></td>
+                                            <td><%= users[i].phoneNumber %></td>
+                                            <td><%= users[i].office %></td>
+                                            <td><%= countries[users[i].country]['CountryName'] %></td>
+                                            <td><%= users[i].address %></td>
+                                            <td><%= formatTime(users[i].createdAt) %></td>
+
+                                            <% if(session.user.role == 'admin') {  %>
+                                                <td>
+                                                    <% if(users[i].status == 'approved') {  %>
+                                                        <span class="badge badge-success"><%= users[i].status %></span>
+                                                    <% } else  { %>
+                                                        <span class="badge badge-warning"><%= users[i].status %></span>
+                                                    <% } %>
+                                                </td>
+                                                <td><%= users[i].payType %></td>
+                                                <td>
+                                                    <button type="button" onclick="onEditUser('<%= users[i]._id %>')" class="btn btn-primary">Edit</button>
+                                                    <button type="button" onclick="onDeleteUser('<%= users[i]._id %>')" class="btn btn-danger">Delete</button>
+                                                </td>
+                                            <% } %>
+                                        </tr>
+
+                                        <%  } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include ../../frontend/layouts %>
+
+<script src="/assets/bundles/mainscripts.bundle.js"></script>
+
+<script src="/assets/custom_js/jquery-datatable.js"></script>
+
+<script>
+    function onEditUser(userId) {
+        location.href = '/users/' + userId;
+    }
+    function onDeleteUser(userId) {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this user profile!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    location.href = '/admin/users/delete/'  + userId
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+</script>
+
+</body>
+</html>

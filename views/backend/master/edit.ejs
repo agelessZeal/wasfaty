@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<% var lang = getLocale(); %>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h4 class="page-title"><%= (page_mode == 'add')? 'Add':'Edit' %> Item</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form action="/admin/item/<%= page_mode %>?id=<%= (page_mode == 'edit')?item_info.itemId:'' %>" method="post">
+                        <% if(error && error.length>0) {  %>
+                            <div class="alert alert-danger">
+                                <strong>Error!</strong> <%= error %>
+                            </div>
+                        <% } %>
+                        <% if(success && success.length>0) {  %>
+                            <div class="alert alert-success">
+                                <strong>Success!</strong> <%= success %>
+                            </div>
+                        <% } %>
+                        <div class="row">
+
+                            <div class="col-sm-3">
+                                <div class="item-img-outer">
+                                    <div class="item-img-inner">
+                                        <img id="avatar-image" src="<%= (page_mode !='add' && item_info.pic)?item_info.pic:'/assets/img/no_image.png'; %>">
+                                    </div>
+                                </div>
+                                <% if(page_mode != 'view') { %>
+                                <button class="btn btn-primary" id="itemImgUploadBtn">
+                                            Upload Item Picture
+                                    <input class="upload" type="file" id="avatar-input" accept="image/*">
+                                            </button>
+                                            <input type="hidden" value="<%= (page_mode!='add' && item_info.pic)?item_info.pic:'/assets/img/no_image.png' %>" name="pic">
+                                <% } %>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Name (English)</label>
+                                            <input class="form-control" <%= (page_mode == 'view')?'disabled':'' %>
+                                                   type="text" name="name_en" required
+                                                   value="<%= (page_mode!='add')?item_info.name_en:'' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Name (Arabic)</label>
+                                            <input class="form-control"  <%= (page_mode == 'view')?'disabled':'' %>
+                                                   type="text" name="name_ar" required
+                                                   value="<%= (page_mode!='add')?item_info.name_ar:'' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Barcode</label>
+                                            <input class="form-control"  <%= (page_mode == 'view')?'disabled':'' %>
+                                                   type="text" name="barcode" required
+                                                   value="<%= (page_mode!='add')?item_info.barcode:'' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Description (English)</label>
+                                            <textarea class="form-control"  <%= (page_mode == 'view')?'disabled':'' %>
+                                                      rows="4" name="description_en"><%= (page_mode!='add')?item_info.description_en:'' %></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Description (Arabic)</label>
+                                            <textarea class="form-control"  <%= (page_mode == 'view')?'disabled':'' %>
+                                                      rows="4" name="description_ar"><%= (page_mode!='add')?item_info.description_ar:'' %></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Price ($)</label>
+                                            <input class="form-control" <%= (page_mode == 'view')?'disabled':'' %>
+                                                   type="number" name="price" required min="0"
+                                                   value="<%= (page_mode!='add')?item_info.price:'' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Commissions (%)</label>
+                                            <input class="form-control"  <%= (page_mode == 'view')?'disabled':'' %>
+                                                   type="number" name="comm" required min="0"
+                                                   value="<%= (page_mode!='add')?item_info.comm:'' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <% for(var key in itemKeys) { %>
+                                        <% if(itemKeys.hasOwnProperty(key) && key != 'dosageId') { %>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label><%= itemKeys[key].name %></label>
+                                                    <select class="form-control" name="<%= key %>"  <%= (page_mode == 'view')?'disabled':'' %>>
+                                                        <% for (var i =0; i<itemKeys[key].list.length; i++ ) { %>
+                                                            <option <%= (page_mode!='add' && item_info[key] == itemKeys[key]['list'][i].mtId )?'selected':'' %> value="<%= itemKeys[key]['list'][i].mtId; %>">
+                                                                <%= itemKeys[key]['list'][i]['name_' + lang] %>
+                                                            </option>
+                                                        <% } %>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    <% } %>
+                                </div>
+                                <% if(page_mode != 'view') {%>
+                                    <div class="form-group text-center">
+                                        <button class="btn btn-primary submit-btn">Save</button>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+<%- include ../../component/cropperjs.ejs %>
+
+</body>
+</html>

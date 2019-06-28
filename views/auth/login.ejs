@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../frontend/layouts/header.ejs %>
+
+<body>
+
+<div class="container">
+    <div class="offset-lg-2 col-lg-8">
+        <div class="row">
+            <div class="offset-lg-2 col-lg-8 offset-md-2 col-md-8">
+                <form  method="post" action="/auth/login" class="ws-login-form">
+                    <div class="row">
+                        <div class="offset-lg-2 col-lg-8 offset-md-2 col-md-8">
+                            <a href="/">
+                                <img src="/assets/img/wasfaty_logo_color.png" alt="wasfaty">
+                            </a>
+                            <% if(error && error.length > 0){ %>
+                                <div class="alert alert-danger">
+                                    <%= error %>
+                                </div>
+                            <% } else if(success && success.length > 0 ){ %>
+                                <div class="alert alert-success">
+                                    <%= success %>
+                                </div>
+                            <% } %>
+                            <div class="form-group text-left">
+                                <label for="email">Email</label>
+                                <input class="form-control" name="email" type="email" required id="email">
+                            </div>
+                            <div class="form-group text-left">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" id="password" class="form-control" required>
+                            </div>
+                            <div class="login-register-btns">
+                                <button class="btn login-btn">Login</button>
+                                <a class="btn register-btn" href="/auth/register">
+                                    <div>
+                                        Create Account
+                                    </div>
+                                </a>
+                            </div>
+                            <p>Forgot password? <a href="/auth/forgot-password">click here</a></p>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../frontend/layouts/footer.ejs %>
+
+</body>
+</html>

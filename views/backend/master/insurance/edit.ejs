@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../../layouts/header.ejs %>
+
+<body>
+<div class="main-wrapper">
+    <%- include ../../layouts/menubar.ejs %>
+    <%- include ../../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h4 class="page-title"><%= (page_mode == 'add')? 'Add':'Edit' %> Insurance <%= page_title %></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <form action="/admin/insurance/<%= page_mode %>/<%= ins_type %>?id=<%= (page_mode == 'edit')?item_info._id:'' %>" method="post">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <% if(error && error.length>0) {  %>
+                                            <div class="alert alert-danger">
+                                                <strong>Error!</strong> <%= error %>
+                                            </div>
+                                        <% } %>
+                                        <% if(success && success.length>0) {  %>
+                                            <div class="alert alert-success">
+                                                <strong>Success!</strong> <%= success %>
+                                            </div>
+                                        <% } %>
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input class="form-control" type="text" name="name" required value="<%= (page_mode=='edit')?item_info.name:'' %>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea name="description" rows="5" class="form-control"><%= (page_mode=='edit')?item_info.description:'' %></textarea>
+                                        </div>
+                                        <div class="form-group random-password-group">
+                                            <button class="btn btn-primary submit-btn">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../../layouts/footer.ejs %>
+
+</body>
+</html>

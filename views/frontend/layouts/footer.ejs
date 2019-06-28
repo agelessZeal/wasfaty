@@ -1,0 +1,13 @@
+<script src="/assets/js/jquery-3.2.1.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/my_app.js"></script>
+<script>
+    setTimeout(function () {
+        hideNotifications();
+    }, 2500);
+    var hideNotifications = function () {
+        $(".alert").slideUp(600, function () {
+            $(this).remove();
+        })
+    }
+</script>

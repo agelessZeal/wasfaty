@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+    function getTodayDt() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        return  dd + '/' + mm + '/' + yyyy;
+    }
+ %>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4 class="page-title">Complete Your Profile</h4>
+                </div>
+                <% if(!user_info.isDoneProfile) { %>
+                <div class="col-sm-12">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Warning !</strong> Please fill your profile information!
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                </div>
+                <% } %>
+                <% if(error && error.length>0) {  %>
+                    <div class="col-sm-12">
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Error!</strong> <%= error %>
+                        </div>
+                    </div>
+                <% } %>
+                <% if(success && success.length>0) {  %>
+                    <div class="col-sm-12">
+                        <div class="alert alert-success" role="alert">
+                            <strong>Success!</strong> <%= success %>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+            <form action="/profile/update" method="post">
+                <div class="card-box">
+                    <h3 class="card-title">Basic Information</h3>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="profile-img-wrap">
+                                <img class="inline-block" id="avatar-image"
+                                     src="<%= (user_info.pic) ? user_info.pic : '/assets/img/user.jpg' %>" alt="user">
+                                <div class="fileupload btn">
+                                    <span class="btn-text">edit</span>
+                                    <input class="upload" type="file" id="avatar-input" accept="image/*">
+                                </div>
+                                <input type="hidden" value="<%= user_info.pic %>" name="pic">
+                            </div>
+                            <div class="profile-basic">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="focus-label">Name (EN)</label>
+                                            <input type="text" class="form-control floating"
+                                                   name="nameEn"
+                                                   value="<%= user_info.nameEn %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="focus-label">Name (AR)</label>
+                                            <input type="text" class="form-control floating"
+                                                   name="nameAr"
+                                                   value="<%= user_info.nameAr %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="focus-label">Email</label>
+                                            <div class="cal-icon">
+                                                <input type="email" class="form-control floating"
+                                                       name="email" disabled
+                                                       value="<%= user_info.email %>" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="focus-label">PhoneNumber</label>
+                                            <div class="cal-icon">
+                                                <input type="text" class="form-control floating"
+                                                       name="phone"
+                                                       value="<%= user_info.phone %>" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="focus-label">Nationality</label>
+                                            <select class="select form-control floating"
+                                                    name="nationality">
+                                                <% for(var i = 0 ; i<nationalities.length; i++) { %>
+                                                    <option value="<%= nationalities[i].name %>"
+                                                            <%= (nationalities[i].name == user_info.nationality)?"selected":'' %>>
+                                                        <%= nationalities[i].name %>
+                                                    </option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="focus-label">Birth Date</label>
+                                            <div class="cal-icon">
+                                                <input class="form-control floating datetimepicker"
+                                                       name="birthDay"
+                                                       type="text" value="<%= user_info.birthDay %>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group select-focus">
+                                            <label class="focus-label">Gender</label>
+                                            <select class="select form-control floating" name="gender">
+                                                <option value="Male" <%= (user_info.gender == 'Male')?'selected':'' %>>Male</option>
+                                                <option value="Female" <%= (user_info.gender == 'Female')?'selected':'' %>>Female</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group select-focus">
+                                            <label class="focus-label">Country</label>
+                                            <% var selcountry = (user_info.country)? user_info.country:'Saudi Arabia'; %>
+                                            <select class="select form-control floating"
+                                                    name="country">
+                                                <% for(var key in countries) {
+                                                    if(countries.hasOwnProperty(key)) {
+                                                %>
+                                                <option <%= (countries[key].CountryName == selcountry)?'selected':'' %>
+                                                        value="<%= countries[key].CountryName %>">
+                                                    <%= countries[key].CountryName %>
+                                                </option>
+                                                <% } } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="focus-label">City</label>
+                                            <% var selcity = (user_info.city)? user_info.city:'Jeddah'; %>
+                                            <input type="text" class="form-control floating"
+                                                   name="city"
+                                                   value="<%= selcity %>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-box">
+                    <h3 class="card-title">Other Information</h3>
+                    <div class="row">
+                        <% if((session.user.role == 'Admin' && session.user._id != user_info._id)   ||
+                                user_info.role == 'Salesman' ||
+                                user_info.role == 'Pharmacy' ||
+                                user_info.role == 'Driver') {  %>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Company Name</label>
+                                    <select class="select form-control floating"
+                                            name="companyName">
+                                        <% for(i = 0 ; i<companies.length; i++) { %>
+                                            <option value="<%= companies[i]._id %>">
+                                                <%= companies[i].nameEn %>
+                                            </option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                        <% } %>
+                        <%  if ((session.user.role == 'Admin' && session.user._id != user_info._id) ||
+                                user_info.role == 'Doctor' ||
+                                user_info.role == 'Client') {  %>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Insurance Type</label>
+                                    <select class="select form-control floating"  name="insuranceType">
+                                        <% for(i = 0 ; i<ins_types.length; i++) { %>
+                                            <option value="<%= ins_types[i].name %>">
+                                                <%= ins_types[i].name %>
+                                            </option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Insurance Company</label>
+                                    <select class="select form-control floating"  name="insuranceCompany">
+                                        <% for(i = 0 ; i<ins_companies.length; i++) { %>
+                                            <option value="<%= ins_companies[i].name %>">
+                                                <%= ins_companies[i].name %>
+                                            </option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Insurance Grade</label>
+                                    <select class="select form-control floating"  name="insuranceGrade">
+                                        <% for(i = 0 ; i<ins_grades.length; i++) { %>
+                                            <option value="<%= ins_grades[i].name %>">
+                                                <%= ins_grades[i].name %>
+                                            </option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Address</label>
+                                    <input type="text" class="form-control floating"
+                                           name="address"
+                                           value="<%= user_info.address %>" required>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if((session.user.role == 'Admin' && session.user._id != user_info._id) ||
+                                user_info.role == 'Doctor') { %>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Specialist</label>
+                                    <select class="select form-control floating"  name="spec">
+                                        <% for(i = 0 ; i<spec_list.length; i++) { %>
+                                            <option value="<%= spec_list[i].name %>"
+                                                    <%= (spec_list[i].name == user_info.spec)?"selected":'' %>>
+                                                <%= spec_list[i].name %>
+                                            </option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                        <% } %>
+                        <%  if ((session.user.role == 'Admin' && session.user._id != user_info._id) ||
+                                user_info.role == 'Driver') {  %>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Licence No</label>
+                                    <input type="text" class="form-control floating"
+                                           name="licenceNo"
+                                           value="<%= user_info.licenceNo %>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Licence Expiry Date</label>
+                                    <div class="cal-icon">
+                                        <input class="form-control floating datetimepicker" type="text"
+                                               name="licenceExpDate"
+                                               value="<%= (user_info.licenceExpDate)?user_info.licenceExpDate: getTodayDt() %>" required>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if ((session.user.role == 'Admin' && session.user._id != user_info._id) ||
+                                user_info.role == 'Company' ||
+                                user_info.role == 'Pharmacy') {  %>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="focus-label">GPS Location</label>
+                                    <input type="text" class="form-control floating"
+                                           name="gps"
+                                           value="<%= user_info.gps %>" required>
+                                </div>
+                                <div id="googleMapCompany">
+
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="text-center m-t-20">
+                    <button class="btn btn-primary submit-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+
+<% if(user_info.role == 'Admin' || user_info.role == 'Company' || user_info.role == 'Pharmacy') { %>
+    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=myMap"></script>
+    <script>
+        /**
+         * Show Google Map
+         */
+        function myMap() {
+            var mapProp = {
+                center: new google.maps.LatLng(51.508742, -0.120850),
+                zoom: 5,
+            };
+            var map = new google.maps.Map(document.getElementById("googleMapCompany"), mapProp);
+        }
+
+        myMap();
+    </script>
+<% } %>
+
+<%- include ../../component/cropperjs.ejs %>
+
+</body>
+</html>

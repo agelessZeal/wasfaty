@@ -1,0 +1,955 @@
+/*-----------------
+	1. General
+-----------------------*/
+
+@import url('https://fonts.googleapis.com/css?family=Rubik:400,500,700');
+
+html {
+	height: 100%;
+}
+body {
+	font-family: 'Rubik', sans-serif;
+	font-size: 0.875rem;
+	height: 100%;
+	/*background-color: #1b1e21;*/
+}
+
+.ws-hide {
+	display: none;
+}
+
+.ws-error {
+	border: 1px solid red;
+}
+
+.ws-header img {
+	width: 100%;
+}
+.ws-header-content {
+	position: absolute;
+	width: 100%;
+	top:0
+}
+.ws-header-content .navbar-brand {
+	display: block;
+}
+.ws-header-content img {
+	width:250px;
+}
+.ws-header-content .navbar {
+	border-bottom: 1px solid white;
+	border-top: 1px solid white;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+	 color: rgb(255, 255, 255);
+}
+.navbar-dark .navbar-nav .nav-item {
+	padding: 2px 10px;
+	font-size: 1.2rem;
+}
+.banner-description {
+	margin-top: 3rem;
+	color: white;
+}
+.banner-description h1 {
+	font-size: 8rem;
+}
+.banner-description p {
+	font-size: 5rem;
+	margin-bottom: 0;
+	line-height: 0.95
+}
+.ws-toggle-btn:focus {
+
+}
+.ws-toggle-btn:focus + #navbarNav {
+	display: block;
+}
+.ws-login-btn:hover,
+.ws-register-btn:hover {
+	color: white;
+}
+.ws-login-btn {
+	padding: 0.8rem 5rem;
+	background-color: transparent;
+	border: 1px solid white;
+	border-radius: 30px;
+	color: white !important;
+	font-size: 1.2rem;
+	margin-right: 8px;
+}
+
+.ws-register-btn {
+	padding: 0.2rem;
+	border: 1px solid white;
+	border-radius: 30px;
+}
+
+.ws-register-btn>div {
+	padding: 0.6rem 3.6rem;
+	background-color: white;
+	border-radius: 30px;
+	color: #047c86;
+	font-size: 1.2rem;
+}
+
+.auth-btn-areas>div {
+	color: white;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-size: 1.2rem;
+}
+.auth-btn-areas>div>a {
+	color: white !important;
+}
+.google-apple-btns img {
+	width: 15rem;
+}
+.auth-app-wrapper {
+	margin-top: 10rem;
+}
+
+#ws-services {
+	background-color: #f9f9f9;
+	padding: 15px 0;
+}
+
+.ws-dash-icon {
+	width: 70%;
+	margin-bottom: 10px;
+}
+#ws-about p {
+	font-size: 2rem;
+	color: #8e8e8e;
+}
+#ws-interesting-fact p {
+	font-size: 1.8rem;
+	color: #8e8e8e;
+}
+#ws-about h2,
+#ws-members h2,
+#ws-interesting-fact h2 {
+	font-size: 2.5rem;
+}
+.service-item {
+	padding: 10px 30px;
+}
+.service-item h5{
+	margin-bottom: 15px;
+}
+.service-item p {
+	margin-top: 15px;
+	font-size: 18px;
+}
+#ws-interesting-fact {
+	margin-top: 30px;
+}
+.owl-item {
+}
+.ws-own-item p {
+	font-size: 1.1rem !important;
+	font-weight: 600;
+	color: #696969c9;
+}
+.ws-own-item {
+	border-radius: 50%;
+	padding: 4px;
+	text-align: center;
+}
+.ws-interesting-fact img  {
+	width: 100px !important;
+}
+.ws-own-item img  {
+	border-radius: 50%;
+	width: 100px;
+	margin: 0 auto;
+}
+.ws-own-item>div:first-child {
+	padding: 2px;
+	border: 1px solid #a2a2a2;
+	border-radius: 50%;
+	display: inline-block;
+}
+.nav-item.active .nav-link{
+	border-bottom: 1px solid;
+}
+
+.nav-item:hover .nav-link{
+	border-bottom: 1px solid;
+	color: white !important;
+}
+.nav-link {
+	padding-bottom: 0;
+	margin-bottom: 10px;
+}
+
+#ws-ads img {
+	width: 100%;
+}
+
+.ws-content h2 {
+	text-transform: uppercase;
+}
+
+#ws-ads {
+	margin-bottom: 20px;
+}
+
+/**
+Effect zoom-in effect doctor list
+ */
+
+.slick-slide img {
+	width: 150px;
+	display: inline-block !important;
+}
+.slick-slide {
+	text-align: center;
+}
+
+.slick-slide>div>div {
+	text-align: center;
+}
+
+.slick-slide p {
+	display: none;;
+}
+
+.slick-slide.slick-center p {
+	display: block;
+}
+
+.slick-slide.slick-center .bottom-line-1 {
+	display: inline-block;
+}
+
+.slick-slide {
+	/*transform: scale(0.7, 0.7);*/
+	transition: transform 0.3s;
+}
+.slick-slide.slick-center {
+	transform: scale(1, 1) !important;
+}
+
+.about-arc-img {
+	width: 100%;
+	margin-bottom: -5em;
+}
+
+#ws-about-us p,
+#ws-about-us h3 {
+	text-align: left;
+}
+
+#ws-about-us h3 {
+	margin-bottom: 0;
+	font-weight: normal;
+}
+
+#ws-about-us .bottom-line {
+	width: 3.6rem;
+	height: 7px;
+	background-color: #4581b5;
+	margin-bottom: 10px;
+}
+
+.bottom-line-1 {
+	width: 60px;
+	height: 4px;
+	background-color: #4581b5;
+	display: none;
+}
+
+.ws-social-icons {
+	margin-top: 10px;
+}
+
+.ws-footer {
+	padding: 20px 0;
+}
+
+.ws-logo-color-img {
+	width: 300px;
+}
+
+#ws-about-us p {
+	margin-bottom: 0;
+	font-size: 1.2rem;
+}
+
+.app-icons-wrap a img{
+	margin-top: 5px;
+}
+
+.ws-about-us-item {
+	margin-bottom: 15px;
+}
+
+#googleMap {
+	height: 200px;
+	width: 100%;
+	margin-top: 5px;
+}
+
+.mapouter{
+	position:relative;
+	text-align:right;
+	height:200px;
+	width:100%;
+}
+.gmap_canvas iframe {
+	width: 100%;
+}
+.gmap_canvas {
+	overflow: hidden;
+	background: none!important;
+	height: 100%;
+	width: 100%;
+}
+
+#googleMapCompany {
+	height: 200px;
+	width: 100%;
+	margin-top: 5px;
+}
+
+.ws-login-form {
+	background-color: white;
+	padding: 30px 10px;
+	border-radius: 10px;
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)!important;
+	margin-top: 30%;
+	margin-bottom: 10%;
+	text-align: center
+}
+
+.ws-login-form label {
+	text-align: left;
+}
+.ws-login-form img {
+	width: 100%;
+}
+
+.ws-login-form select,
+.ws-login-form input {
+	border: 1px solid #087e8e;
+}
+
+.ws-login-form select option {
+	color: #087e8e;
+}
+
+.ws-login-form label {
+	color: #087e8e;
+}
+.ws-login-form p {
+	margin-top: 20px;
+	font-size: 1.1rem;
+	color: black;
+}
+
+.have-already-account {
+	margin-top: 20px;
+	font-size: 1.1rem;
+	color: black;
+}
+
+.ws-login-form a {
+	 color: #087e8e;
+ }
+
+.login-register-btns .login-btn {
+	border: 2px solid #087e8e;
+	background-color: white;
+	color: #087e8e;
+	padding: 5px 25px;
+	border-radius: 20px;
+}
+
+.ws-login-form .register-btn {
+	border: 2px solid #087e8e;
+	border-radius: 20px;
+	padding: 2px;
+}
+
+.ws-login-form .register-btn>div {
+	padding: 3px 10px;
+	background-color: #087e8e;
+	color: white;
+	border-radius: 20px;
+}
+
+.login-register-btns button,
+.login-register-btns a {
+	margin-top: 20px;
+}
+
+.register-submit-btn {
+	border: 2px solid #087e8e;
+	border-radius: 20px;
+	padding: 2px;
+	margin-top: 10px !important;
+}
+
+.register-submit-btn>div {
+	padding: 3px 40px;
+	background-color: #087e8e;
+	color: white;
+	border-radius: 20px;
+}
+
+.terms-service-agree {
+	margin-top: 20px !important;
+	margin-bottom: 0;
+}
+
+.terms-service-agree label {
+	/*font-size: 1.1rem;*/
+}
+
+.header .logo img {
+	width: 84%;
+}
+
+.error-box>a>img {
+	width: 100%;
+}
+
+.random-password-group label {
+	display: block;
+}
+.random-password-group button {
+	height: 40px;
+	width: 100%;
+	font-size: 1.1rem;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+	width: 55px;
+}
+
+/**
+Datatable Setting
+ */
+.dataTables_length {
+	display: inline-block;
+}
+.dataTables_filter{
+	display: inline-block;
+	float: right;
+}
+
+div.dt-buttons {
+	display: inline-block;
+	margin-left: 20px;
+	float: unset;
+}
+
+button.dt-button {
+	border-color: transparent !important;
+	background-color: #009efb !important;
+	background-image: unset !important;
+	font-size: 0.875rem !important;
+}
+
+button.dt-button>span{
+	color: white;
+}
+
+.profile-img-wrap {
+	height: 200px !important;
+	width: 200px !important;
+	border: 1px solid #aba8a8;
+	border-radius: 5px;
+}
+.profile-img-wrap img {
+	width: 200px;
+	height: 200px;
+}
+.profile-basic {
+	margin-left: 220px;
+}
+
+.header .user-img img {
+	border: 1px solid #f3f5f5;
+}
+
+/**
+Slick style
+ */
+@media (max-width: 1023px) {
+	.slick-active {
+		transform: scale(0.85, 0.85);
+		transition: transform 0.3s;
+	}
+}
+
+@media (min-width: 1024px) {
+	.slick-active {
+		transform: scale(0.7, 0.7);
+		transition: transform 0.3s;
+	}
+
+	.slick-active + .slick-active {
+		transform: scale(0.85, 0.85);
+	}
+
+	.slick-slide.slick-current.slick-active.slick-center {
+		/*background-color: #0c5460;*/
+	}
+
+	.slick-slide.slick-current.slick-active.slick-center + .slick-active{
+		transform: scale(0.85, 0.85);
+	}
+
+	.slick-slide.slick-current.slick-active.slick-center + .slick-active +  .slick-active{
+		transform: scale(0.7, 0.7);
+	}
+}
+
+
+/*-----------------
+	42. Responsive
+-----------------------*/
+
+@media only screen and (min-width: 991px) {
+
+}
+@media only screen and (min-width: 768px) {
+
+
+}
+@media only screen and (max-width: 1199.98px) {
+
+}
+@media only screen and (max-width: 991.98px) {
+	#navbarNav {
+		position: absolute;
+		top: 39px;
+		z-index: 10;
+		background-color: #047e8cc2;
+		width: 100%;
+		left: 0;
+	}
+	.navbar-nav.ml-auto {
+		padding-left: 15%;
+	}
+}
+@media only screen and (max-width: 767.98px) {
+
+}
+@media only screen and (max-width: 575.98px) {
+	.profile-basic {
+		margin-left: 0;
+	}
+}
+@media only screen and (max-width: 479px) {
+
+}
+/**
+///////
+ */
+
+@media (max-width: 540px) {
+	.banner-description {
+		text-align: center;
+		margin-bottom: 5px;
+	}
+	.banner-image {
+		height: 400px;
+	}
+	.auth-app-wrapper {
+		 margin-top: 0 !important;
+	}
+	.ws-register-btn {
+		padding: 0.2rem 0.2rem !important;
+	}
+	.ws-register-btn>div {
+		padding: 0.3rem 1rem !important;
+	}
+	.google-apple-btns img {
+		width: 120px !important;
+	}
+	.ws-login-btn {
+		padding: 0.4rem 2rem !important;
+	}
+}
+
+@media (max-width:360px){
+	html{ font-size: 11px}
+	.banner-description h1 {
+		font-size: 3rem;
+	}
+	.banner-description p {
+		font-size: 2rem;
+	}
+	.banner-description {
+		margin-top: 1rem;
+	}
+	.about-arc-img {
+		margin-bottom: 0;
+	}
+	.header .logo img {
+		width: 54%;
+	}
+}
+@media (min-width:361px) and (max-width:439px){
+	html{ font-size: 11px}
+	.banner-description h1 {
+		font-size: 3rem;
+	}
+	.banner-description p {
+		font-size: 2rem;
+	}
+	.banner-description {
+		margin-top: 1rem;
+	}
+	.auth-app-wrapper {
+		margin-top: -4rem;
+	}
+	.google-apple-btns img {
+		width: 9rem;
+	}
+	.ws-login-btn {
+		padding: 0.4rem 2rem;
+	}
+	.ws-register-btn {
+		padding: 0.4rem 1.5rem;
+	}
+	.about-arc-img {
+		margin-bottom: 0;
+	}
+	.header .logo img {
+		width: 48%;
+	}
+}
+@media (min-width:440px) and (max-width:519px){
+	html{ font-size: 11px}
+	.ws-header-content img {
+		width: 150px;
+	}
+	.banner-description h1 {
+		font-size: 3rem;
+	}
+	.banner-description p {
+		font-size: 2rem;
+	}
+	.banner-description {
+		margin-top: 1rem;
+	}
+	.auth-app-wrapper {
+		margin-top: -6rem;
+	}
+	.google-apple-btns img {
+		width: 9rem;
+	}
+	.ws-login-btn {
+		padding: 0.4rem 2rem;
+	}
+	.ws-register-btn>div {
+		padding: 0.3rem 1rem;
+	}
+	.about-arc-img {
+		margin-bottom: -0;
+	}
+	.header .logo img {
+		width: 36%;
+	}
+}
+@media (min-width:520px) and (max-width:599px){
+	html{ font-size: 11px}
+	.ws-header-content img {
+		width: 150px;
+	}
+	.banner-description h1 {
+		font-size: 2.5rem;
+	}
+	.banner-description p {
+		font-size: 2rem;
+	}
+	.banner-description {
+		margin-top: 0;
+	}
+	.auth-app-wrapper {
+		margin-top: -1.8rem;
+	}
+	.google-apple-btns img {
+		width: 9rem;
+	}
+	.ws-login-btn {
+		padding: 0.4rem 2.4rem;
+	}
+	.ws-register-btn>div {
+		padding: 0.4rem 1.5rem;
+	}
+	.about-arc-img {
+		margin-bottom: -0;
+	}
+	.header .logo img {
+		width: 25%;
+	}
+}
+@media (min-width:600px) and (max-width:679px){
+	html{ font-size: 11px}
+	.ws-header-content img {
+		width: 200px;
+	}
+	.banner-description h1 {
+		font-size: 3rem;
+	}
+	.banner-description p {
+		font-size: 2rem;
+	}
+	.banner-description {
+		margin-top: 2rem;
+	}
+	.banner-description {
+		margin-top: 1rem;
+	}
+	.auth-app-wrapper {
+		margin-top: -1rem;
+	}
+	.google-apple-btns img {
+		width: 9rem;
+	}
+	.ws-login-btn {
+		padding: 0.4rem 2rem;
+	}
+	.ws-register-btn>div {
+		padding: 0.4rem 1.5rem;
+	}
+	.about-arc-img {
+		margin-bottom: -2em;
+	}
+	.header .logo img {
+		width: 24%;
+	}
+}
+@media (min-width:680px) and (max-width:759px){
+	html{ font-size: 11px}
+	.banner-description h1 {
+		font-size: 3rem;
+	}
+	.banner-description p {
+		font-size: 2rem;
+	}
+	.banner-description {
+		margin-top: 1rem;
+	}
+	.auth-app-wrapper {
+		margin-top: 1rem;
+	}
+	.google-apple-btns img {
+		width: 9rem;
+	}
+	.ws-login-btn {
+		padding: 0.6rem 2rem;
+	}
+	.ws-register-btn>div {
+		padding: 0.6rem 1.5rem;
+	}
+	.about-arc-img {
+		margin-bottom: -2em;
+	}
+	.header .logo img {
+		width: 24%;
+	}
+}
+@media (min-width:760px) and (max-width:839px){
+	html{ font-size: 11px}
+	.banner-description h1 {
+		font-size: 4rem;
+	}
+	.banner-description p {
+		font-size: 3rem;
+	}
+	.banner-description {
+		margin-top: 1rem;
+	}
+	.auth-app-wrapper {
+		margin-top: -2rem;
+	}
+	.google-apple-btns img {
+		width: 9rem;
+	}
+	.ws-login-btn {
+		padding: 0.6rem 3rem;
+	}
+	.ws-register-btn>div {
+		padding: 0.5rem 1rem;
+	}
+	.about-arc-img {
+		margin-bottom: 0;
+	}
+	.header .logo img {
+		width: 22%;
+	}
+}
+@media (min-width:840px) and (max-width:919px){
+	html{ font-size: 11px}
+	.banner-description h1 {
+		font-size: 6rem;
+	}
+	.banner-description p {
+		font-size: 4rem;
+	}
+	.banner-description {
+		margin-top: 1rem;
+	}
+	.auth-app-wrapper {
+		margin-top: -1rem;
+	}
+	.google-apple-btns img {
+		width: 13rem;
+	}
+	.ws-login-btn {
+		padding: 0.6rem 3rem;
+	}
+	.about-arc-img {
+		margin-bottom: -4em;
+	}
+	.header .logo img {
+		width: 18%;
+	}
+}
+@media (min-width:920px) and (max-width:999px){
+	html{ font-size: 11px}
+	.banner-description h1 {
+		font-size: 6rem;
+	}
+	.banner-description {
+		margin-top: 2rem;
+	}
+	.banner-description p {
+		font-size: 4rem;
+	}
+	.auth-app-wrapper {
+		margin-top: -1rem;
+	}
+	.google-apple-btns img {
+		width: 14rem;
+	}
+	.ws-login-btn {
+		padding: 0.6rem 3rem;
+	}
+	.about-arc-img {
+		margin-bottom: -4em;
+	}
+	.header .logo img {
+		width: 17%;
+	}
+}
+@media (min-width:1000px) and (max-width:1079px){
+	html{ font-size: 11px}
+	.banner-description h1 {
+		font-size: 6rem;
+	}
+	.banner-description p {
+		font-size: 4rem;
+	}
+	.auth-app-wrapper {
+		margin-top: 3rem;
+	}
+	.banner-description {
+		margin-top: 2rem;
+	}
+	.about-arc-img {
+		margin-bottom: -1.2em;
+	}
+}
+
+@media (min-width:1080px) and (max-width:1159px){
+	html{ font-size: 11px}
+	.banner-description h1 {
+		font-size: 7rem;
+	}
+	.banner-description p {
+		font-size: 4rem;
+	}
+	.auth-app-wrapper {
+		margin-top: 5rem;
+	}
+	.about-arc-img {
+		margin-bottom: -2em;
+	}
+}
+@media (min-width:1160px) and (max-width:1239px){
+	html{ font-size: 11px}
+	.auth-app-wrapper {
+		margin-top: 6rem;
+	}
+	.about-arc-img {
+		margin-bottom: -3em;
+	}
+}
+@media (min-width:1240px) and (max-width:1319px){
+	html{ font-size: 12px}
+	.auth-app-wrapper {
+		margin-top: 6rem;
+	}
+	.about-arc-img {
+		margin-bottom: -2em;
+	}
+}
+@media (min-width:1320px) and (max-width:1399px){
+	html{ font-size: 13px}
+	.auth-app-wrapper {
+		margin-top: 4rem;
+	}
+	.about-arc-img {
+		margin-bottom: -3em;
+	}
+}
+@media (min-width:1400px) and (max-width:1479px){
+	html{ font-size: 14px}
+	.auth-app-wrapper {
+		margin-top: 6rem;
+	}
+	.about-arc-img {
+		margin-bottom: -4em;
+	}
+}
+@media (min-width:1480px) and (max-width:1559px){
+	html{ font-size: 14px}
+	.auth-app-wrapper {
+		margin-top: 7rem;
+	}
+	.about-arc-img {
+		margin-bottom: -5em;
+	}
+}
+@media (min-width:1560px) and (max-width:1639px){
+	html{ font-size: 14px}
+	.auth-app-wrapper {
+		margin-top: 9rem;
+	}
+	.about-arc-img {
+		margin-bottom: -6em;
+	}
+}
+@media (min-width:1640px) and (max-width:1719px){
+	html{ font-size: 14px}
+	.auth-app-wrapper {
+		margin-top: 12rem;
+	}
+	.about-arc-img {
+		margin-bottom: -7em;
+	}
+}
+@media (min-width:1720px) and (max-width:1799px){
+	html{ font-size: 14px}
+	.auth-app-wrapper {
+		margin-top: 12rem;
+	}
+	.about-arc-img {
+		margin-bottom: -7em;
+	}
+}
+@media (min-width:1800px){
+	html{ font-size: 15px}
+	.about-arc-img {
+		margin-bottom: -7em;
+	}
+}
+

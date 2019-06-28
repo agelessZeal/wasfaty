@@ -1,0 +1,42 @@
+<!-- registration form -->
+<div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="listing-modal-1 modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="onCloseSignupForm()">&times;</button>
+                <h4 class="modal-title" id="myModalLabel2">Registration</h4>
+            </div>
+            <div class="modal-body">
+                <div class="listing-register-form">
+                    <form role="form" action="#" id="signupform" name="signupform">
+                        <div class="alert alert-danger" id="signup-error-msg">
+                            Indicates a dangerous or potentially negative action.
+                        </div>
+                        <div class="alert alert-success" id="signup-success-msg">
+                            Indicates a successful or positive action.
+                        </div>
+                        <div class="listing-form-field"> <i class="fa fa-user blue-1"></i>
+                            <input class="form-field bgwhite" type="text" name="user_name" placeholder="Name"  />
+                        </div>
+                        <div class="listing-form-field"> <i class="fa fa-envelope blue-1"></i>
+                            <input class="form-field bgwhite" type="email" name="user_email" placeholder="Email" />
+                        </div>
+                        <div class="listing-form-field"> <i class="fa fa-lock blue-1"></i>
+                            <input class="form-field bgwhite" type="password" name="user_password" placeholder="Password"  />
+                        </div>
+                        <div class="listing-form-field"> <i class="fa fa-lock blue-1"></i>
+                            <input class="form-field bgwhite" type="password" name="user_confirm_password" placeholder="Confirm Password" />
+                        </div>
+                        <div class="listing-form-field clearfix margin-top-20 margin-bottom-20 login_form_text_center" style="display: none">
+                            <input type="checkbox" id="checkbox-1-2" class="regular-checkbox" />
+                            <label for="checkbox-1-2"></label>
+                            <label class="checkbox-lable">i agree with</label> &nbsp; <a href="#">Terms & Conditions</a> </div>
+                        <div class="listing-form-field">
+                            <input class="submit" type="button" value="create account" name="register_btn" onclick="onCreateAccount()"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

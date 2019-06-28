@@ -1,0 +1,240 @@
+/*-----------------
+	1. General
+-----------------------*/
+
+.ws-hide {
+    display: none;
+}
+
+.ws-error {
+    border: 1px solid red;
+}
+
+#googleMapCompany {
+    height: 200px;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.header .logo img {
+    width: 84%;
+}
+
+.error-box>a>img {
+    width: 100%;
+}
+
+.random-password-group label {
+    display: block;
+}
+.random-password-group button {
+    height: 40px;
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    width: 55px;
+}
+
+/**
+Datatable Setting
+ */
+.dataTables_length {
+    display: inline-block;
+}
+.dataTables_filter{
+    display: inline-block;
+    float: right;
+}
+
+div.dt-buttons {
+    display: inline-block;
+    margin-left: 20px;
+    float: unset;
+}
+
+button.dt-button {
+    border-color: transparent !important;
+    background-color: #009efb !important;
+    background-image: unset !important;
+    font-size: 0.875rem !important;
+}
+
+button.dt-button>span{
+    color: white;
+}
+
+.profile-img-wrap {
+    height: 200px !important;
+    width: 200px !important;
+    border: 1px solid #aba8a8;
+    border-radius: 5px;
+}
+.profile-img-wrap img {
+    width: 200px;
+    height: 200px;
+}
+.profile-basic {
+    margin-left: 220px;
+}
+
+.header .user-img img {
+    border: 1px solid #f3f5f5;
+}
+.item-img-outer {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    border-radius: 2px;
+    border:1px solid #d8d8d8;
+}
+.item-img-inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top:0;
+}
+.item-img-inner img {
+    width: 100%;
+    height: 100%;
+}
+#itemImgUploadBtn {
+    width: 100%;
+    position: relative;
+    margin-top: 20px;
+}
+#itemImgUploadBtn input {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top:0;
+    opacity: 0;
+}
+.ws-td-img {
+    width: 60px;
+}
+
+#check-existing-user {
+    margin-bottom: 20px;
+}
+
+#check-existing-user .btn-outline-primary:hover {
+    background-color: transparent;
+    color: #009efb;
+    border-color: #007bff;
+}
+
+#addItemModal tr,
+#chooseClient tr {
+    cursor: pointer;
+}
+
+#addItemModal tr.selected td,
+#chooseClient tr.selected td {
+    background-color: #009efb;
+    color: white;
+}
+
+
+/*.modal-dialog {*/
+/*    min-height: calc(100vh - 60px);*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: center;*/
+/*    overflow: auto;*/
+/*}*/
+/*@media(max-width: 768px) {*/
+/*    .modal-dialog {*/
+/*        min-height: calc(100vh - 20px);*/
+/*    }*/
+/*}*/
+/*-----------------
+	42. Responsive
+-----------------------*/
+
+@media only screen and (min-width: 991px) {
+
+}
+@media only screen and (min-width: 768px) {
+
+
+}
+@media only screen and (max-width: 1199.98px) {
+
+}
+@media only screen and (max-width: 991.98px) {
+    #navbarNav {
+        position: absolute;
+        top: 39px;
+        z-index: 10;
+        background-color: #047e8cc2;
+        width: 100%;
+        left: 0;
+    }
+    .navbar-nav.ml-auto {
+        padding-left: 15%;
+    }
+}
+@media only screen and (max-width: 767.98px) {
+
+}
+@media only screen and (max-width: 575.98px) {
+    .profile-basic {
+        margin-left: 0;
+    }
+}
+@media only screen and (max-width: 479px) {
+
+}
+/**
+///////
+ */
+
+@media (max-width:360px){
+    .header .logo img {
+        width: 54%;
+    }
+}
+@media (min-width:361px) and (max-width:439px){
+    .header .logo img {
+        width: 48%;
+    }
+}
+@media (min-width:440px) and (max-width:519px){
+    .header .logo img {
+        width: 36%;
+    }
+}
+@media (min-width:520px) and (max-width:599px){
+    .header .logo img {
+        width: 25%;
+    }
+}
+@media (min-width:600px) and (max-width:679px){
+    .header .logo img {
+        width: 24%;
+    }
+}
+@media (min-width:680px) and (max-width:759px){
+    .header .logo img {
+        width: 24%;
+    }
+}
+@media (min-width:760px) and (max-width:839px){
+    .header .logo img {
+        width: 22%;
+    }
+}
+@media (min-width:840px) and (max-width:919px){
+    .header .logo img {
+        width: 18%;
+    }
+}
+@media (min-width:920px) and (max-width:999px){
+    .header .logo img {
+        width: 17%;
+    }
+}
+

@@ -1,0 +1,163 @@
+{
+  "Admin" : [
+    {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
+    {"sub": true, "name": "Users", "icon": "fa fa-user-md", "children": [
+      {"name": "Salesman", "url": "/admin/salesman", "title": "Salesman List"},
+      {"name": "Company", "url": "/admin/company", "title": "Company List"},
+      {"name": "Pharmacy", "url": "/admin/pharmacy", "title": "Pharmacy List"},
+      {"name": "Doctor", "url": "/admin/doctor", "title": "Doctor List"},
+      {"name": "Client", "url": "/admin/client", "title": "Client List"},
+      {"name": "Driver", "url": "/admin/driver", "title": "Driver List"},
+      {"name": "CallCenter", "url": "/admin/callcenter", "title": "CallCenter List"}
+    ]},
+    {"sub": true, "name": "Master Files", "icon": "fa fa-flag-o", "children": [
+      {"name": "Item List", "url": "/admin/item", "title": "Item List"},
+      {"name": "Patient(Client) file", "url": "#", "title": ""},
+      {"name": "Countries", "url": "/admin/country", "title": "Country List"},
+      {"name": "Cities", "url": "#", "title": ""},
+      {"name": "Areas", "url": "#", "title": ""},
+      {"name": "Doctor Sub Specialist", "url": "/admin/specialist", "title": "Doctor Specialist"},
+      {"name": "Insurance Companies", "url": "/admin/insurance/companies", "title": "Insurance Companies"},
+      {"name": "Insurance Grades", "url": "/admin/insurance/grades", "title": "Insurance Grades"},
+      {"name": "Insurance Types", "url": "/admin/insurance/types", "title": "Insurance Types"},
+
+      {"name": "Item Dosage", "url": "/admin/master-item/dosage", "title": "Dosage"},
+      {"name": "Item Brand Name", "url": "/admin/master-item/brand", "title": "Brand Name"},
+      {"name": "Item Commercial Group", "url": "/admin/master-item/commercial-group", "title": "Commercial Group"},
+      {"name": "Item Main Classification", "url": "/admin/master-item/main-classification", "title": "Main Classification"},
+      {"name": "Item Sub Classification", "url": "/admin/master-item/sub-classification", "title": "Sub Classification"},
+      {"name": "Item Product Form", "url": "/admin/master-item/product-form", "title": "Product Form"},
+      {"name": "Item Concentration", "url": "/admin/master-item/concentration", "title": "Concentration"},
+      {"name": "Item Quantity", "url": "/admin/master-item/quantity", "title": "Quantity"},
+      {"name": "Item Unit of measurement", "url": "/admin/master-item/unit-of-measurement", "title": "Unit of measurement"},
+      {"name": "Item Ingredient", "url": "/admin/master-item/ingredient", "title": "Ingredient"},
+      {"name": "Item Flavor", "url": "/admin/master-item/flavor", "title": "Flavor"},
+      {"name": "Item Company Name", "url": "/admin/master-item/company-name", "title": "Company Name"},
+      {"name": "Item Age Range", "url": "/admin/master-item/age-range", "title": "Age Range"},
+      {"name": "Item Color", "url": "/admin/master-item/color", "title": "Color"}
+    ]},
+    {"sub": false, "name": "Orders", "icon": "fa fa-calendar", "url": "/orders", "title": "Orders"},
+    {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
+      {"name": "Driver Orders", "url": "#", "title": ""},
+      {"name": "Salesman Orders", "url": "#", "title": ""},
+      {"name": "Doctor Orders", "url": "#", "title": ""},
+      {"name": "Pharmacy Orders", "url": "#", "title": ""},
+      {"name": "Company Orders", "url": "#", "title": ""},
+      {"name": "Commissions", "url": "#", "title": ""}
+    ]},
+    {"sub": false, "name": "Invitations", "url": "/invite/list", "title": "Invitation List", "icon":"fa fa-hospital-o"},
+    {"sub": false, "name": "Messages", "url": "#", "title": "Messages", "icon":  "fa fa-envelope"}
+  ],
+  "Salesman" : [
+    {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
+    {"sub": false, "name": "My Account", "url": "#", "title": "My Account", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Announcement", "url": "#", "title": "Announcement", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Notifications", "url": "#", "title": "Notifications", "icon": "fa fa-envelope"},
+    {"sub": false, "name": "Item Catalog", "url": "#", "title": "Item Catalog", "icon": "fa fa-list"},
+    {"sub": false, "name": "Orders", "url": "#", "title": "Orders", "icon": "fa fa-list"},
+    {"sub": false, "name": "Doctor List", "url": "/salesman/doctor/list", "title": "Doctor List", "icon": "fa fa-list"},
+    {"sub": false, "name": "Doctor Invitation", "url": "/invite/list", "title": "Invitation List", "icon": "fa fa-list"},
+    {"sub": false, "name": "Finance Report", "url": "#", "title": "Finance Report", "icon": "fa fa-list"},
+    {"sub": false, "name": "Contact Us", "url": "#", "title": "Contact Us", "icon": "fa fa-list"}
+  ],
+  "Pharmacy" : [
+    {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
+    {"sub": false, "name": "My Account", "url": "#", "title": "My Account", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Announcement", "url": "#", "title": "Announcement", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Notifications", "url": "#", "title": "Notifications", "icon": "fa fa-envelope"},
+    {"sub": false, "name": "Item Catalog", "url": "#", "title": "Item Catalog", "icon": "fa fa-list"},
+    {"sub": false, "name": "Orders", "url": "#", "title": "Orders", "icon": "fa fa-list"},
+    {"sub": false, "name": "Companies", "url": "#", "title": "Companies", "icon": "fa fa-list"},
+    {"sub": false, "name": "Contact Us", "url": "#", "title": "Contact Us", "icon": "fa fa-list"}
+  ],
+  "Company" : [
+    {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
+    {"sub": false, "name": "My Account", "url": "#", "title": "My Account", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Announcement", "url": "#", "title": "Announcement", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Notifications", "url": "#", "title": "Notifications", "icon": "fa fa-envelope"},
+    {"sub": false, "name": "Item Catalog", "url": "#", "title": "Item Catalog", "icon": "fa fa-list"},
+    {"sub": false, "name": "Orders", "url": "#", "title": "Orders", "icon": "fa fa-list"},
+    {"sub": false, "name": "Contact Us", "url": "#", "title": "Contact Us", "icon": "fa fa-list"}
+  ],
+  "Doctor" : [
+    {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
+    {"sub": false, "name": "My Account", "url": "#", "title": "My Account", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Announcement", "url": "#", "title": "Announcement", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Notifications", "url": "#", "title": "Notifications", "icon": "fa fa-envelope"},
+    {"sub": false, "name": "Item Catalog", "url": "#", "title": "Item Catalog", "icon": "fa fa-list"},
+    {"sub": false, "name": "Orders", "url": "/orders", "title": "Orders", "icon": "fa fa-list"},
+    {"sub": false, "name": "Clients", "url": "#", "title": "Clients", "icon": "fa fa-list"},
+    {"sub": false, "name": "Item List", "url": "/admin/item", "title": "Item List", "icon": "fa fa-list"},
+    {"sub": false, "name": "My Invitation", "url": "/doctor/my-invitation", "title": "My Invitation", "icon": "fa fa-list"},
+    {"sub": false, "name": "Loyalty Points", "url": "#", "title": "Loyalty Points", "icon": "fa fa-list"},
+    {"sub": false, "name": "Contact Us", "url": "#", "title": "Contact Us", "icon": "fa fa-list"}
+  ],
+  "Client" : [
+    {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
+    {"sub": false, "name": "My Account", "url": "#", "title": "My Account", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Announcement", "url": "#", "title": "Announcement", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Notifications", "url": "#", "title": "Notifications", "icon": "fa fa-envelope"},
+    {"sub": false, "name": "Orders", "url": "/client/orders", "title": "Orders", "icon": "fa fa-list"},
+    {"sub": false, "name": "Item Catalog", "url": "#", "title": "Item Catalog", "icon": "fa fa-list"},
+    {"sub": false, "name": "Item List", "url": "#", "title": "Item List", "icon": "fa fa-list"},
+    {"sub": false, "name": "Invitation", "url": "/client/my-invitation", "title": "My Invitation", "icon": "fa fa-list"},
+    {"sub": false, "name": "Loyalty Points", "url": "#", "title": "Loyalty Points", "icon": "fa fa-list"},
+    {"sub": false, "name": "Contact Us", "url": "#", "title": "Contact Us", "icon": "fa fa-list"}
+  ],
+  "Driver" : [
+    {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
+    {"sub": false, "name": "My Account", "url": "#", "title": "My Account", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Announcement", "url": "#", "title": "Announcement", "icon": "fa fa-user-md"},
+    {"sub": false, "name": "Notifications", "url": "#", "title": "Notifications", "icon": "fa fa-envelope"},
+    {"sub": false, "name": "Open Orders", "url": "#", "title": "Invitation", "icon": "fa fa-list"},
+    {"sub": false, "name": "Finance Report", "url": "#", "title": "Loyalty Points", "icon": "fa fa-list"},
+    {"sub": false, "name": "Contact Us", "url": "#", "title": "Contact Us", "icon": "fa fa-list"}
+  ],
+  "CallCenter" : [
+    {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
+    {"sub": true, "name": "Users", "icon": "fa fa-user-md", "children": [
+      {"name": "Salesman", "url": "/admin/salesman", "title": "Salesman List"},
+      {"name": "Company", "url": "/admin/company", "title": "Company List"},
+      {"name": "Pharmacy", "url": "/admin/pharmacy", "title": "Pharmacy List"},
+      {"name": "Doctor", "url": "/admin/doctor", "title": "Doctor List"},
+      {"name": "Client", "url": "/admin/client", "title": "Client List"},
+      {"name": "Driver", "url": "/admin/driver", "title": "Driver List"},
+      {"name": "CallCenter", "url": "/admin/callcenter", "title": "CallCenter List"}
+    ]},
+    {"sub": true, "name": "Master Files", "icon": "fa fa-flag-o", "children": [
+      {"name": "Item List", "url": "#", "title": ""},
+      {"name": "Patient(Client) file", "url": "#", "title": ""},
+      {"name": "Countries", "url": "#", "title": ""},
+      {"name": "City", "url": "#", "title": ""},
+      {"name": "Areas", "url": "#", "title": ""},
+      {"name": "Doctor Sub Specialist", "url": "#", "title": ""},
+      {"name": "Insurance Companies", "url": "#", "title": ""},
+      {"name": "Insurance Grades", "url": "#", "title": ""},
+      {"name": "Item Dosage", "url": "#", "title": ""},
+      {"name": "Item Brand Name", "url": "#", "title": ""},
+      {"name": "Item Commercial Group", "url": "#", "title": ""},
+      {"name": "Item Main Classification", "url": "#", "title": ""},
+      {"name": "Item Sub Classification", "url": "#", "title": ""},
+      {"name": "Item Product Form", "url": "#", "title": ""},
+      {"name": "Item Concentration", "url": "#", "title": ""},
+      {"name": "Item Quantity", "url": "#", "title": ""},
+      {"name": "Item Unit of measurement", "url": "#", "title": ""},
+      {"name": "Item Ingredient", "url": "#", "title": ""},
+      {"name": "Item Flavor", "url": "#", "title": ""},
+      {"name": "Item Company Name", "url": "#", "title": ""},
+      {"name": "Item Age Range", "url": "#", "title": ""},
+      {"name": "Item Color", "url": "#", "title": ""}
+    ]},
+    {"sub": false, "name": "Orders", "icon": "fa fa-calendar", "url": "/admin/orders", "title": "Order List"},
+    {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
+      {"name": "Driver Orders", "url": "#", "title": ""},
+      {"name": "Salesman Orders", "url": "#", "title": ""},
+      {"name": "Doctor Orders", "url": "#", "title": ""},
+      {"name": "Pharmacy Orders", "url": "#", "title": ""},
+      {"name": "Company Orders", "url": "#", "title": ""},
+      {"name": "Commissions", "url": "#", "title": ""}
+    ]},
+    {"sub": false, "name": "Invitations", "url": "/invite/list", "title": "Invitation List", "icon":"fa fa-hospital-o"},
+    {"sub": false, "name": "Messages", "url": "#", "title": "Messages", "icon":  "fa fa-envelope"}
+  ]
+}
