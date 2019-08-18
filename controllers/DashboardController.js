@@ -35,13 +35,30 @@ module.exports = BaseController.extend({
             return res.redirect('/auth/login');
         }
         if(!req.session.user.isDoneProfile) {
-            return res.redirect('/profile/info');
+            return res.redirect('/invite/profile/info');
         }
-        let v;
-        v = new View(res, 'backend/dashboard/index');
-        v.render({
-            title: 'Dashboard',
-            session: req.session,
-        });
+        if (req.session.user.role == 'Company') {
+            return res.redirect('/company/dashboard');
+        } else if (req.session.user.role == 'Salesman') {
+            return res.redirect('/salesman/dashboard');
+        } else if (req.session.user.role == 'Doctor') {
+            return res.redirect('/doctor/dashboard');
+        } else if (req.session.user.role == 'Driver') {
+            return res.redirect('/driver/dashboard');
+        } else if (req.session.user.role == 'Client') {
+            return res.redirect('/client/dashboard');
+        } else if (req.session.user.role == 'CallCenter') {
+            return res.redirect('/callcenter/dashboard');
+        } else if (req.session.user.role == 'Pharmacy') {
+            return res.redirect('/pharmacy/dashboard');
+        } else {
+            let v;
+            v = new View(res, 'backend/dashboard/index');
+            v.render({
+                title: 'Dashboard',
+                session: req.session,
+            });
+        }
+
     },
 });

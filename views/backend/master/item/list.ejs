@@ -27,7 +27,7 @@ var formatTime = function (ts) {
                     <h4 class="page-title"><%= title %></h4>
                 </div>
                 <div class="col-sm-8 col-9 text-right m-b-20">
-                    <a href="/admin/master-item/<%= mtType %>/add" class="btn btn btn-primary btn-rounded float-right">
+                    <a href="/master-item/update/<%= mtType %>/add" class="btn btn btn-primary btn-rounded float-right">
                         <i class="fa fa-plus"></i> Add <%= title %>
                     </a>
                 </div>
@@ -53,7 +53,7 @@ var formatTime = function (ts) {
                                     <td><%= data_list[i].name_ar %></td>
                                     <td><%= formatTime(data_list[i].createdAt) %></td>
                                     <td class="text-right">
-                                        <a class="btn btn-primary" href="/admin/master-item/<%= mtType %>/edit?id=<%= data_list[i].mtId %>">
+                                        <a class="btn btn-primary" href="/master-item/update/<%= mtType %>/edit?id=<%= data_list[i].mtId %>">
                                             <i class="fa fa-pencil m-r-5"></i> Edit
                                         </a>
                                         <a class="btn btn-danger  ws-delete-link"

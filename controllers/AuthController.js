@@ -88,7 +88,7 @@ module.exports = BaseController.extend({
             delete req.session.redirectTo;
             return res.redirect(backURL);
         } else {
-            return res.redirect('/profile/info');
+            return res.redirect('/invite/profile/info');
         }
     },
     createUser: async function (req, res) {

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+var formatTime = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month<10){ month = '0' + month;}
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day<10){ day = '0' + day;}
+    return year+"-"+month + "-"+day;
+}
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-4 col-3">
+                    <h4 class="page-title">Client List</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-border table-striped custom-table datatable mb-0">
+                            <thead>
+                            <tr>
+                                <th>Name(EN/AR)</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Company</th>
+                                <th>Country</th>
+                                <th>City</th>
+                                <th>Status</th>
+                                <th>CreatedAt</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for(var i = 0; i<clients.length; i++) {  %>
+                                <tr>
+                                    <td>
+                                        <img width="28" height="28" src="<%= (clients[i].pic)?clients[i].pic:'/assets/img/user.jpg'; %>" class="rounded-circle m-r-5" alt="">
+                                        <%= (getLocale()== 'en')? clients[i].nameEn: clients[i].nameAr %>
+                                    </td>
+                                    <td><%= clients[i].email %></td>
+                                    <td><%= clients[i].phone %></td>
+                                    <td><%= clients[i].companyName %></td>
+                                    <td><%= clients[i].country %></td>
+                                    <td><%= clients[i].city %></td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm <%= (clients[i].status == "Enabled")?"btn-primary":"btn-secondary" %>"><%= (clients[i].status)?clients[i].status:'Disabled' %></button>
+                                    </td>
+                                    <td><%= formatTime(clients[i].createdAt) %></td>
+                                    <td>
+                                        <a class="btn btn-outline-primary" href="/users/profile?id=<%= clients[i]._id %>">View</a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include ../layouts/footer.ejs %>
+</body>
+</html>

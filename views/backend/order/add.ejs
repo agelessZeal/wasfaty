@@ -102,7 +102,7 @@
                                 <div class="row">
                                     <div class="col-12 text-right">
                                         <div class="form-group">
-                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addItemModal"
+                                            <button class="btn btn-primary" type="button" onclick="showAddOrderModal()"
                                                     id="order-item-add-btn">+ Add Item</button>
                                         </div>
                                     </div>
@@ -111,6 +111,7 @@
                                             <table class="table table-bordered" id="order-item-list">
                                                 <thead>
                                                 <tr>
+                                                    <th style="width: 82px">Picture</th>
                                                     <th>Item Code</th>
                                                     <th>Item Description</th>
                                                     <th>Item Dosage</th>
@@ -160,7 +161,7 @@
 
 <!-- The Modal -->
 <div class="modal fade" id="addItemModal">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
@@ -173,7 +174,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Dosage</label>
-                            <select class="form-control" id="add-item-dosage">
+                            <select class="form-control chosen" id="add-item-dosage">
                                 <% for(i=0; i<dosages.length; i++) {%>
                                     <option value="<%= dosages[i]['name_' + lang] %>"><%= dosages[i]['name_' + lang] %></option>
                                 <% } %>
@@ -187,29 +188,130 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-border table-striped custom-table my-datatable-item mb-0">
-                        <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <% for (var i = 0; i<items.length; i++) { %>
-                            <tr
-                                    data-code="<%= items[i].itemId %>"
-                                    data-name="<%= items[i]['name_' + lang] %>"
-                                    data-description="<%= items[i]['description_' + lang] %>"
-                                    data-price="<%= items[i].price %>">
-                                <td><%= items[i].itemId %></td>
-                                <td><%= items[i]['name_' + lang] %></td>
-                                <td><%= items[i]['description_' + lang] %></td>
-                            </tr>
-                        <% }  %>
-                        </tbody>
-                    </table>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="filter-options-outer">
+                            <h3><i class="fa fa-align-left"></i>&nbsp;Filter Options</h3>
+                            <div class="op-btns">
+                                <button class="btn btn-outline-primary" onclick="resetFilters()">Reset</button>
+                                <button class="btn btn-primary" onclick="searchProduct(1)">Search</button>
+                            </div>
+                            <input class="form-control" placeholder="Barcode" id="itemBarcode" type="text">
+                            <input class="form-control" placeholder="Keyword" id="itemName" type="text">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card">
+                                    <button type="button" class="btn btn-link filter-group-btn" data-toggle="collapse"
+                                            data-target="#collapseOne">
+                                        Main Classification <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                         data-parent="#accordionExample">
+                                        <div class="card-body" id="mainClassification">
+                                            <% for(i = 0; i < mainCs.length; i++) { %>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="<%= mainCs[i].mtId %>">
+                                                    <label for="<%= mainCs[i].mtId %>"><%= mainCs[i]['name_' + lang]; %></label>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                            data-target="#collapseTwo">
+                                        Sub Classification <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+                                        <div class="card-body"  id="subClassification">
+                                            <% for(i = 0; i < subCs.length; i++) { %>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="<%= subCs[i].mtId %>">
+                                                    <label for="<%= subCs[i].mtId %>"><%= subCs[i]['name_' + lang]; %></label>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                            data-target="#collapseThree">
+                                        Brand Name <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+                                        <div class="card-body" id="brand">
+                                            <% for(i = 0; i < brands.length; i++) { %>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="<%= brands[i].mtId %>">
+                                                    <label for="<%= brands[i].mtId %>"><%= brands[i]['name_' + lang]; %></label>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                            data-target="#headingFour">
+                                        Company Name <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="headingFour" class="collapse" aria-labelledby="headingFour">
+                                        <div class="card-body" id="company">
+                                            <% for(i = 0; i < companies.length; i++) { %>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="<%= companies[i].mtId %>">
+                                                    <label for="<%= companies[i].mtId %>"><%= companies[i]['name_' + lang]; %></label>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                            data-target="#headingFive">
+                                        Price <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="headingFive" class="collapse" aria-labelledby="headingFive">
+                                        <div class="card-body">
+                                            <div class="input-group mb-3">
+                                                <input type="number" class="form-control" placeholder="From" id="fromPrice">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">SAR</span>
+                                                </div>
+                                                <input type="number" class="form-control" placeholder="To" id="toPrice">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="search-item-wrapper">
+                            <div id="loadingScreen" class="ws-hide">
+                                <img src="/assets/img/ajax-loader.gif">
+                            </div>
+                            <div id="search-items-body">
+                                <div class="no-items-box">No available Items</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="pagination-bar">
+                                    <!--                            <span class="pgBtn" id="pgFirstBtn"><i class="fa fa-angle-double-left"></i></span>-->
+                                    <!--                            <span class="pgBtn" id="pgPrevBtn"><i class="fa fa-angle-left"></i></span>-->
+                                    <!--                            <select class="form-control" onchange="onChangePageNumber(this)" id="pgSelector">-->
+                                    <!--                                <option>1</option>-->
+                                    <!--                                <option>2</option>-->
+                                    <!--                                <option>3</option>-->
+                                    <!--                            </select>-->
+                                    <!--                            <span id="pgSlash">/</span>-->
+                                    <!--                            <span id="pgTotalBtn">5</span>-->
+                                    <!--                            <span class="pgBtn" id="pgNextBtn"><i class="fa fa-angle-right"></i></span>-->
+                                    <!--                            <span class="pgBtn" id="pgLastBtn"><i class="fa fa-angle-double-right"></i></span>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Modal footer -->
@@ -270,5 +372,199 @@
 
 <%- include ../layouts/footer.ejs %>
 <script src="/assets/js/order.js"></script>
+
+<script type="text/javascript">
+    $(".chosen").chosen();
+</script>
+
+<script>
+
+    var lang = '<%= getLocale(); %>';
+    function showAddOrderModal() {
+        $('#addItemModal').modal({backdrop:'static', keyboard: false});
+    }
+    //https://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-dollars-currency-string-in-javascript
+    function formatMoney(n, c, d, t) {
+        var c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+            j = (j = i.length) > 3 ? j % 3 : 0;
+
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    }
+
+    $(document).ready(function () {
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.show").each(function () {
+            $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+        });
+
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function () {
+            $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function () {
+            $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
+    });
+
+    function searchProduct(page) {
+        var mainIds = [], subIds = [], brandIds = [], companyIds = [];
+        var fromPrice = 0, toPrice = Infinity, keyword = "", barcode = "";
+
+        $('#mainClassification input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                mainIds.push($(this).attr('id'));
+            }
+        });
+
+        $('#subClassification input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                subIds.push($(this).attr('id'));
+            }
+        });
+
+        $('#brand input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                brandIds.push($(this).attr('id'));
+            }
+        });
+
+        $('#company input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                companyIds.push($(this).attr('id'));
+            }
+        });
+
+        fromPrice = $('#fromPrice').val();
+        toPrice = $('#toPrice').val();
+        barcode = $('#itemBarcode').val();
+        keyword = $('#itemName').val();
+
+        page = 1;
+
+        $.ajax('/product/search/product', {
+            type:'post',
+            data:{
+                page: page,
+                companyIds: companyIds,
+                brandIds: brandIds,
+                subIds: subIds,
+                mainIds: mainIds,
+                fromPrice: fromPrice,
+                toPrice: toPrice,
+                barcode: barcode,
+                q: keyword,
+            },
+            beforeSend: function(xhr) {
+                $('#loadingScreen').removeClass('ws-hide');
+            }
+        }).done(function (res) {
+            console.log(res);
+            if(res.status == 'success') {
+                showProductHtml(res.data.docs);
+                showPaginationBar(res.data);
+            } else {
+                alert(res.data);
+                showProductHtml([]);
+                showPaginationBar({totalPages: 0});
+            }
+        }).always(function (res) {
+            console.log('done');
+            $('#loadingScreen').addClass('ws-hide');
+        });
+    }
+
+    function showProductHtml(itemList) {
+        var itemHTML = ''
+        for (var i = 0; i<itemList.length; i++) {
+            var itemInfo = itemList[i];
+            itemHTML += `<div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="item-info-outer">
+                                    <div class="item-info-wrapper">
+                                        <div>
+                                            <img src="${itemInfo.pic}">
+                                        </div>
+                                    </div>
+                                    <div class="item-info-text">
+                                        ${itemInfo['name_' + lang]}
+                                    </div>
+                                    <div class="item-info-price">
+                                        ${formatMoney(itemInfo.price, 2)} SAR
+                                    </div>
+                                    <div class="item-add-cart">
+                                        <button class="btn add-cart-btn"
+                                            data-pic=${itemInfo.pic}
+                                            data-code=${itemInfo.itemId}
+                                            data-name=${itemInfo['name_' + lang]}
+                                            data-description=${itemInfo['description_' + lang]}
+                                            data-price=${itemInfo.price}
+                                            onclick="addToCart(this)">Add to cart</button>
+                                    </div>
+                                </div>
+                            </div>`;
+        }
+        if (itemHTML != "") {
+            $('#search-items-body').html(`<div class="row">${itemHTML}</div>`);
+        } else {
+            $('#search-items-body').html(`<div class="no-items-box">No available Items</div>`);
+        }
+
+    }
+
+    /// Pagination function
+    /**
+     * Show pagination Bar
+     * @param info
+     */
+    function showPaginationBar(info) {
+
+        // Make Select box
+        var pgHtml = '';
+
+        if (info.totalPages > 1) {
+            if (info.hasPrevPage) {
+                pgHtml += `<span class="pgBtn" id="pgFirstBtn" onclick="searchProduct('1')">First</span>`;
+                pgHtml += `<span class="pgBtn" id="pgPrevBtn" onclick="searchProduct('${info.prevPage}')">Prev</span>`;
+            }
+
+            pgHtml += `<select class="form-control" id="product-page-select" onchange="onChangePageNumber(this)">`;
+            for (var i = 1; i <= info.totalPages; i++) {
+                pgHtml += `<option value="${i}" ${(i == info.page) ? 'selected' : ''}>${i}</option>`;
+            }
+            pgHtml += '</select>';
+            pgHtml += '<span id="pgSlash"> / </span>';
+            pgHtml += `<span id="pgTotalBtn">${info.totalPages}</span>`;
+
+            if (info.hasNextPage) {
+                pgHtml += `<span class="pgBtns" id="pgNextBtn" onclick="searchProduct('${info.nextPage}')">Next</span>`;
+                pgHtml += `<span class="pgBtn" id="pgLastBtn" onclick="searchProduct('${info.totalPages}')">Last</span>`;
+            }
+        }
+
+        $('.pagination-bar').html(pgHtml);
+    }
+
+    function onChangePageNumber(self) {
+        searchProduct($('#product-page-select').val());
+    }
+
+    function resetFilters () {
+        $('.filter-options-outer').find('input[type="text"]').val('');
+        $('.filter-options-outer').find('input[type="number"]').val('');
+        $('.filter-options-outer').find('input[type="checkbox"]').prop('checked', false);
+        searchProduct(1);
+    }
+
+
+    function addToCart(self) {
+        $('.add-cart-btn').removeClass('active');
+        $(self).addClass('active');
+    }
+
+    searchProduct(1); // Initial Loading
+
+</script>
 </body>
 </html>

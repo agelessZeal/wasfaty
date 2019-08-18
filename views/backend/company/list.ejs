@@ -46,7 +46,7 @@ var formatTime = function (ts) {
                                 <th>City</th>
                                 <th>Status</th>
                                 <th>CreatedAt</th>
-                                <th class="text-right">Action</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -65,20 +65,19 @@ var formatTime = function (ts) {
                                         <button type="button" class="btn btn-sm <%= (users[i].status == "Enabled")?"btn-primary":"btn-secondary" %>"><%= (users[i].status)?users[i].status:'Disabled' %></button>
                                     </td>
                                     <td><%= formatTime(users[i].createdAt) %></td>
-                                    <td class="text-right">
-                                        <div class="dropdown dropdown-action">
-                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="/user/profile?m=edit&id=<%= users[i]._id %>"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                <a class="dropdown-item ws-delete-link"
-                                                   href="#"
-                                                   data-msg="Company"
-                                                   data-url="/user/delete/<%= users[i]._id %>"
-                                                   data-toggle="modal"
-                                                   data-target="#delete_box">
-                                                    <i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                            </div>
-                                        </div>
+                                    <td>
+                                        <% if(session.user.role == 'Admin') {  %>
+                                            <a class="btn btn-primary" href="/users/profile?m=edit&id=<%= users[i]._id %>"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                            <a class="btn btn-danger ws-delete-link"
+                                               href="#"
+                                               data-msg="Company"
+                                               data-url="/users/delete/<%= users[i]._id %>"
+                                               data-toggle="modal"
+                                               data-target="#delete_box">
+                                                <i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                        <% } else  {  %>
+                                            <a class="btn btn-primary" href="/users/profile?m=view&id=<%= users[i]._id %>"><i class="fa fa-eye m-r-5"></i> View</a>
+                                        <% } %>
                                     </td>
                                 </tr>
                             <% } %>

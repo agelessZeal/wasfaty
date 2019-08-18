@@ -6,6 +6,8 @@ let UserModel, InviteModel, CountryModel, SpecModel,
 
 let nodemailer, ejs, transporter;
 
+let geoip;
+
 async = require("async");
 mongoose = require('mongoose');
 axios = require('axios');
@@ -26,7 +28,7 @@ BaseController = require('./BaseController');
 View = require('../views/base');
 
 request = require('request');
-
+geoip = require('geoip-lite');
 nodemailer = require('nodemailer');
 ejs = require('ejs');
 
@@ -189,7 +191,7 @@ module.exports = BaseController.extend({
             return res.redirect('/*');
         }
 
-        let backURL = '/profile/info';
+        let backURL = '/invite/profile/info';
 
         if (inviteInfo.status == 'Awaiting') {
             // add / update user from users table
@@ -291,12 +293,12 @@ module.exports = BaseController.extend({
 
     showInviteStatus: async function (req, res) {
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/profile/info';
+            req.session.redirectTo = '/invite/profile/info';
             return res.redirect('/auth/login');
         }
         let v = new View(res, 'backend/invite/info');
         if (req.session.user.isDoneProfile) {
-            return res.redirect('/user/profile?m=view');
+            return res.redirect('/users/profile?m=view');
         }
         let nationalities = await CountryModel.find().sort({name:1});
         let spec_list = await SpecModel.find().sort({name:1});
@@ -304,6 +306,16 @@ module.exports = BaseController.extend({
         let ins_grades = await InsGradeModel.find().sort({name:1});
         let ins_types = await InsTypeModel.find().sort({name:1});
         let companies = await UserModel.find({role:'Company', status:'Enabled'}).sort({username:1});
+
+        let curIp = this.getClientIp(req);
+        let geo = geoip.lookup(curIp);
+        let userInfo = req.session.user;
+        if (geo) {
+            userInfo.gpsLat = geo.ll[0];
+            userInfo.gpsLong = geo.ll[1];
+        }
+
+        console.log(curIp, geo);
 
         v.render({
             title: 'Profile Information',
@@ -315,7 +327,7 @@ module.exports = BaseController.extend({
             ins_grades: ins_grades,
             ins_types: ins_types,
             companies: companies,
-            user_info: req.session.user,
+            user_info: userInfo,
             error: req.flash("error"),
             success: req.flash("success"),
         });
@@ -324,13 +336,16 @@ module.exports = BaseController.extend({
     updateInviteStatus: async function (req, res) {
         // update User Profile Information
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/profile/info';
+            req.session.redirectTo = '/invite/profile/info';
             return res.redirect('/auth/login');
         }
         let rq = req.body;
         let userInfo = await UserModel.findOne({_id: req.session.user._id});
         rq.isDoneProfile = true;
         rq.loginCount = 1;
+
+        rq.gpsLat = (rq.gpsLat) ? Number(rq.gpsLat) : config.mapCenter.lat;
+        rq.gpsLong = (rq.gpsLong) ? Number(rq.gpsLong) : config.mapCenter.long;
 
         userInfo = Object.assign(userInfo, rq);
         await UserModel.updateOne({_id: userInfo._id}, userInfo);
@@ -339,7 +354,7 @@ module.exports = BaseController.extend({
         await req.session.save();
 
         req.flash('success', 'Updated Profile Information Successfully!');
-        return res.redirect('/user/profile?m=edit');
+        return res.redirect('/users/profile?m=edit');
     },
 
     deleteInvite: async function (req, res) {

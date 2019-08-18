@@ -69,11 +69,11 @@ var formatTime = function (ts) {
                                         <div class="dropdown dropdown-action">
                                             <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="/user/profile?m=edit&id=<%= users[i]._id %>"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                <a class="dropdown-item" href="/users/profile?m=edit&id=<%= users[i]._id %>"><i class="fa fa-pencil m-r-5"></i> Edit</a>
                                                 <a class="dropdown-item ws-delete-link" href="#"
                                                    data-toggle="modal"
                                                    data-msg="Driver"
-                                                   data-url="/user/delete/<%= users[i]._id %>"
+                                                   data-url="/users/delete/<%= users[i]._id %>"
                                                    data-target="#delete_box">
                                                     <i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                             </div>

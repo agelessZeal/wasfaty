@@ -26,7 +26,7 @@ module.exports = BaseController.extend({
         let v, mtDataList, title, typePos;
         let mtType = req.params.mtType;
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/admin/master-item/' + mtType;
+            req.session.redirectTo = '/master-item/update/' + mtType;
             return res.redirect('/auth/login');
         }
         if (req.session.user.role != 'Admin') {
@@ -63,7 +63,7 @@ module.exports = BaseController.extend({
         }
 
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/admin/master-item/' + mtType + '/' + opType;
+            req.session.redirectTo = '/master-item/update/' + mtType + '/' + opType;
             return res.redirect('/auth/login');
         }
         if (req.session.user.role != 'Admin') {
@@ -95,7 +95,7 @@ module.exports = BaseController.extend({
         let itemInfo, itemid;
         let mtType = req.params.mtType;
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/admin/master-item/' + mtType;
+            req.session.redirectTo = '/master-item/update/' + mtType;
             return res.redirect('/auth/login');
         }
         if (req.session.user.role != 'Admin') {
@@ -120,7 +120,7 @@ module.exports = BaseController.extend({
             req.flash('success', 'Added new item successfully!');
         }
 
-        let backurl = '/admin/master-item/' + mtType+ '/' + pageMode;
+        let backurl = '/master-item/update/' + mtType+ '/' + pageMode;
         if (pageMode == 'edit') {
             backurl += '?id=' + itemid;
         }
@@ -136,7 +136,7 @@ module.exports = BaseController.extend({
         }
         let id = req.params.id;
         await MasterItem.deleteOne({mtId: id});
-        return res.redirect('/admin/master-item/' + mtType);
+        return res.redirect('/master-item/update/' + mtType);
     },
 
 });

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include ../layouts/header.ejs %>
+<!-- Add the slick-theme.css if you want default styling -->
+<link rel="stylesheet" type="text/css" href="/assets/plugins/slick/css/slick.css"/>
+<!-- Add the slick-theme.css if you want default styling -->
+<link rel="stylesheet" type="text/css" href="/assets/plugins/slick/css/slick-theme.css"/>
+<% var lang = getLocale(); var i = 0; %>
+<% var suffix = (lang == 'en')?'En':'Ar'; %>
+<body>
+<section class="ws-header">
+    <img src="/assets/img/banner.png" class="banner-image">
+    <div class="ws-header-content">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <img src="/assets/img/logo_white.png">
+            </a>
+        </div>
+        <div class="menu-list">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container">
+                    <button class="navbar-toggler ml-auto ws-toggle-btn" type="button">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse right" id="navbarNav">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Services</a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="/product">Products</a>
+                            </li>
+                            <% if(session.login) { %>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dashboard">Dasboard</a>
+                                </li>
+                            <% } %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contact Us</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="container">
+            <div class="banner-description">
+                <h1>Experience</h1>
+                <p>ealing</p>
+                <p>and curing</p>
+                <p>illnesses</p>
+            </div>
+            <div class="row auth-app-wrapper">
+                <div class="offset-sm-6 col-sm-6 text-center">
+                    <% if(!session.login) { %>
+                        <div class="auth-btn-areas">
+                            <a class="btn ws-login-btn" href="/auth/login">Login</a>
+                            <a class="btn ws-register-btn" href="/auth/register">
+                                <div>Create Account</div>
+                            </a>
+                            <div> Forgot your password? <a href="/auth/forgot-password">click here</a></div>
+                        </div>
+                    <% } %>
+                    <div class="google-apple-btns ">
+                        <a href="#"><img src="/assets/img/google_play.png"></a>
+                        <a href="#"><img src="/assets/img/apple.png"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ws-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="filter-options-outer">
+                    <h3><i class="fa fa-align-left"></i>&nbsp;Filter Options</h3>
+                    <div class="op-btns">
+                        <button class="btn btn-outline-primary" onclick="resetFilters()">Reset</button>
+                        <button class="btn btn-primary" onclick="searchProduct(1)">Search</button>
+                    </div>
+                    <input class="form-control" placeholder="Barcode" id="itemBarcode" type="text">
+                    <input class="form-control" placeholder="Keyword" id="itemName" type="text">
+                    <div class="accordion" id="accordionExample">
+                        <div class="card">
+                            <button type="button" class="btn btn-link filter-group-btn" data-toggle="collapse"
+                                    data-target="#collapseOne">
+                                Main Classification <i class="fa fa-plus"></i>
+                            </button>
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                 data-parent="#accordionExample">
+                                <div class="card-body" id="mainClassification">
+                                    <% for(i = 0; i < mainCs.length; i++) { %>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="<%= mainCs[i].mtId %>">
+                                            <label for="<%= mainCs[i].mtId %>"><%= mainCs[i]['name_' + lang]; %></label>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                    data-target="#collapseTwo">
+                                Sub Classification <i class="fa fa-plus"></i>
+                            </button>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+                                <div class="card-body"  id="subClassification">
+                                    <% for(i = 0; i < subCs.length; i++) { %>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="<%= subCs[i].mtId %>">
+                                            <label for="<%= subCs[i].mtId %>"><%= subCs[i]['name_' + lang]; %></label>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                    data-target="#collapseThree">
+                                Brand Name <i class="fa fa-plus"></i>
+                            </button>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+                                <div class="card-body" id="brand">
+                                    <% for(i = 0; i < brands.length; i++) { %>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="<%= brands[i].mtId %>">
+                                            <label for="<%= brands[i].mtId %>"><%= brands[i]['name_' + lang]; %></label>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                    data-target="#headingFour">
+                                Company Name <i class="fa fa-plus"></i>
+                            </button>
+                            <div id="headingFour" class="collapse" aria-labelledby="headingFour">
+                                <div class="card-body" id="company">
+                                    <% for(i = 0; i < companies.length; i++) { %>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="<%= companies[i]._id %>" <%= (cpyId == companies[i]._id)?'checked':'' %>>
+                                            <label for="<%= companies[i]._id %>"><%= companies[i]['name' + suffix]; %></label>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                    data-target="#headingFive">
+                                Price <i class="fa fa-plus"></i>
+                            </button>
+                            <div id="headingFive" class="collapse" aria-labelledby="headingFive">
+                                <div class="card-body">
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" placeholder="From" id="fromPrice">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">SAR</span>
+                                        </div>
+                                        <input type="number" class="form-control" placeholder="To" id="toPrice">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="search-item-wrapper">
+                    <div id="loadingScreen" class="ws-hide">
+                        <img src="/assets/img/ajax-loader.gif">
+                    </div>
+                    <div id="search-items-body">
+                        <div class="no-items-box">No available Items</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="pagination-bar">
+<!--                            <span class="pgBtn" id="pgFirstBtn"><i class="fa fa-angle-double-left"></i></span>-->
+<!--                            <span class="pgBtn" id="pgPrevBtn"><i class="fa fa-angle-left"></i></span>-->
+<!--                            <select class="form-control" onchange="onChangePageNumber(this)" id="pgSelector">-->
+<!--                                <option>1</option>-->
+<!--                                <option>2</option>-->
+<!--                                <option>3</option>-->
+<!--                            </select>-->
+<!--                            <span id="pgSlash">/</span>-->
+<!--                            <span id="pgTotalBtn">5</span>-->
+<!--                            <span class="pgBtn" id="pgNextBtn"><i class="fa fa-angle-right"></i></span>-->
+<!--                            <span class="pgBtn" id="pgLastBtn"><i class="fa fa-angle-double-right"></i></span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ws-content text-center" id="ws-about-us">
+    <img src="/assets/img/arc.png" class="about-arc-img">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="ws-about-us-item">
+                    <h3>Contact Us</h3>
+                    <div class="bottom-line"></div>
+                    <p>BROOKYLN, NY 10036, UNITED STATES</p>
+                    <p>1-800-123-1234</p>
+                    <p>EXAMPLE@MEDICINE-PLUS.COM</p>
+                    <div class="mapouter">
+                        <div class="gmap_canvas">
+                            <iframe height="200" id="gmap_canvas"
+                                    src="https://maps.google.com/maps?q=Saudi%20Araiba%20jddah&t=&z=11&ie=UTF8&iwloc=&output=embed"
+                                    frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                            <a href="https://www.pureblack.de"></a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="ws-about-us-item">
+                    <h3>Our Laboratory</h3>
+                    <div class="bottom-line"></div>
+                    <p>The world pharmacy is derived from its root word pharma which was term used since the 15rh-17th
+                        centuries.
+                        However, the original Greek roots from pharmaks imply sorcery or even poison. In addition to
+                        pharma responsibilities,
+                        the pharma offered general medical advice and a range of services that are now performed solely
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="ws-about-us-item">
+                    <h3>Additional info</h3>
+                    <div class="bottom-line"></div>
+                    <p>Synthetic Natural Products Chemistry</p>
+                    <p>Organic Chemistry for Drug Development</p>
+                    <p>Pharmaceutics Physical Chemistry for Drug</p>
+                    <p>Design</p>
+                    <p>Radioisotope Research Laboratory</p>
+                    <p>Social Pharmacy (Student Learning Support)</p>
+                    <p>Pharmacutical Informatics</p>
+                    <p>Clinical Pharmacokinetics</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ws-footer text-center">
+    <img src="/assets/img/wasfaty_logo_color.png" alt="wasfaty-logo-color" class="ws-logo-color-img">
+    <div class="app-icons-wrap">
+        <a href="#">
+            <img src="/assets/img/google_play.png">
+        </a>
+        <a href="#">
+            <img src="/assets/img/apple.png">
+        </a>
+    </div>
+    <div class="ws-social-icons">
+        <a href="#"><img src="/assets/img/google_plus.png"></a>
+        <a href="#"><img src="/assets/img/facebook.png"></a>
+        <a href="#"><img src="/assets/img/twitter.png"></a>
+        <a href="#"><img src="/assets/img/instagram.png"></a>
+        <a href="#"><img src="/assets/img/pint.png"></a>
+        <a href="#"><img src="/assets/img/link.png"></a>
+        <a href="#"><img src="/assets/img/youtube.png"></a>
+    </div>
+</section>
+
+<%- include ../layouts/footer.ejs %>
+
+<script src="/assets/plugins/carousel/js/owl.carousel.min.js"></script>
+<script src="/assets/plugins/slick/js/slick.min.js"></script>
+
+<script>
+
+    var lang = '<%= getLocale(); %>';
+    //https://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-dollars-currency-string-in-javascript
+    function formatMoney(n, c, d, t) {
+        var c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+            j = (j = i.length) > 3 ? j % 3 : 0;
+
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    }
+
+    $(document).ready(function () {
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.show").each(function () {
+            $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+        });
+
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function () {
+            $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function () {
+            $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
+    });
+
+    function searchProduct(page) {
+        var mainIds = [], subIds = [], brandIds = [], companyIds = [];
+        var fromPrice = 0, toPrice = Infinity, keyword = "", barcode = "";
+
+        $('#mainClassification input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                mainIds.push($(this).attr('id'));
+            }
+        });
+
+        $('#subClassification input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                subIds.push($(this).attr('id'));
+            }
+        });
+
+        $('#brand input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                brandIds.push($(this).attr('id'));
+            }
+        });
+
+        $('#company input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                companyIds.push($(this).attr('id'));
+            }
+        });
+
+        fromPrice = $('#fromPrice').val();
+        toPrice = $('#toPrice').val();
+        barcode = $('#itemBarcode').val();
+        keyword = $('#itemName').val();
+
+        page = 1;
+
+        $.ajax('/product/search/product', {
+            type:'post',
+            data:{
+                page: page,
+                companyIds: companyIds,
+                brandIds: brandIds,
+                subIds: subIds,
+                mainIds: mainIds,
+                fromPrice: fromPrice,
+                toPrice: toPrice,
+                barcode: barcode,
+                q: keyword,
+            },
+            beforeSend: function(xhr) {
+                $('#loadingScreen').removeClass('ws-hide');
+            }
+        }).done(function (res) {
+            console.log(res);
+            if(res.status == 'success') {
+                showProductHtml(res.data.docs);
+                showPaginationBar(res.data);
+            } else {
+                alert(res.data);
+                showProductHtml([]);
+                showPaginationBar({totalPages: 0});
+            }
+        }).always(function (res) {
+            console.log('done');
+            $('#loadingScreen').addClass('ws-hide');
+        });
+    }
+
+    function showProductHtml(itemList) {
+        var itemHTML = ''
+        for (var i = 0; i<itemList.length; i++) {
+            var itemInfo = itemList[i];
+            itemHTML += `<div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="item-info-outer">
+                                    <div class="item-info-wrapper">
+                                        <div>
+                                            <img src="${itemInfo.pic}">
+                                        </div>
+                                    </div>
+                                    <div class="item-info-text">
+                                        ${itemInfo['name_' + lang]}
+                                    </div>
+                                    <div class="item-info-price">
+                                        ${formatMoney(itemInfo.price, 2)} SAR
+                                    </div>
+                                </div>
+                            </div>`;
+        }
+        if (itemHTML != "") {
+            $('#search-items-body').html(`<div class="row">${itemHTML}</div>`);
+        } else {
+            $('#search-items-body').html(`<div class="no-items-box">No available Items</div>`);
+        }
+
+    }
+
+    /// Pagination function
+    /**
+     * Show pagination Bar
+     * @param info
+     */
+    function showPaginationBar(info) {
+
+        // Make Select box
+        var pgHtml = '';
+
+        if (info.totalPages > 1) {
+            if (info.hasPrevPage) {
+                pgHtml += `<span class="pgBtn" id="pgFirstBtn" onclick="searchProduct('1')">First</span>`;
+                pgHtml += `<span class="pgBtn" id="pgPrevBtn" onclick="searchProduct('${info.prevPage}')">Prev</span>`;
+            }
+
+            pgHtml += `<select class="form-control" id="product-page-select" onchange="onChangePageNumber(this)">`;
+            for (var i = 1; i <= info.totalPages; i++) {
+                pgHtml += `<option value="${i}" ${(i == info.page) ? 'selected' : ''}>${i}</option>`;
+            }
+            pgHtml += '</select>';
+            pgHtml += '<span id="pgSlash"> / </span>';
+            pgHtml += `<span id="pgTotalBtn">${info.totalPages}</span>`;
+
+            if (info.hasNextPage) {
+                pgHtml += `<span class="pgBtns" id="pgNextBtn" onclick="searchProduct('${info.nextPage}')">Next</span>`;
+                pgHtml += `<span class="pgBtn" id="pgLastBtn" onclick="searchProduct('${info.totalPages}')">Last</span>`;
+            }
+        }
+
+        $('.pagination-bar').html(pgHtml);
+    }
+
+    function onChangePageNumber(self) {
+        searchProduct($('#product-page-select').val());
+    }
+
+    function resetFilters () {
+        $('.filter-options-outer').find('input[type="text"]').val('');
+        $('.filter-options-outer').find('input[type="number"]').val('');
+        $('.filter-options-outer').find('input[type="checkbox"]').prop('checked', false);
+        searchProduct(1);
+    }
+
+    searchProduct(1); // Initial Loading
+
+</script>
+
+</body>
+</html>

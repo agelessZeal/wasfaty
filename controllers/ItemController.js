@@ -42,6 +42,7 @@ module.exports = BaseController.extend({
         });
     },
     showAddItems: async function (req, res) {
+
         let v, opType, itemId, itemInfo, subMasterItems;
         opType = req.params.op;
         if (req.params.op != 'edit' && req.params.op != 'add' && req.params.op != 'view') {
@@ -55,9 +56,11 @@ module.exports = BaseController.extend({
             req.session.redirectTo = '/admin/item/' + opType;
             return res.redirect('/auth/login');
         }
+
         if (req.session.user.role != 'Admin' && req.session.user.role != 'Doctor') {
             return res.redirect('/*');
         }
+
         if (opType != 'add') {
             itemInfo = await ItemModel.findOne({itemId: itemId});
             if (!itemInfo) {
@@ -77,12 +80,15 @@ module.exports = BaseController.extend({
             }
         }
 
+        let companies = await UserModel.find({role:'Company'}).sort({createdAt:-1});
+
         v = new View(res, 'backend/master/edit');
         v.render({
             title: 'Item List',
             page_mode: opType,
             item_info: itemInfo,
             itemKeys: itemKeys,
+            companies: companies,
             session: req.session,
             error: req.flash("error"),
             success: req.flash("success"),
@@ -104,11 +110,17 @@ module.exports = BaseController.extend({
             itemId = req.query.id;
             itemInfo = await ItemModel.findOne({itemId: itemId});
             itemInfo = Object.assign(itemInfo, req.body);
+            itemInfo.price = Number(itemInfo.price);
+            itemInfo.comm = Number(itemInfo.comm);
+            console.log(typeof itemInfo.price);
+
             await itemInfo.save();
         } else {
             req.body['createdAt'] = new Date();
             req.body.itemId = this.makeItemCode('', 20);
-            await ItemModel.collection.insertOne(req.body);
+            req.body.price = Number(req.body.price);
+            req.body.comm = Number(req.body.comm);
+            await new ItemModel(req.body).save();
         }
         if (pageMode == 'edit') {
             req.flash('success', 'Updated item successfully!');

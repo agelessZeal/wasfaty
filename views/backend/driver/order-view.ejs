@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+var lang = getLocale();
+var suffix = (lang == 'ar') ? 'Ar' : 'En';
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h4 class="page-title">
+                        Order Details
+                        &nbsp;<i class="fa fa-print"
+                                 id="printOrderDetails"
+                                 onclick="onPrintOrderDetails()"
+                                 data-toggle="tooltip"
+                                 title="Print Order Details"></i>
+                    </h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>OrderNo</label>
+                                            <input class="form-control" type="text" name="orderId"
+                                                   value="<%= orderInfo.orderId %>" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input class="form-control ws-order-ctl"
+                                                   value="<%= orderInfo.clientEmail %>"
+                                                   type="text" name="clientEmail" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Mobile</label>
+                                            <input class="form-control ws-order-ctl"
+                                                   value="<%= orderInfo.clientPhone %>"
+                                                   type="text" name="clientPhone" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input class="form-control ws-order-ctl" disabled
+                                                   value="<%= orderInfo.clientName %>"
+                                                   type="text" name="clientName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Insurance Type</label>
+                                            <select class="form-control floating ws-order-ctl" disabled id="curInsType">
+                                                <% for(i = 0 ; i < ins_types.length; i++) { %>
+                                                    <option value="<%= ins_types[i].name %>"
+                                                            <%= (orderInfo.insuranceType == ins_types[i].name) ? 'selected' : '' %>>
+                                                        <%= ins_types[i].name %>
+                                                    </option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Insurance Grade</label>
+                                            <select class="form-control floating ws-order-ctl" disabled id="curInsGrade">
+                                                <% for(i = 0 ; i < ins_grades.length; i++) { %>
+                                                    <option value="<%= ins_grades[i].name %>" <%= (orderInfo.insuranceGrade == ins_grades[i].name) ? 'selected' : '' %>><%= ins_grades[i].name %></option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Insurance Company</label>
+                                            <select class="form-control floating ws-order-ctl" disabled id="curInsCompany">
+                                                <% for(i = 0 ; i < ins_companies.length; i++) { %>
+                                                    <option value="<%= ins_companies[i].name %>"
+                                                            <%= (orderInfo.insuranceCompany == ins_companies[i].name) ? 'selected' : '' %>>
+                                                        <%= ins_companies[i].name %>
+                                                    </option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Remark</label>
+                                            <input class="form-control" disabled type="text"
+                                                   value="<%= orderInfo.remark %>" name="remark">
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" value="totalPrice" name="totalPrice">
+                                <input type="hidden" value="items" name="items" id="items">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="order-item-list">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width: 82px">Picture</th>
+                                                    <th>Item Code</th>
+                                                    <th>Item Description</th>
+                                                    <th>Item Dosage</th>
+                                                    <th>QTY</th>
+                                                    <th>Amount</th>
+                                                    <th>Total</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="order-items-body">
+                                                <% for(var i = 0; i < orderInfo.items.length; i++) { %>
+                                                    <tr>
+                                                        <td style="width: 82px">
+                                                            <img class="itemPic" src="<%= (orderInfo.items[i].picture && orderInfo.items[i].picture.length != 0) ? orderInfo.items[i].picture : "/assets/img/no_image.png"; %>">
+                                                        </td>
+                                                        <td><%= orderInfo.items[i].code %></td>
+                                                        <td><%= orderInfo.items[i]['description_' + lang] %></td>
+                                                        <td><%= orderInfo.items[i].dosage %></td>
+                                                        <td><%= orderInfo.items[i].qty %></td>
+                                                        <td><%= orderInfo.items[i].amount %></td>
+                                                        <td><%= orderInfo.items[i].total %></td>
+                                                        <td>
+                                                            <select class="form-control order-item-st"
+                                                                    id="<%= `${orderInfo.orderId}-${i}-${orderInfo.items[i].code}` %>">
+                                                                <option value="Delivered"
+                                                                        <%= (orderInfo.items[i].status == 'Delivered')?'selected':'' %>>
+                                                                    Delivered</option>
+                                                                <option value="Not Delivered"
+                                                                        <%= (orderInfo.items[i].status == 'Not Delivered')?'selected':'' %>>
+                                                                    Not Delivered
+                                                                </option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                <% } %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-12 text-right">
+                                            <div class="form-group">
+                                                <h4>Total: $<span
+                                                            id="total-item-price"><%= orderInfo.totalPrice %></span>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <p class="order-status-wrap">Order Status: <span
+                                                    class="pending"><%= orderInfo.status %></span></p>
+                                    </div>
+                                </div>
+                                <% if(  session.user.role == 'Driver' &&
+                                        orderInfo.orderType == 'Delivery' &&
+                                        orderInfo.status != "Closed" &&
+                                        orderInfo.status != "Cancelled") { %>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <% if(orderStInfo) {  %>
+                                                <% if (orderStInfo.orderType == 'DriverPicked') { %>
+                                                    <a href="##" class="btn btn-primary"
+                                                       onclick="onDriverAcceptOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">Accept</a>
+                                                    <a class="btn btn-warning"
+                                                       onclick="onDriverRejectOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">Reject</a>
+                                                <% } else if (orderStInfo.orderType == 'DriverAccepted') { %>
+                                                    <a href="##" class="btn btn-success"
+                                                       onclick="onDriverCloseOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">
+                                                        Close Order
+                                                    </a>
+                                                <% } else if (orderStInfo.orderType == 'Rejected') { %>
+                                                    <p class="rejected-order">
+                                                        Rejected Order
+                                                        by
+                                                        <a href="<%= `/users/profile?m=view&id=${orderStInfo.phId}` %>"
+                                                           target="_blank">
+                                                            <%= (driverInfo['name' + suffix]) ? driverInfo['name' + suffix] : driverInfo.email %>
+                                                            ( Driver)
+                                                        </a>
+                                                    </p>
+                                                    <div class="rejected-reason-wrapper">
+                                                        <h5>Rejected Reason</h5>
+                                                        <div>
+                                                            <%- orderStInfo.description %>
+                                                        </div>
+                                                    </div>
+                                                <% } %>
+                                            <% } else {  %>
+                                                    <a href="##" class="btn btn-primary"
+                                                       onclick="onDriverAcceptOrder('<%= orderInfo.orderId %>', '')">Accept</a>
+                                            <% } %>
+
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+
+<script>
+
+    $('.order-item-st').change(function (e) {
+        var orderst = $(this).val();
+        var orderInfo = $(this).attr('id').split('-');
+        console.log(orderInfo); // 0 : OrderId, 1: Item Order, 2: Item Code
+
+        $.ajax('/pharmacy/orders-item/update',{
+            type:'post',
+            data:{st: orderst, orderId: orderInfo[0], itemOrder: orderInfo[1], itemCode: orderInfo[2]},
+        }).done(function (res) {
+            if (res.status == 'success') {
+                console.log('done');
+            } else {
+                alert(res.data);
+            }
+        }).fail(function (jqxhr, textStatus) {
+            alert('Internet connection error');
+        }).always(function (res) {
+            console.log('done');
+        })
+    })
+
+    function onCancelOrder(orderId) {
+        swal({
+            title: "Are you sure to cancel this order?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    location.href = '/orders/canceled/' + orderId;
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+
+    function onDriverAcceptOrder(orderId, orderStId) {
+        swal({
+            title: "Are you sure to accept this order?",
+            icon: "success",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    location.href = '/orders/delivery/accept/' + orderId;
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+
+    function onDriverCloseOrder(orderId, orderStId) {
+        swal({
+            title: "Are you sure to close this order?",
+            icon: "success",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    location.href = '/orders/delivery/close/' + orderId + '/' + orderStId;
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+
+    function onDriverRejectOrder(orderId, orderStId) {
+        swal({
+            title: "Are you sure to reject this order?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal({
+                        title: "Type your reject reason",
+                        content: {
+                            element: "input",
+                            attributes: {
+                                placeholder: "Type your reject reason",
+                                type: "text",
+                            },
+                        },
+                    }).then((willReject) => {
+                        if (willReject) {
+                            var reason = ($('.swal-content__input').val())
+                            location.href = '/orders/delivery/reject/' + orderId + '/' + orderStId + '/' + reason;
+                        }
+                    })
+                    //
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+
+</script>
+</body>
+</html>

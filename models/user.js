@@ -30,7 +30,8 @@ let UserSchema = new Schema({
     address: String, //used for the only client
     spec: String, //specialist
 
-    gps:String, //latitude, longitude, altitude, address used in pharmacy location
+    gpsLat:Number, //latitude, longitude, altitude, address used in pharmacy location
+    gpsLong: Number,
 
     licenceNo: String, // Driver data, {no, expDate}
     licenceExpDate: String, // Driver data, {no, expDate}

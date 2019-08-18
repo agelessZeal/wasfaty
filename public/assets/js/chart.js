@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	
+
 	// Bar Chart
 
 	var barChartData = {
@@ -19,17 +19,21 @@ $(document).ready(function() {
 		}]
 	};
 
-	var ctx = document.getElementById('bargraph').getContext('2d');
-	window.myBar = new Chart(ctx, {
-		type: 'bar',
-		data: barChartData,
-		options: {
-			responsive: true,
-			legend: {
-				display: false,
+
+	if (document.getElementById('bargraph')) {
+		var ctx = document.getElementById('bargraph').getContext('2d');
+		window.myBar = new Chart(ctx, {
+			type: 'bar',
+			data: barChartData,
+			options: {
+				responsive: true,
+				legend: {
+					display: false,
+				}
 			}
-		}
-	});
+		});
+	}
+
 
 	// Line Chart
 
@@ -46,31 +50,51 @@ $(document).ready(function() {
 		data: [28, 48, 40, 19, 86, 27, 20, 90, 50, 20, 90, 20]
 		}]
 	};
-	
-	var linectx = document.getElementById('linegraph').getContext('2d');
-	window.myLine = new Chart(linectx, {
-		type: 'line',
-		data: lineChartData,
-		options: {
-			responsive: true,
-			legend: {
-				display: false,
-			},
-			tooltips: {
-				mode: 'index',
-				intersect: false,
+
+	if (document.getElementById('linegraph')) {
+		var linectx = document.getElementById('linegraph').getContext('2d');
+		window.myLine = new Chart(linectx, {
+			type: 'line',
+			data: lineChartData,
+			options: {
+				responsive: true,
+				legend: {
+					display: false,
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				}
 			}
-		}
-	});
-	
+		});
+	}
+
+	if (document.getElementById('doctor_bargraph')) {
+		var linectx = document.getElementById('doctor_bargraph').getContext('2d');
+		window.myLine = new Chart(linectx, {
+			type: 'line',
+			data: lineChartData,
+			options: {
+				responsive: true,
+				legend: {
+					display: false,
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				}
+			}
+		});
+	}
+
 	// Bar Chart 2
-	
+
     barChart();
-    
+
     $(window).resize(function(){
         barChart();
     });
-    
+
     function barChart(){
         $('.bar-chart').find('.item-progress').each(function(){
             var itemProgress = $(this),

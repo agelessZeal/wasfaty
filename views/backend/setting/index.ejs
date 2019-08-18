@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <h3>Default Commission Settings</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <form action="/admin/setting/commission/update" method="post">
+                        <% if(error && error.length > 0){ %>
+                            <div class="alert alert-danger">
+                                <%= error %>
+                            </div>
+                        <% } else if(success && success.length > 0 ){ %>
+                            <div class="alert alert-success">
+                                <%= success %>
+                            </div>
+                        <% } %>
+                        <% for(var key in config.defaultCommissions) { %>
+                            <div class="form-group">
+                                <label><%= key %></label>
+                                <input class="form-control" name="<%= key %>" type="number" value="<%= comms[key] %>" required>
+                            </div>
+                        <% } %>
+                        <div class="form-group">
+                            <label>Wasfaty Online</label>
+                            <input class="form-control" name="Wasfaty" value="<%= comms.Wasfaty %>" type="number" required>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include ../layouts/footer.ejs %>
+</body>
+</html>

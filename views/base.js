@@ -25,6 +25,7 @@ module.exports.prototype = {
             data.siteDomain = config.info.domain;
             data.wsPort = config.ws_port;
             data.menu = menuConfig;
+            data.config = config;
 
             this.response.render(this.template, data);
         }

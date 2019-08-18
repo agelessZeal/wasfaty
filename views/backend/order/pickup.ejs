@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+
+var lang = getLocale();
+var suffix = (lang == 'ar')?'Ar':'En';
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h4 class="page-title">View Order</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>OrderNo</label>
+                                            <input class="form-control" type="text" name="orderId"
+                                                   value="<%= orderInfo.orderId %>" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input class="form-control ws-order-ctl" value="<%= orderInfo.clientEmail %>"
+                                                   type="text" name="clientEmail" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Mobile</label>
+                                            <input class="form-control ws-order-ctl" value="<%= orderInfo.clientPhone %>"
+                                                   type="text" name="clientPhone" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input class="form-control ws-order-ctl" disabled value="<%= orderInfo.clientName %>"
+                                                   type="text" name="clientName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Insurance Type</label>
+                                            <select class="form-control floating ws-order-ctl" disabled >
+                                                <% for(i = 0 ; i<ins_types.length; i++) { %>
+                                                    <option value="<%= ins_types[i].name %>" <%= (orderInfo.insuranceType == ins_types[i].name)?'selected':'' %>><%= ins_types[i].name %></option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Insurance Grade</label>
+                                            <select class="form-control floating ws-order-ctl" disabled>
+                                                <% for(i = 0 ; i<ins_grades.length; i++) { %>
+                                                    <option value="<%= ins_grades[i].name %>" <%= (orderInfo.insuranceGrade == ins_grades[i].name)?'selected':'' %>><%= ins_grades[i].name %></option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Insurance Company</label>
+                                            <select class="form-control floating ws-order-ctl"  disabled>
+                                                <% for(i = 0 ; i<ins_companies.length; i++) { %>
+                                                    <option value="<%= ins_companies[i].name %>" <%= (orderInfo.insuranceCompany == ins_companies[i].name)?'selected':'' %>><%= ins_companies[i].name %></option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Remark</label>
+                                            <input class="form-control" disabled type="text" value="<%= orderInfo.remark %>" name="remark">
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" value="totalPrice" name="totalPrice">
+                                <input type="hidden" value="items" name="items" id="items">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="order-item-list">
+                                                <thead>
+                                                <tr>
+                                                    <th>Item Code</th>
+                                                    <th>Item Description</th>
+                                                    <th>Item Dosage</th>
+                                                    <th>QTY</th>
+                                                    <th>Amount</th>
+                                                    <th>Total</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="order-items-body">
+                                                <% for(var i = 0; i<orderInfo.items.length; i++) {  %>
+                                                    <tr>
+                                                        <td><%= orderInfo.items[i].code %></td>
+                                                        <td><%= orderInfo.items[i].description %></td>
+                                                        <td><%= orderInfo.items[i].dosage %></td>
+                                                        <td><%= orderInfo.items[i].qty %></td>
+                                                        <td><%= orderInfo.items[i].amount %></td>
+                                                        <td><%= orderInfo.items[i].total %></td>
+                                                        <td><%= orderInfo.items[i].status %></td>
+                                                    </tr>
+                                                <% } %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-12 text-right">
+                                            <div class="form-group">
+                                                <h4>Total: $<span id="total-item-price"><%= orderInfo.totalPrice %></span></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>Select Pharmacy</label>
+                                <select class="form-control" id="pharmacyList">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label class="ws-btn-label">&nbsp;</label>
+                                <button type="button"
+                                        class="btn btn-primary ws-label-btn"
+                                        onclick="onPickupPharmacy('<%= orderInfo.orderId %>')">Pickup</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div id="googleMapCompany">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= config.gMapKey %>&callback=myMap"></script>
+<script>
+    /**
+     * Show Google Map
+     */
+    var center = {lat: Number('<%= (user_info.gpsLat)?user_info.gpsLat:config.mapCenter.lat %>'), lng: Number('<%= (user_info.gpsLong)?user_info.gpsLong:config.mapCenter.long; %>')};
+    var userPosition = {lat: Number('<%= (user_info.gpsLat)?user_info.gpsLat:config.mapCenter.lat %>'), lng: Number('<%= (user_info.gpsLong)?user_info.gpsLong:config.mapCenter.long; %>')};
+    var map, mapProp, marker;
+    function myMap() {
+        mapProp = {
+            center: center,
+            zoom: 16,
+        };
+        map = new google.maps.Map(document.getElementById("googleMapCompany"), mapProp);
+    }
+
+    myMap();
+
+    marker = new google.maps.Marker({
+        position: userPosition,
+        map: map
+    });
+
+    google.maps.event.addListener(map, 'click', function(event) {
+        // marker.setPosition(event.latLng);
+        $('input[name="gpsLat"]').val(event.latLng.lat());
+        $('input[name="gpsLong"]').val(event.latLng.lng());
+        // map.setCenter({
+        //     lat : event.latLng.lat(),
+        //     lng : event.latLng.lng()
+        // });
+    });
+
+    $('#getMyLocation').click(function () {
+        getMyLocation();
+    })
+
+</script>
+<script>
+    //Get Pharmacy List
+    var lang  = '<%= getLocale() %>';
+    var pMarkerList = {};
+    lang = (lang == 'en') ? 'En' : 'Ar';
+    $.ajax('/api/user/Pharmacy', {
+        type:'get',
+        data:{}
+    }).done(function (res) {
+        if (res.status == 'success') {
+            var pList = res.data, pHtml = '';
+            for (var i = 0; i<pList.length; i++) {
+                console.log(pList[i]);
+                pHtml += `<option value="${pList[i]._id}" data-lat="${pList[i].gpsLat}" data-lng="${pList[i].gpsLong}">${pList[i]['name' + lang]}</option>`;
+            }
+            $('#pharmacyList').html(pHtml);
+            showPharmacyList(pList);
+        } else {
+            alert(res.data);
+        }
+    }).always(function (res) {
+        console.log('done');
+    })
+
+    $('#pharmacyList').change(function () {
+        var lat = Number($(this).find('option:selected').data('lat')),
+            long = Number($(this).find('option:selected').data('lng'));
+        var selectedPharmacyMarker = pMarkerList[$(this).val()];
+        google.maps.event.trigger(selectedPharmacyMarker, 'click');
+    })
+
+    function showPharmacyList(pList) {
+        var infowindow = new google.maps.InfoWindow();
+        for (var i = 0; i < pList.length; i++) {
+            var pmarker = new google.maps.Marker({
+                position: new google.maps.LatLng(Number(pList[i].gpsLat), Number(pList[i].gpsLong)),
+                map: map,
+                icon:'/assets/img/pharmacy.png',
+            });
+            pMarkerList[pList[i]._id] = pmarker;
+            google.maps.event.addListener(pmarker, 'click', (function(pmarker, i) {
+                var popHTML = `<h5 class="ws-map-popup">${pList[i]['name' + lang]}</h5>`;
+                return function() {
+                    console.log(pList[i]);
+                    $('#pharmacyList').val(pList[i]._id)
+                    infowindow.setContent(popHTML);
+                    infowindow.open(map, pmarker);
+                }
+            })(pmarker, i));
+        }
+    }
+
+    function onPickupPharmacy(orderId) {
+        var phId = $('#pharmacyList').val();
+        if (phId) {
+            swal({
+                title: "Are you sure?",
+                text: "Once picked up, you will be delivered this order by pharmacy!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        location.href = '/orders/pickup/selected/' + orderId + '/' + phId;
+                    } else {
+                        console.log('close modal');
+                    }
+                });
+        }
+    }
+
+</script>
+
+</body>
+</html>

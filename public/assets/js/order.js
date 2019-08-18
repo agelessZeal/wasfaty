@@ -84,12 +84,24 @@ function onSelectClient(self) {
 
 
 function onAddItem(self) {
-    if(itemTable.rows('.selected').data().length>0){
-        var itemInfo = ($('.my-datatable-item tbody tr.selected').data());
+    var selItem = $('.add-cart-btn.active');
+
+    if(selItem.length>0){
+        var itemInfo = {
+            pic: selItem.data('pic'),
+            code: selItem.data('code'),
+            description:selItem.data('description'),
+            price:selItem.data('price'),
+            name:selItem.data('name')
+        };
+
         var dosage = $('#add-item-dosage').val();
         var count = $('#add-item-qty').val();
         // Make Html
         var itemHTML = `<tr id="${itemInfo.code}">
+                            <td style="width: 82px">
+                                <img class="itemPic" src="${ (itemInfo.pic)?itemInfo.pic : "/assets/img/no_image.png"}">
+                            </td>
                             <td>${itemInfo.code}</td>
                             <td>${itemInfo.description}</td>
                             <td>${ dosage }</td>
@@ -103,7 +115,6 @@ function onAddItem(self) {
                                 </button>
                             </td>
                         </tr>`;
-
         $('#order-items-body').append(itemHTML);
         // update total number
         calculateTotalPrice();
@@ -133,12 +144,7 @@ function calculateTotalPrice() {
 
 $('#order-save-btn').click(function (e) {
     getItemTableStatus();
-
     //Check Validation
-
-
-
-
 });
 
 function getItemTableStatus() {
@@ -147,14 +153,14 @@ function getItemTableStatus() {
     var totalPrice = 0.000;
     trList.each(function () {
         var tdItems = $(this).find('td');
-        totalPrice += Number($(tdItems[5]).text());
-        var itemCode = $(tdItems[0]).text();
-        var itemDescription = $(tdItems[1]).text();
-        var itemDosage = $(tdItems[2]).text();
-        var itemQty = Number($(tdItems[3]).text());
-        var itemAmount = Number($(tdItems[4]).text());
-        var itemTotal = Number($(tdItems[5]).text());
-        var itemStatus = $(tdItems[6]).text();
+        totalPrice += Number($(tdItems[6]).text());
+        var itemCode = $(tdItems[1]).text();
+        var itemDescription = $(tdItems[2]).text();
+        var itemDosage = $(tdItems[3]).text();
+        var itemQty = Number($(tdItems[4]).text());
+        var itemAmount = Number($(tdItems[5]).text());
+        var itemTotal = Number($(tdItems[6]).text());
+        var itemStatus = $(tdItems[7]).text();
         itemList.push({
             code: itemCode,
             description: itemDescription,

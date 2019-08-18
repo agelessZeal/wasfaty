@@ -21,7 +21,7 @@
         <div class="content">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 class="page-title">Edit Profile</h4>
+                    <h4 class="page-title">Profile Details</h4>
                 </div>
                 <% if(error && error.length>0) {  %>
                     <div class="col-sm-12">
@@ -41,9 +41,9 @@
             <%  var update_url = '';
                 if(pg_mode == 'edit') {
                     if(user_info.role != session.user.role) {
-                        update_url = '/user/update?uid=' + user_info._id;
+                        update_url = '/users/update?uid=' + user_info._id;
                     } else {
-                        update_url = '/user/update';
+                        update_url = '/users/update';
                     }
                 }
              %>
@@ -342,19 +342,37 @@
                                     </div>
                                 </div>
                             <% } %>
-                            <% if (user_info.role == 'Company' ||
+                            <% if (user_info.role == 'Company' || user_info.role == 'Driver' ||
                                     user_info.role == 'Pharmacy') {  %>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="focus-label">GPS Location</label>
-                                        <input type="text" class="form-control floating"
-                                               name="gps"
-                                                <%= (pg_mode=='view')?'disabled':'';%>
-                                               value="<%= user_info.gps %>" required>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="focus-label">GPS Location (Latitude)</label>
+                                                    <input type="number" class="form-control"  step="any"
+                                                           name="gpsLat" placeholder="Latitude"
+                                                           value="<%= user_info.gpsLat %>" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="focus-label">GPS Location (Longitude)</label>
+                                                    <input type="number" class="form-control"
+                                                           name="gpsLong" placeholder="Longitude"  step="any"
+                                                           value="<%= user_info.gpsLong %>" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    <label class="focus-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-primary" id="getMyLocation">Get Location</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div id="googleMapCompany">
+
                                     </div>
-                                </div>
                             <% } %>
                         </div>
                     </div>
@@ -370,22 +388,47 @@
 </div>
 
 <%- include ../layouts/footer.ejs %>
-
-<% if(user_info.role == 'Admin' || user_info.role == 'Company' || user_info.role == 'Pharmacy') { %>
-    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=myMap"></script>
+<% if(user_info.role == 'Admin' ||
+        user_info.role == 'Company' ||
+        user_info.role == 'Driver' ||
+        user_info.role == 'Pharmacy') { %>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= config.gMapKey %>&callback=myMap"></script>
     <script>
         /**
          * Show Google Map
          */
+        var center = {lat: Number('<%= (user_info.gpsLat)?user_info.gpsLat:config.mapCenter.lat %>'), lng: Number('<%= (user_info.gpsLong)?user_info.gpsLong:config.mapCenter.long; %>')};
+        var userPosition = {lat: Number('<%= (user_info.gpsLat)?user_info.gpsLat:config.mapCenter.lat %>'), lng: Number('<%= (user_info.gpsLong)?user_info.gpsLong:config.mapCenter.long; %>')};
+        var map, mapProp, marker;
         function myMap() {
-            var mapProp = {
-                center: new google.maps.LatLng(51.508742, -0.120850),
-                zoom: 5,
+            mapProp = {
+                center: center,
+                zoom: 16,
             };
-            var map = new google.maps.Map(document.getElementById("googleMapCompany"), mapProp);
+            map = new google.maps.Map(document.getElementById("googleMapCompany"), mapProp);
         }
 
         myMap();
+
+        marker = new google.maps.Marker({
+            position: userPosition,
+            map: map
+        });
+
+        google.maps.event.addListener(map, 'click', function(event) {
+            marker.setPosition(event.latLng);
+            $('input[name="gpsLat"]').val(event.latLng.lat());
+            $('input[name="gpsLong"]').val(event.latLng.lng());
+            // map.setCenter({
+            //     lat : event.latLng.lat(),
+            //     lng : event.latLng.lng()
+            // });
+        });
+
+        $('#getMyLocation').click(function () {
+            getMyLocation();
+        })
+
     </script>
 <% } %>
 

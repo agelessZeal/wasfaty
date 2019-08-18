@@ -3,9 +3,8 @@
 
 <%- include ../layouts/header.ejs %>
 <%
-
 var lang = getLocale();
-var suffix = (lang == 'ar')?'Ar':'En';
+var suffix = (lang == 'ar') ? 'Ar' : 'En';
 %>
 <body>
 <div class="main-wrapper">
@@ -15,7 +14,14 @@ var suffix = (lang == 'ar')?'Ar':'En';
         <div class="content">
             <div class="row">
                 <div class="col-lg-12">
-                    <h4 class="page-title">View Order</h4>
+                    <h4 class="page-title">
+                        Order Details
+                        &nbsp;<i class="fa fa-print"
+                                 id="printOrderDetails"
+                                 onclick="onPrintOrderDetails()"
+                                 data-toggle="tooltip"
+                                 title="Print Order Details"></i>
+                    </h4>
                 </div>
             </div>
             <div class="row">
@@ -34,21 +40,24 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input class="form-control ws-order-ctl" value="<%= orderInfo.clientEmail %>"
+                                            <input class="form-control ws-order-ctl"
+                                                   value="<%= orderInfo.clientEmail %>"
                                                    type="text" name="clientEmail" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Mobile</label>
-                                            <input class="form-control ws-order-ctl" value="<%= orderInfo.clientPhone %>"
+                                            <input class="form-control ws-order-ctl"
+                                                   value="<%= orderInfo.clientPhone %>"
                                                    type="text" name="clientPhone" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Name</label>
-                                            <input class="form-control ws-order-ctl" disabled value="<%= orderInfo.clientName %>"
+                                            <input class="form-control ws-order-ctl" disabled
+                                                   value="<%= orderInfo.clientName %>"
                                                    type="text" name="clientName">
                                         </div>
                                     </div>
@@ -57,9 +66,9 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Insurance Type</label>
-                                            <select class="form-control floating ws-order-ctl" disabled >
-                                                <% for(i = 0 ; i<ins_types.length; i++) { %>
-                                                    <option value="<%= ins_types[i].name %>" <%= (orderInfo.insuranceType == ins_types[i].name)?'selected':'' %>><%= ins_types[i].name %></option>
+                                            <select class="form-control floating ws-order-ctl" disabled id="curInsType">
+                                                <% for(i = 0 ; i < ins_types.length; i++) { %>
+                                                    <option value="<%= ins_types[i].name %>" <%= (orderInfo.insuranceType == ins_types[i].name) ? 'selected' : '' %>><%= ins_types[i].name %></option>
                                                 <% } %>
                                             </select>
                                         </div>
@@ -67,9 +76,9 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Insurance Grade</label>
-                                            <select class="form-control floating ws-order-ctl" disabled>
-                                                <% for(i = 0 ; i<ins_grades.length; i++) { %>
-                                                    <option value="<%= ins_grades[i].name %>" <%= (orderInfo.insuranceGrade == ins_grades[i].name)?'selected':'' %>><%= ins_grades[i].name %></option>
+                                            <select class="form-control floating ws-order-ctl" disabled id="curInsGrade">
+                                                <% for(i = 0 ; i < ins_grades.length; i++) { %>
+                                                    <option value="<%= ins_grades[i].name %>" <%= (orderInfo.insuranceGrade == ins_grades[i].name) ? 'selected' : '' %>><%= ins_grades[i].name %></option>
                                                 <% } %>
                                             </select>
                                         </div>
@@ -77,9 +86,9 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Insurance Company</label>
-                                            <select class="form-control floating ws-order-ctl"  disabled>
-                                                <% for(i = 0 ; i<ins_companies.length; i++) { %>
-                                                    <option value="<%= ins_companies[i].name %>" <%= (orderInfo.insuranceCompany == ins_companies[i].name)?'selected':'' %>><%= ins_companies[i].name %></option>
+                                            <select class="form-control floating ws-order-ctl" disabled  id="curInsCompany">
+                                                <% for(i = 0 ; i < ins_companies.length; i++) { %>
+                                                    <option value="<%= ins_companies[i].name %>" <%= (orderInfo.insuranceCompany == ins_companies[i].name) ? 'selected' : '' %>><%= ins_companies[i].name %></option>
                                                 <% } %>
                                             </select>
                                         </div>
@@ -87,7 +96,8 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Remark</label>
-                                            <input class="form-control" disabled type="text" value="<%= orderInfo.remark %>" name="remark">
+                                            <input class="form-control" disabled type="text"
+                                                   value="<%= orderInfo.remark %>" name="remark">
                                         </div>
                                     </div>
                                 </div>
@@ -98,21 +108,25 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                         <div class="table-responsive">
                                             <table class="table table-bordered" id="order-item-list">
                                                 <thead>
-                                                <tr>
-                                                    <th>Item Code</th>
-                                                    <th>Item Description</th>
-                                                    <th>Item Dosage</th>
-                                                    <th>QTY</th>
-                                                    <th>Amount</th>
-                                                    <th>Total</th>
-                                                    <th>Status</th>
-                                                </tr>
+                                                    <tr>
+                                                        <th style="width: 82px">Picture</th>
+                                                        <th>Item Code</th>
+                                                        <th>Item Description</th>
+                                                        <th>Item Dosage</th>
+                                                        <th>QTY</th>
+                                                        <th>Amount</th>
+                                                        <th>Total</th>
+                                                        <th>Status</th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody id="order-items-body">
-                                                <% for(var i = 0; i<orderInfo.items.length; i++) {  %>
+                                                <% for(var i = 0; i < orderInfo.items.length; i++) { %>
                                                     <tr>
+                                                        <td style="width: 82px">
+                                                            <img class="itemPic" src="<%= (orderInfo.items[i].picture && orderInfo.items[i].picture.length != 0) ? orderInfo.items[i].picture : "/assets/img/no_image.png"; %>">
+                                                        </td>
                                                         <td><%= orderInfo.items[i].code %></td>
-                                                        <td><%= orderInfo.items[i].description %></td>
+                                                        <td><%= orderInfo.items[i]['description_' + lang] %></td>
                                                         <td><%= orderInfo.items[i].dosage %></td>
                                                         <td><%= orderInfo.items[i].qty %></td>
                                                         <td><%= orderInfo.items[i].amount %></td>
@@ -125,11 +139,173 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                         </div>
                                         <div class="col-12 text-right">
                                             <div class="form-group">
-                                                <h4>Total: $<span id="total-item-price"><%= orderInfo.totalPrice %></span></h4>
+                                                <h4>Total: $<span
+                                                            id="total-item-price"><%= orderInfo.totalPrice %></span>
+                                                </h4>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <p class="order-status-wrap">Order Status: <span
+                                                    class="pending"><%= orderInfo.status %></span></p>
+                                    </div>
+                                </div>
+                                <% if(session.user.role == 'Client') { %>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <% if(orderInfo.status == "Open") { %>
+                                                <a class="btn btn-warning"
+                                                   onclick="onCancelOrder('<%= orderInfo.orderId %>')">Cancel
+                                                    Order</a>
+                                            <% } %>
+                                            <% if(orderInfo.status != 'Cancelled' && orderInfo.status != 'Closed') { %>
+                                                <% if(!orderStInfo || (orderStInfo && orderStInfo.orderType == 'Rejected')) { %>
+                                                    <a href="/orders/pickup/<%= orderInfo.orderId %>"
+                                                       class="btn btn-primary">Pick Up</a>
+                                                    <a href="/orders/delivery/<%= orderInfo.orderId %>" class="btn btn-success" style="display: none">Delivery</a>
+                                                    <button type="button" onclick="onSelectDelivery('<%= orderInfo.orderId %>')" class="btn btn-success">Delivery</button>
+                                                <% } %>
+                                            <% } else { %>
+                                                <a href="###" class="btn btn-info"
+                                                   style="cursor: auto"><%= (orderInfo.orderType) ? orderInfo.orderType : 'Pickup' %>
+                                                    Order</a>
+                                            <% } %>
+                                            <% if (orderStInfo) { %>
+                                                <% if (orderStInfo.orderType == 'PhPicked') { %>
+                                                    <div>
+                                                        <p class="client-order-action">You picked up pharmacy </p>
+                                                        <p class="client-target-info"> Pharmacy Info:
+                                                            <a href="<%= `/users/profile?m=view&id=${orderStInfo.phId}` %>"
+                                                               target="_blank">
+                                                                <%= (orderPhInfo['name' + suffix]) ? orderPhInfo['name' + suffix] : orderPhInfo.email %>
+                                                            </a>
+                                                        </p>
+                                                        <p class="client-target-info navigate-pharmacy-location">
+                                                            <a href="<%= `https://www.google.com/maps?z=16&t=m&q=loc:${orderPhInfo.gpsLat}+${orderPhInfo.gpsLong}` %>"
+                                                               target="_blank">
+                                                                Navigate to Pharmacy Location
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                <% } else if(orderStInfo.orderType == 'PhAccepted') { %>
+                                                    <div>
+                                                        <p class="client-order-action">Order has been accepted by
+                                                            pharmacy </p>
+                                                        <p class="client-target-info"> Pharmacy Info:
+                                                            <a href="<%= `/users/profile?m=view&id=${orderStInfo.phId}` %>"
+                                                               target="_blank">
+                                                                <%= (orderPhInfo['name' + suffix]) ? orderPhInfo['name' + suffix] : orderPhInfo.email %>
+                                                            </a>
+                                                        </p>
+                                                        <p class="client-target-info navigate-pharmacy-location">
+                                                            <a href="<%= `https://www.google.com/maps?z=16&t=m&q=loc:${orderPhInfo.gpsLat}+${orderPhInfo.gpsLong}` %>"
+                                                               target="_blank">
+                                                                Navigate to Pharmacy Location
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                <% } else if(orderStInfo.orderType == 'Rejected') { %>
+                                                    <div>
+                                                        <p class="client-order-action rejected-st">Order has been
+                                                            rejected</p>
+                                                        <p class="client-target-info"> Pharmacy Info:
+                                                            <a href="<%= `/users/profile?m=view&id=${orderStInfo.phId}` %>"
+                                                               target="_blank">
+                                                                <%= (orderPhInfo['name' + suffix]) ? orderPhInfo['name' + suffix] : orderPhInfo.email %>
+                                                            </a>
+                                                        </p>
+                                                        <p class="client-target-info navigate-pharmacy-location">
+                                                            <a href="<%= `https://www.google.com/maps?z=16&t=m&q=loc:${orderPhInfo.gpsLat}+${orderPhInfo.gpsLong}` %>"
+                                                               target="_blank">
+                                                                Navigate to Pharmacy Location
+                                                            </a>
+                                                        </p>
+                                                        <hr>
+                                                        <div class="rejected-reason-wrapper">
+                                                            <h5>Rejected Reason</h5>
+                                                            <div>
+                                                                <%- orderStInfo.description %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <% } else if(orderStInfo.orderType == 'DriverPicked') { %>
+                                                    <div>
+                                                        <p class="client-order-action">You selected delivery </p>
+                                                        <p class="client-target-info"> Driver Info:
+                                                            <a href="<%= `/users/profile?m=view&id=${orderStInfo.driverId}` %>"
+                                                               target="_blank">
+                                                                <%= (orderPhInfo['name' + suffix]) ? orderPhInfo['name' + suffix] : orderPhInfo.email %>
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                <% } else if(orderStInfo.orderType == 'DriverAccepted') { %>
+                                                    <div>
+                                                        <p class="client-order-action">Order has been accepted by driver </p>
+                                                        <p class="client-target-info"> Driver Info:
+                                                            <a href="<%= `/users/profile?m=view&id=${orderStInfo.driverId}` %>"
+                                                               target="_blank">
+                                                                <%= (orderPhInfo['name' + suffix]) ? orderPhInfo['name' + suffix] : orderPhInfo.email %>
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                <% } else if(orderStInfo.orderType == 'DriverRejected') { %>
+                                                    <div>
+                                                        <p class="client-order-action">You rejected your order </p>
+                                                        <p class="client-target-info"> Driver Info:
+                                                            <a href="<%= `/users/profile?m=view&id=${orderStInfo.driverId}` %>"
+                                                               target="_blank">
+                                                                <%= (orderPhInfo['name' + suffix]) ? orderPhInfo['name' + suffix] : orderPhInfo.email %>
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                <% } %>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                <% } %>
+                                <% if(  session.user.role == 'Pharmacy' &&
+                                        orderInfo.orderType == 'Pickup' &&
+                                        orderInfo.status != "Closed" &&
+                                        orderInfo.status != "Cancelled") { %>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <% if (orderStInfo.orderType == 'PhPicked') { %>
+                                                <a href="##" class="btn btn-primary"
+                                                   onclick="onPhAcceptOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">Accept</a>
+                                                <a class="btn btn-warning"
+                                                   onclick="onPhRejectOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">Reject</a>
+                                            <% } else if (orderStInfo.orderType == 'PhAccepted') { %>
+                                                <a href="##" class="btn btn-success"
+                                                   onclick="onPhCloseOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">
+                                                    Close Order
+                                                </a>
+                                            <% } else if (orderStInfo.orderType == 'Rejected') { %>
+                                                <p class="rejected-order">
+                                                    Rejected Order
+                                                    by
+                                                    <a href="<%= `/users/profile?m=view&id=${orderStInfo.phId}` %>"
+                                                       target="_blank">
+                                                        <%= (orderPhInfo['name' + suffix]) ? orderPhInfo['name' + suffix] : orderPhInfo.email %>
+                                                        ( Pharmacy)
+                                                    </a>
+                                                </p>
+                                                <div class="rejected-reason-wrapper">
+                                                    <h5>Rejected Reason</h5>
+                                                    <div>
+                                                        <%- orderStInfo.description %>
+                                                    </div>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                <% } else if (session.user.role == 'Driver' &&
+                                        orderInfo.orderType == 'Delivery' &&
+                                        orderInfo.status != "Closed" &&
+                                        orderInfo.status != "Cancelled")  {  %>
+
+                                <% } %>
                             </div>
                         </div>
                     </form>
@@ -140,5 +316,103 @@ var suffix = (lang == 'ar')?'Ar':'En';
 </div>
 
 <%- include ../layouts/footer.ejs %>
+
+<script>
+
+    function onCancelOrder(orderId) {
+        swal({
+            title: "Are you sure to cancel this order?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    location.href = '/orders/canceled/' + orderId;
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+
+    function onPhAcceptOrder(orderId, orderStId) {
+        swal({
+            title: "Are you sure to accept this order?",
+            icon: "success",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    location.href = '/orders/pickup/accept/' + orderId + '/' + orderStId;
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+
+    function onPhCloseOrder(orderId, orderStId) {
+        swal({
+            title: "Are you sure to close this order?",
+            icon: "success",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    location.href = '/orders/pickup/close/' + orderId + '/' + orderStId;
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+
+    function onPhRejectOrder(orderId, orderStId) {
+        swal({
+            title: "Are you sure to reject this order?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal({
+                        title: "Type your reject reason",
+                        content: {
+                            element: "input",
+                            attributes: {
+                                placeholder: "Type your reject reason",
+                                type: "text",
+                            },
+                        },
+                    }).then((willReject) => {
+                        if (willReject) {
+                            var reason = ($('.swal-content__input').val())
+                            location.href = '/orders/pickup/reject/' + orderId + '/' + orderStId + '/' + reason;
+                        }
+                    })
+                    //
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+    function onSelectDelivery(orderId) {
+        swal({
+            title: "Are you sure?",
+            text: "Once picked up, you will be delivered this order by driver!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    location.href = '/orders/delivery/picked/' + orderId;
+                } else {
+                    console.log('close modal');
+                }
+            });
+    }
+</script>
 </body>
 </html>

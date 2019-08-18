@@ -33,6 +33,24 @@ transporter = nodemailer.createTransport({
 
 module.exports = BaseController.extend({
     name: 'SalesmanController',
+    showDashboard: async function(req, res) {
+        if(!this.isLogin(req)){
+            req.session.redirectTo = '/salesman/dashboard';
+            return res.redirect('/auth/login');
+        }
+        if (req.session.user.role != 'Salesman') {
+            return res.redirect('/*');
+        }
+        if(!req.session.user.isDoneProfile) {
+            return res.redirect('/invite/profile/info');
+        }
+        let v;
+        v = new View(res, 'backend/salesman/dashboard');
+        v.render({
+            title: 'Dashboard',
+            session: req.session,
+        });
+    },
     list: async function (req, res) {
         let v, users;
         if (!this.isLogin(req)) {

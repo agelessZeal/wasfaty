@@ -1,7 +1,8 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
+let mongoosePaginate = require('mongoose-paginate-v2');
 
-let ItemMasterSchema = new Schema({
+let ItemSchema = new Schema({
     itemId: String,
     mainClassId: String,
     subClassId: String,
@@ -28,4 +29,5 @@ let ItemMasterSchema = new Schema({
     createdAt: Date,
 });
 
-module.exports = mongoose.model('item_master', ItemMasterSchema);
+ItemSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model('item_master', ItemSchema);

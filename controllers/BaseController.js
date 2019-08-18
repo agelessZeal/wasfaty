@@ -47,6 +47,11 @@ module.exports = {
         if (ipAddress.substr(0, 1) == ':') ipAddress = ipAddress.substr(7);
         return ipAddress;
     },
+    getCurDate: function() {
+        let severDt = new Date();
+        let localDt =  new Date(severDt.getTime() + config.tz);
+        return new Date(localDt.toDateString());
+    },
     isEmail: function (email) {
         let emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
         return emailRegex.test(email);
@@ -96,11 +101,15 @@ module.exports = {
             return res.send({status: 'success', data: '/uploads/avatar/' + dest_fn});
         });
     },
-
-    inviteUser: async function (senderInfo, receiverInfo, pwd, msg) {
-
+    getDate: function(dt) {
+        let fYear = dt.getFullYear();
+        let fMonth  = dt.getMonth() + 1;
+        if (fMonth<10){ fMonth = '0' + fMonth;}
+        // Day part from the timestamp
+        let day = dt.getDate();
+        if (day<10){ day = '0' + day;}
+        return fYear+"-"+fMonth + "-"+day;
     },
-
     getTs: function () {
         return Math.round((new Date()).getTime() / 1000);
     },

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                    <div class="dash-widget" style="cursor: pointer" onclick="onClickCompanyItems('<%= session.user._id %>')">
+                        <span class="dash-widget-bg2"><i class="fa fa-database"></i></span>
+                        <div class="dash-widget-info text-right">
+                            <h3><%= totalItemCnt %></h3>
+                            <span class="widget-title2">Items <i class="fa fa-check" aria-hidden="true"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                    <div class="dash-widget">
+                        <span class="dash-widget-bg1"><i class="fa fa-money" aria-hidden="true"></i></span>
+                        <div class="dash-widget-info text-right">
+                            <h3><%= totalAmount %></h3>
+                            <span class="widget-title1">Order Total Amount <i class="fa fa-check" aria-hidden="true"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                    <div class="dash-widget">
+                        <span class="dash-widget-bg3"><i class="fa fa-barcode" aria-hidden="true"></i></span>
+                        <div class="dash-widget-info text-right">
+                            <h3><%= totalQty %></h3>
+                            <span class="widget-title3">Order Total Qty <i class="fa fa-check" aria-hidden="true"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                    <div class="dash-widget">
+                        <span class="dash-widget-bg4"><i class="fa fa-stethoscope" aria-hidden="true"></i></span>
+                        <div class="dash-widget-info text-right">
+                            <h3><%= doctorCount %></h3>
+                            <span class="widget-title4">Doctors <i class="fa fa-check" aria-hidden="true"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="chart-title">
+                                <h4>Total Items Qty</h4>
+                            </div>
+                            <canvas id="total_items_graph"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="chart-title">
+                                <h4>Doctors In</h4>
+                            </div>
+                            <canvas id="doctor_bargraph"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="sidebar-overlay" data-reff=""></div>
+
+<%- include ../layouts/footer.ejs %>
+
+<script>
+    // Line Chart
+    var qtyGraphData = JSON.parse('<%- JSON.stringify(qtyGraphData) %>');
+    var doctorGraphData = JSON.parse('<%- JSON.stringify(doctorGraphData) %>');
+    var totalQtyChartData = {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        datasets: [{
+            label: "Items Qty",
+            backgroundColor: "rgba(0, 158, 251, 0.5)",
+            // data: [100, 70, 20, 100, 120, 50, 70, 50, 50, 100, 50, 90]
+            data: qtyGraphData
+        }]
+    };
+
+    if (document.getElementById('total_items_graph')) {
+        var totalqtyctx = document.getElementById('total_items_graph').getContext('2d');
+        window.myLine = new Chart(totalqtyctx, {
+            type: 'line',
+            data: totalQtyChartData,
+            options: {
+                responsive: true,
+                legend: {
+                    display: false,
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                }
+            }
+        });
+    }
+
+    var doctorChartData = {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        datasets: [{
+            label: "My First dataset",
+            backgroundColor: "rgba(255, 188, 53, 0.5)",
+            // data: [100, 70, 20, 100, 120, 50, 70, 50, 50, 100, 50, 90]
+            data: doctorGraphData
+        }]
+    };
+
+    if (document.getElementById('doctor_bargraph')) {
+        var doctorLinectx = document.getElementById('doctor_bargraph').getContext('2d');
+        window.myLine = new Chart(doctorLinectx, {
+            type: 'line',
+            data: doctorChartData,
+            options: {
+                responsive: true,
+                legend: {
+                    display: false,
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                }
+            }
+        });
+    }
+
+    function onClickCompanyItems(companyId) {
+        window.open('/product?cpyId=' + companyId , '_blank');
+    }
+
+</script>
+
+</body>
+</html>

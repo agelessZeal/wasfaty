@@ -46,7 +46,7 @@
                     </div>
                 <% } %>
             </div>
-            <form action="/profile/update" method="post">
+            <form action="/invite/profile/update" method="post">
                 <div class="card-box">
                     <h3 class="card-title">Basic Information</h3>
                     <div class="row">
@@ -270,17 +270,37 @@
                         <% } %>
                         <% if ((session.user.role == 'Admin' && session.user._id != user_info._id) ||
                                 user_info.role == 'Company' ||
+                                user_info.role == 'Client' ||
+                                user_info.role == 'Driver' ||
                                 user_info.role == 'Pharmacy') {  %>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="focus-label">GPS Location</label>
-                                    <input type="text" class="form-control floating"
-                                           name="gps"
-                                           value="<%= user_info.gps %>" required>
+                            <div class="col-md-12" style="display: <%= (session.user.role == 'Client')?'none': '' %>">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="focus-label">GPS Location (Latitude)</label>
+                                            <input type="number" class="form-control"
+                                                   name="gpsLat" placeholder="Latitude" step="any"
+                                                   value="<%= user_info.gpsLat %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="focus-label">GPS Location (Longitude)</label>
+                                            <input type="number" class="form-control"
+                                                   name="gpsLong" placeholder="Longitude" step="any"
+                                                   value="<%= user_info.gpsLong %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label class="focus-label">&nbsp;</label>
+                                            <button type="button" class="btn btn-primary" id="getMyLocation">Get Location</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div id="googleMapCompany">
+                            </div>
+                            <div id="googleMapCompany" style="display: <%= (session.user.role == 'Client')?'none': '' %>">
 
-                                </div>
                             </div>
                         <% } %>
                     </div>
@@ -295,21 +315,50 @@
 
 <%- include ../layouts/footer.ejs %>
 
-<% if(user_info.role == 'Admin' || user_info.role == 'Company' || user_info.role == 'Pharmacy') { %>
-    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=myMap"></script>
+<% if(user_info.role == 'Admin' ||
+        user_info.role == 'Company' ||
+        user_info.role == 'Driver' ||
+        user_info.role == 'Pharmacy') { %>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= config.gMapKey %>&callback=myMap"></script>
     <script>
         /**
          * Show Google Map
          */
+        var center = {lat: Number('<%= (user_info.gpsLat)?user_info.gpsLat:config.mapCenter.lat %>'), lng: Number('<%= (user_info.gpsLong)?user_info.gpsLong:config.mapCenter.long; %>')};
+        var userPosition = {lat: Number('<%= (user_info.gpsLat)?user_info.gpsLat:config.mapCenter.lat %>'), lng: Number('<%= (user_info.gpsLong)?user_info.gpsLong:config.mapCenter.long; %>')};
+        var map, mapProp, marker;
         function myMap() {
-            var mapProp = {
-                center: new google.maps.LatLng(51.508742, -0.120850),
-                zoom: 5,
+            mapProp = {
+                center: center,
+                zoom: 16,
             };
-            var map = new google.maps.Map(document.getElementById("googleMapCompany"), mapProp);
+            map = new google.maps.Map(document.getElementById("googleMapCompany"), mapProp);
         }
 
         myMap();
+
+        marker = new google.maps.Marker({
+            position: userPosition,
+            map: map
+        });
+
+        google.maps.event.addListener(map, 'click', function(event) {
+            marker.setPosition(event.latLng);
+            $('input[name="gpsLat"]').val(event.latLng.lat());
+            $('input[name="gpsLong"]').val(event.latLng.lng());
+        });
+
+        $('#getMyLocation').click(function () {
+            getMyLocation();
+        })
+
+    </script>
+<% } %>
+
+<% if(session.user.role == 'Client') {  %>
+    <script>
+        var map, mapProp, marker;
+        getMyLocation();
     </script>
 <% } %>
 

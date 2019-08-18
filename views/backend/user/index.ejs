@@ -116,22 +116,6 @@ var formatTime = function (ts) {
     function onEditUser(userId) {
         location.href = '/users/' + userId;
     }
-    function onDeleteUser(userId) {
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this user profile!",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    location.href = '/admin/users/delete/'  + userId
-                } else {
-                    console.log('close modal');
-                }
-            });
-    }
 </script>
 
 </body>

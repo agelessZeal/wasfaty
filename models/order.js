@@ -11,11 +11,13 @@ let OrderSchema = new Schema({
     insuranceCompany: String,
     insuranceType: String,
     remark: String,
+    orderType: String, // Pending, Pickup, Delivery, Rejected.
     status: String, // ['Open', 'Pending', 'Closed', 'Cancelled', 'Under process'],
     items: Array,
     totalPrice: Number,
-    createdAt: String,
-    closedAt: String,
+    createdAt: Date,
+    updatedAt: Date,
+    closedAt: Date,
 });
 
 module.exports = mongoose.model('order', OrderSchema);

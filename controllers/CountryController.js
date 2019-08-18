@@ -25,7 +25,7 @@ module.exports = BaseController.extend({
     showItems: async function (req, res) {
         let v, specDataList;
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/admin/country';
+            req.session.redirectTo = '//country/list';
             return res.redirect('/auth/login');
         }
         if (req.session.user.role != 'Admin') {
@@ -52,7 +52,7 @@ module.exports = BaseController.extend({
         }
 
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/admin/country/' + opType;
+            req.session.redirectTo = '/country/update/' + opType;
             return res.redirect('/auth/login');
         }
         if (req.session.user.role != 'Admin') {
@@ -79,7 +79,7 @@ module.exports = BaseController.extend({
     updateItems: async function (req, res) {
         let itemInfo, itemid;
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/admin/country';
+            req.session.redirectTo = '//country/list';
             return res.redirect('/auth/login');
         }
         if (req.session.user.role != 'Admin') {
@@ -102,7 +102,7 @@ module.exports = BaseController.extend({
             req.flash('success', 'Added new item successfully!');
         }
 
-        let backurl = '/admin/country/' + pageMode;
+        let backurl = '/country/update/' + pageMode;
         if (pageMode == 'edit') {
             backurl += '?id=' + itemid;
         }
@@ -117,7 +117,7 @@ module.exports = BaseController.extend({
         }
         let id = req.params.id;
         await CountryModel.deleteOne({_id: id});
-        return res.redirect('/admin/country');
+        return res.redirect('//country/list');
     },
 
 });

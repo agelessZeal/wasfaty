@@ -3,6 +3,8 @@ let config, axios, request, fs, ejs, crypto, nodemailer, transporter, View;
 let UserModel, countryList, CountryModel, SpecModel,
     InsCompanyModel, InsGradeModel, InsTypeModel;
 
+let geoip;
+
 async = require("async");
 mongoose = require('mongoose');
 axios = require('axios');
@@ -21,8 +23,11 @@ InsCompanyModel = require('../models/insuranceCompany');
 InsTypeModel = require('../models/insuranceType');
 InsGradeModel = require('../models/insuranceGrade');
 
+geoip = require('geoip-lite');
+
 BaseController = require('./BaseController');
 View = require('../views/base');
+
 
 transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -32,7 +37,6 @@ transporter = nodemailer.createTransport({
     }
 });
 
-
 module.exports = BaseController.extend({
     name: 'UserController',
     editProfile: async function (req, res) {
@@ -40,7 +44,7 @@ module.exports = BaseController.extend({
         let pgMode = req.query.m;
         if (pgMode != 'edit') pgMode = 'view';
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/user/profile?m=view';
+            req.session.redirectTo = '/users/profile?m=view';
             return res.redirect('/auth/login');
         }
         //Check UserId
@@ -52,7 +56,7 @@ module.exports = BaseController.extend({
             userInfo = req.session.user;
             // Redirect user into Profile Information View where user should complete his profile.
             if(!userInfo.isDoneProfile) {
-                return res.redirect('/profile/info');
+                return res.redirect('/invite/profile/info');
             }
         }
         let nationalities = await CountryModel.find().sort({name:1});
@@ -99,9 +103,9 @@ module.exports = BaseController.extend({
         let userId = req.query.uid;
         if (!this.isLogin(req)) {
             if (userId) {
-                req.session.redirectTo = `/user/profile?id=${userId}m=edit`;
+                req.session.redirectTo = `/users/profile?id=${userId}m=edit`;
             } else {
-                req.session.redirectTo = '/user/profile?m=edit';
+                req.session.redirectTo = '/users/profile?m=edit';
             }
             return res.redirect('/auth/login');
         }
@@ -111,16 +115,19 @@ module.exports = BaseController.extend({
         }
         let userInfo = await UserModel.findOne({_id: userId});
         if (userInfo) {
-            console.log(mongoose.Types.ObjectId('578df3efb618f5141202a196'));
+
+            req.body.gpsLat = (req.body.gpsLat)?Number(req.body.gpsLat):'';
+            req.body.gpsLong = (req.body.gpsLong)?Number(req.body.gpsLong):'';
+
             userInfo = Object.assign(userInfo, req.body);
             await userInfo.save();
             req.flash('success', 'Updated User Profile Successfully!');
             if (userId == req.session.user._id) {
                 req.session.user = userInfo;
                 await req.session.save();
-                return res.redirect(`/user/profile?m=edit`);
+                return res.redirect(`/users/profile?m=edit`);
             } else {
-                return res.redirect(`/user/profile?id=${userId}&m=edit`);
+                return res.redirect(`/users/profile?id=${userId}&m=edit`);
             }
         } else {
             console.log("Can't find user profile information!");
@@ -129,7 +136,7 @@ module.exports = BaseController.extend({
     },
     changePassword: async function (req, res) {
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/user/change-password';
+            req.session.redirectTo = '/users/change-password';
             return res.redirect('/auth/login');
         }
         let v;
@@ -143,22 +150,22 @@ module.exports = BaseController.extend({
     },
     updatePassword: function (req, res) {
         if (!this.isLogin(req)) {
-            req.session.redirectTo = '/user/change-password';
+            req.session.redirectTo = '/users/change-password';
             return res.redirect('/auth/login');
         }
         let password = req.body.password;
         if (password.length < config.pwd_length) {
             req.flash('error', 'Password length must be at least 6 characters');
-            return res.redirect('/user/change-password');
+            return res.redirect('/users/change-password');
         }
         password = crypto.createHash('md5').update(password).digest("hex");
         UserModel.updateOne({_id: req.session.user._id}, {password: password}, function (err, data) {
             if (err) {
                 req.flash('error', "Database Error");
-                return res.redirect('/user/change-password');
+                return res.redirect('/users/change-password');
             }
             req.flash('success', "Password changed successfully!");
-            return res.redirect('/user/change-password');
+            return res.redirect('/users/change-password');
         })
     },
     deleteUser: async function (req, res) {
@@ -176,6 +183,31 @@ module.exports = BaseController.extend({
         }
         return res.redirect('/admin/' + user_role);
     },
+
+    getUsers: async function (req, res) {
+        let userType = req.params.userType,
+            ret = {status:'success', data:''};
+
+        if (!this.isLogin(req)) {
+            ret.data = 'Please Login!';
+            return  res.json(ret);
+        }
+        let users =  await UserModel.find({role: userType, isDoneProfile: true}).sort({createdAt: -1});
+        ret.status = 'success';
+        ret.data = users;
+        return res.json(ret);
+    },
+
+    getLocation: async function (req, res) {
+        let ip = this.getClientIp(req);
+        let geo = geoip.lookup(ip);
+        if (geo) {
+            return res.json({gpsLat:geo.ll[0], gpsLong: geo.ll[1]});
+        } else {
+            return res.json({gpsLat: config.mapCenter.lat, gpsLong: config.mapCenter.long});
+        }
+    },
+
     uploadAvatar: async function (req, res) {
         let upload_file, fn, ext, dest_fn;
         upload_file = req.files.file;

@@ -2,12 +2,14 @@
  * Module dependencies.
  */
 let express, http, fileUpload, cookieParser, session,
-    mongoose, bodyParser, methodOverride, cmd,https,WebSocket,
+    mongoose, bodyParser, methodOverride, cmd, https, WebSocket,
     app, route, d, config, url, flash, path, schedule;
 
 let logChecker; // Middleware for log checking
 
 let i18n;
+
+let call_center;
 
 express = require('express');
 http = require('http');
@@ -22,7 +24,9 @@ bodyParser = require('body-parser');
 methodOverride = require('method-override');
 cookieParser = require('cookie-parser');
 schedule = require('node-schedule');
+call_center = require('./controllers/CallCenterController');
 cmd = require('node-cmd');
+WebSocket = require('ws');
 app = express();
 
 logChecker = require('./middleware/log_checker');
@@ -30,15 +34,14 @@ logChecker = require('./middleware/log_checker');
 // Multi language middleware ,
 // https://www.npmjs.com/package/i18n
 // https://medium.com/@markocen/i18n-for-node-application-4b8180b803e
-i18n  = require("i18n");
+i18n = require("i18n");
 i18n.configure({
-    locales:['ar', 'en'],
+    locales: ['ar', 'en'],
     directory: __dirname + '/locales',
     defaultLocale: 'ar',
     cookie: 'i18n',
     register: global
 });
-
 
 route = require('./router.js');
 config = require('./config/index');
@@ -70,8 +73,6 @@ app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-M
 app.use(flash());
 app.use(fileUpload());
 
-app.use(logChecker.logCheck);
-
 app.use(i18n.init);
 app.get('/lang/:lang', function (req, res) {
     res.cookie('i18n', req.params.lang);
@@ -79,6 +80,19 @@ app.get('/lang/:lang', function (req, res) {
     res.redirect(bkurl)
 });
 
+app.use(logChecker.logCheck);
+
+require('./ws'); // Start Websocket server.....
+
+// schedule.scheduleJob('*/1 * * * *', function () { //Every 1 mins
+//     console.log(new Date(), '----------------Checking Pending Driver Orders--------------------');
+//     call_center.checkPendingDeliveryOrders();
+// });
+
+schedule.scheduleJob('0 0 1 * *', function () { //Every Month Schedule
+    console.log(new Date(), '----------------Initializing Group Search Count--------------------');
+    console.log('Your scheduled job at beginning of month');
+});
 
 let mongoDB = "mongodb://" + config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.dbname;
 mongoose.connect(mongoDB, {useNewUrlParser: true},
@@ -93,7 +107,7 @@ mongoose.connect(mongoDB, {useNewUrlParser: true},
             };
             app.use('/', attachDB, route);
             http.createServer(app).listen(config.port, function () {
-                console.log('[' + d.toLocaleString() + '] ' + 'Express server listening on port ' + config.port);
+                console.log('[' + d.toLocaleString() + '] ' + 'Express server listening on http://127.0.0.1:' + config.port);
             });
         }
     });

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+var formatTime = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month<10){ month = '0' + month;}
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day<10){ day = '0' + day;}
+    return year+"-"+month + "-"+day;
+}
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-4 col-3">
+                    <h4 class="page-title"><%= title %></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-border table-striped custom-table datatable mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Client</th>
+                                    <th>Mobile</th>
+                                    <th>Remark</th>
+                                    <th>OrderType</th>
+                                    <th>Status</th>
+                                    <th>CreatedAt</th>
+                                    <th>ClosedAt</th>
+                                    <th class="text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <% for(var i = 0; i<data_list.length; i++) {  %>
+                                <tr>
+                                    <td><%= data_list[i].doctorEmail %></td>
+                                    <td><%= data_list[i].clientEmail %></td>
+                                    <td><%= data_list[i].clientPhone %></td>
+                                    <td><%= data_list[i].remark %></td>
+                                    <td>
+                                        <%  if(data_list[i].orderType == 'Rejected') {  %>
+                                            <span class="custom-badge status-red">Rejected</span>
+                                        <% } else  {  %>
+                                            <span class="custom-badge status-green"><%= data_list[i].orderType %></span>
+                                        <% } %>
+                                    </td>
+                                    <td><%= data_list[i].status %></td>
+                                    <td><%= formatTime(data_list[i].createdAt) %></td>
+                                    <td><%= (data_list[i].closedAt)? formatTime(data_list[i].closedAt):'' %></td>
+                                    <td class="text-right">
+                                        <a class="btn btn-success" href="/orders/view/<%= data_list[i].orderId %>">
+                                            <i class="fa fa-eye m-r-5"></i> View Order
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+
+</body>
+</html>

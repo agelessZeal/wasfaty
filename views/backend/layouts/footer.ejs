@@ -35,27 +35,18 @@
 <script src="/assets/plugins/datatable/plugin/js/buttons.html5.min.js"></script>
 <script src="/assets/plugins/datatable/plugin/js/buttons.print.min.js"></script>
 
+<script src="/assets/plugins/sweetalert/sweetalert.js"></script>
 <script src="/assets/plugins/cropperjs/cropper.js"></script>
+<script src="/assets/plugins/search-box/choosen.js"></script>
 
 <script src="/assets/js/app.js"></script>
 <script src="/assets/js/my_app.js"></script>
 
 <script>
-    setTimeout(function () {
-        hideNotifications();
-    }, 2500);
-    var hideNotifications = function () {
-        $('.alert').each(function () {
-            if($(this).attr('class').indexOf('alert-dismissible')<0) {
-                $(this).slideUp(600, function () {
-                    $(this).remove();
-                })
-            }
-        })
-    }
-    $('.ws-delete-link').click(function () {
-        $('#delete_box h3').text('Are you sure want to delete this ' + $(this).data('msg') + '?');
-        $('#delete_box a.btn-danger').attr('href', $(this).data('url'));
-    })
-
+    var siteDomain = '<%= siteDomain %>';
+    var wsPort = '<%= wsPort %>';
+    var userRole = '<%= (session && session.user && session.user.role)?session.user.role:'' %>';
 </script>
+
+<script src="/assets/js/notification_ws.js"></script>
+<script src="/assets/js/delivery_ws.js"></script>

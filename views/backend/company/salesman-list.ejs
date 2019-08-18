@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+var formatTime = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month<10){ month = '0' + month;}
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day<10){ day = '0' + day;}
+    return year+"-"+month + "-"+day;
+}
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-4 col-3">
+                    <h4 class="page-title">Salesman List</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-border table-striped custom-table datatable mb-0">
+                            <thead>
+                            <tr>
+                                <th>Name(EN/AR)</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Specialist</th>
+                                <th>Company</th>
+                                <th>Country</th>
+                                <th>City</th>
+                                <th>Status</th>
+                                <th>CreatedAt</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for(var i = 0; i<users.length; i++) {  %>
+                                <tr>
+                                    <td>
+                                        <img width="28" height="28" src="<%= (users[i].pic)?users[i].pic:'/assets/img/user.jpg'; %>" class="rounded-circle m-r-5" alt="">
+                                        <%= (getLocale()== 'en')? users[i].nameEn: users[i].nameAr %>
+                                    </td>
+                                    <td><%= users[i].email %></td>
+                                    <td><%= users[i].phone %></td>
+                                    <td><%= users[i].spec %></td>
+                                    <td><%= users[i].companyName %></td>
+                                    <td><%= users[i].country %></td>
+                                    <td><%= users[i].city %></td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm <%= (users[i].status == "Enabled")?"btn-primary":"btn-secondary" %>"><%= (users[i].status)?users[i].status:'Disabled' %></button>
+                                    </td>
+                                    <td><%= formatTime(users[i].createdAt) %></td>
+                                    <td>
+                                        <a class="btn btn-outline-primary" href="/users/profile?id=<%= users[i]._id %>">View</a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include ../layouts/footer.ejs %>
+</body>
+</html>
