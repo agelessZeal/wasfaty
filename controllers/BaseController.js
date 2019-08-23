@@ -1,6 +1,6 @@
 let _, config, _ld, qs, fs, async;
 
-let UserModel, InviteModel;
+let UserModel, ItemModel;
 
 _ = require("underscore");
 config = require('../config/index');
@@ -11,6 +11,7 @@ _ld = require('lodash');
 qs = require('qs');
 fs = require('fs');
 
+ItemModel = require("../models/item");
 
 module.exports = {
     name: "BaseController",
@@ -47,9 +48,9 @@ module.exports = {
         if (ipAddress.substr(0, 1) == ':') ipAddress = ipAddress.substr(7);
         return ipAddress;
     },
-    getCurDate: function() {
+    getCurDate: function () {
         let severDt = new Date();
-        let localDt =  new Date(severDt.getTime() + config.tz);
+        let localDt = new Date(severDt.getTime() + config.tz);
         return new Date(localDt.toDateString());
     },
     isEmail: function (email) {
@@ -59,6 +60,9 @@ module.exports = {
     isURL: function (str) {
         let regexp = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
         return regexp.test(str);
+    },
+    onlyUnique: function (value, index, self) {
+        return self.indexOf(value) === index;
     },
     checkSpecialStr: function (str) {
         let strFormat = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
@@ -101,14 +105,18 @@ module.exports = {
             return res.send({status: 'success', data: '/uploads/avatar/' + dest_fn});
         });
     },
-    getDate: function(dt) {
+    getDate: function (dt) {
         let fYear = dt.getFullYear();
-        let fMonth  = dt.getMonth() + 1;
-        if (fMonth<10){ fMonth = '0' + fMonth;}
+        let fMonth = dt.getMonth() + 1;
+        if (fMonth < 10) {
+            fMonth = '0' + fMonth;
+        }
         // Day part from the timestamp
         let day = dt.getDate();
-        if (day<10){ day = '0' + day;}
-        return fYear+"-"+fMonth + "-"+day;
+        if (day < 10) {
+            day = '0' + day;
+        }
+        return fYear + "-" + fMonth + "-" + day;
     },
     getTs: function () {
         return Math.round((new Date()).getTime() / 1000);

@@ -12,7 +12,6 @@
     ]},
     {"sub": true, "name": "Master Files", "icon": "fa fa-flag-o", "children": [
       {"name": "Item List", "url": "/admin/item", "title": "Item List"},
-      {"name": "Patient(Client) file", "url": "#", "title": ""},
       {"name": "Countries", "url": "/country/list", "title": "Country List"},
       {"name": "Cities", "url": "#", "title": ""},
       {"name": "Areas", "url": "#", "title": ""},
@@ -20,39 +19,34 @@
       {"name": "Insurance Companies", "url": "/admin/insurance/companies", "title": "Insurance Companies"},
       {"name": "Insurance Grades", "url": "/admin/insurance/grades", "title": "Insurance Grades"},
       {"name": "Insurance Types", "url": "/admin/insurance/types", "title": "Insurance Types"},
-
-      {"name": "Item Dosage", "url": "/master-item/update/dosage", "title": "Dosage"},
-      {"name": "Item Brand Name", "url": "/master-item/update/brand", "title": "Brand Name"},
-      {"name": "Item Commercial Group", "url": "/master-item/update/commercial-group", "title": "Commercial Group"},
-      {"name": "Item Main Classification", "url": "/master-item/update/main-classification", "title": "Main Classification"},
-      {"name": "Item Sub Classification", "url": "/master-item/update/sub-classification", "title": "Sub Classification"},
-      {"name": "Item Product Form", "url": "/master-item/update/product-form", "title": "Product Form"},
-      {"name": "Item Concentration", "url": "/master-item/update/concentration", "title": "Concentration"},
-      {"name": "Item Quantity", "url": "/master-item/update/quantity", "title": "Quantity"},
-      {"name": "Item Unit of measurement", "url": "/master-item/update/unit-of-measurement", "title": "Unit of measurement"},
-      {"name": "Item Ingredient", "url": "/master-item/update/ingredient", "title": "Ingredient"},
-      {"name": "Item Flavor", "url": "/master-item/update/flavor", "title": "Flavor"},
-      {"name": "Item Age Range", "url": "/master-item/update/age-range", "title": "Age Range"},
-      {"name": "Item Color", "url": "/master-item/update/color", "title": "Color"}
+      {"name": "Item Dosage", "url": "/master-item/dosage", "title": "Dosage"},
+      {"name": "Item Brand Name", "url": "/master-item/brand", "title": "Brand Name"},
+      {"name": "Item Commercial Group", "url": "/master-item/commercial-group", "title": "Commercial Group"},
+      {"name": "Item Main Classification", "url": "/master-item/main-classification", "title": "Main Classification"},
+      {"name": "Item Sub Classification", "url": "/master-item/sub-classification", "title": "Sub Classification"},
+      {"name": "Item Product Form", "url": "/master-item/product-form", "title": "Product Form"},
+      {"name": "Item Concentration", "url": "/master-item/concentration", "title": "Concentration"},
+      {"name": "Item Quantity", "url": "/master-item/quantity", "title": "Quantity"},
+      {"name": "Item Unit of measurement", "url": "/master-item/unit-of-measurement", "title": "Unit of measurement"},
+      {"name": "Item Ingredient", "url": "/master-item/ingredient", "title": "Ingredient"},
+      {"name": "Item Flavor", "url": "/master-item/flavor", "title": "Flavor"},
+      {"name": "Item Age Range", "url": "/master-item/age-range", "title": "Age Range"},
+      {"name": "Item Color", "url": "/master-item/color", "title": "Color"}
     ]},
     {"sub": false, "name": "Orders", "icon": "fa fa-calendar", "url": "/orders", "title": "Orders"},
     {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
-      {"name": "Driver Orders", "url": "#", "title": ""},
-      {"name": "Salesman Orders", "url": "#", "title": ""},
-      {"name": "Doctor Orders", "url": "#", "title": ""},
-      {"name": "Pharmacy Orders", "url": "#", "title": ""},
-      {"name": "Company Orders", "url": "#", "title": ""},
-      {"name": "Commissions", "url": "#", "title": ""}
+      {"name": "Commission statistics", "url": "/admin/commission-stat", "title": "Commission statistics"},
+      {"name": "Order Reports", "url": "/admin/reports", "title": "Order Reports"}
     ]},
     {"sub": false, "name": "Invitations", "url": "/invite/list", "title": "Invitation List", "icon":"fa fa-hospital-o"}
   ],
   "Salesman" : [
     {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
     {"sub": false, "name": "Doctor Invitation", "url": "/invite/list", "title": "Invitation List", "icon": "fa fa-list"},
-    {"sub": false, "name": "Orders", "url": "#", "title": "Orders", "icon": "fa fa-list"},
+    {"sub": false, "name": "Orders", "url": "/salesman/orders", "title": "Orders", "icon": "fa fa-list"},
     {"sub": false, "name": "Item Catalog", "url": "/product", "title": "Item Catalog", "icon": "fa fa-list"},
     {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
-      {"name": "Orders", "url": "#", "title": ""},
+      {"name": "Orders", "url": "/salesman/reports", "title": "Order Reports"},
       {"name": "Doctors", "url": "/salesman/doctor/list", "title": "Doctor List"}
     ]}
   ],
@@ -61,15 +55,14 @@
     {"sub": false, "name": "Orders", "url": "/pharmacy/orders", "title": "Orders", "icon": "fa fa-list"},
     {"sub": false, "name": "Item Catalog", "url": "/product", "title": "Item Catalog", "icon": "fa fa-list"},
     {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
-      {"name": "Orders", "url": "/pharmacy/reports", "title": "Order Reports"},
-      {"name": "Loyalty Points", "url": "#", "title": ""}
+      {"name": "Orders", "url": "/pharmacy/reports", "title": "Order Reports"}
     ]}
   ],
   "Company" : [
     {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
     {"sub": false, "name": "Item Catalog", "url": "/product", "title": "Item Catalog", "icon": "fa fa-list"},
     {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
-      {"name": "Orders", "url": "#", "title": ""},
+      {"name": "Orders", "url": "/company/reports", "title": "Order Reports"},
       {"name": "Doctors", "url": "/company/doctor", "title": "Doctor List"},
       {"name": "Salesman", "url": "/company/salesman", "title": "Salesman List"}
     ]}
@@ -78,12 +71,10 @@
     {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
     {"sub": false, "name": "My Invitation", "url": "/doctor/my-invitation", "title": "My Invitation", "icon": "fa fa-list"},
     {"sub": false, "name": "Orders", "url": "/orders", "title": "Orders", "icon": "fa fa-list"},
-    {"sub": false, "name": "Clients", "url": "/doctor/clients", "title": "Clients", "icon": "fa fa-list"},
     {"sub": false, "name": "Item Catalog", "url": "/product", "title": "Item Catalog", "icon": "fa fa-list"},
     {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
       {"name": "Orders", "url": "/doctor/reports", "title": "Order Reports"},
-      {"name": "Clients", "url": "#", "title": ""},
-      {"name": "Loyalty Points", "url": "#", "title": ""}
+      {"name": "Clients", "url": "/doctor/clients", "title": "Clients"}
     ]}
   ],
   "Client" : [
@@ -92,9 +83,8 @@
     {"sub": false, "name": "Orders", "url": "/client/orders", "title": "Orders", "icon": "fa fa-list"},
     {"sub": false, "name": "Item Catalog", "url": "/product", "title": "Item Catalog", "icon": "fa fa-list"},
     {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
-      {"name": "Orders", "url": "/client/reports", "title": "Order Reports"},
-      {"name": "Doctors", "url": "/client/doctors", "title": "Doctor List"},
-      {"name": "Loyalty Points", "url": "#", "title": ""}
+      {"name": "Loyalty Points", "url": "/client/reports", "title": "Loyalty Points"},
+      {"name": "Doctors", "url": "/client/doctors", "title": "Doctor List"}
     ]}
   ],
   "Driver" : [
@@ -108,13 +98,8 @@
     {"sub": false, "name": "Dashboard", "url": "/dashboard", "title": "Dashboard", "icon": "fa fa-dashboard"},
     {"sub": false, "name": "Orders", "icon": "fa fa-calendar", "url": "/callcenter/orders", "title": "Orders"},
     {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
-      {"name": "Driver Reports", "url": "#", "title": "Driver Reports"},
-      {"name": "Salesman Reports", "url": "#", "title": ""},
-      {"name": "Doctor Reports", "url": "#", "title": "Doctor Reports"},
-      {"name": "Pharmacy Reports", "url": "#", "title": "Pharmacy Reports"},
-      {"name": "Company Reports", "url": "#", "title": ""},
-      {"name": "Client Reports", "url": "#", "title": "Client Reports"},
-      {"name": "Commissions", "url": "#", "title": ""}
+      {"name": "Commission statistics", "url": "/admin/commission-stat", "title": "Commission statistics"},
+      {"name": "Order Reports", "url": "/admin/reports", "title": "Order Reports"}
     ]},
     {"sub": false, "name": "Invitations", "url": "/invite/list", "title": "Invitation List", "icon":"fa fa-hospital-o"}
   ]

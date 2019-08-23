@@ -56,6 +56,10 @@ router.get('/company/dashboard', function (req, res) {
     company_controller.showDashboard(req, res);
 });
 
+router.get('/company/reports', function (req, res) {
+    company_controller.showCompanyReports(req, res);
+});
+
 router.get('/company/doctor', function (req, res) {
     company_controller.showCompanyDoctors(req, res);
 });
@@ -70,6 +74,15 @@ router.get('/doctor/dashboard', function (req, res) {
 router.get('/salesman/dashboard', function (req, res) {
     salesman_controller.showDashboard(req, res);
 });
+
+router.get('/salesman/orders', function (req, res) {
+    salesman_controller.showMyOrders(req, res);
+});
+
+router.get('/salesman/reports', function (req, res) {
+    salesman_controller.showMyOrderReports(req, res);
+});
+
 router.get('/driver/dashboard', function (req, res) {
     driver_controller.showDashboard(req, res);
 });
@@ -140,6 +153,14 @@ router.get('/master-item/delete/:mtType/:id', function (req, res) {
     mi_controller.deleteMasterItem(req, res);
 });
 
+router.get('/master-item/:mtType', function (req, res) {
+    mi_controller.showMasterItems(req, res)
+});
+
+router.get('/master-item/update/:mtType/:op', function (req, res) {
+    mi_controller.showAddMasterItems(req, res);
+});
+
 router.post('/master-item/update/:mtType/:op', function (req, res) {
     mi_controller.updateMasterItems(req, res);
 });
@@ -202,6 +223,9 @@ router.get('/doctor/reports', function (req, res) {
 //===================API==========================================
 router.get('/api/user/:userType', function (req, res) {
     user_controller.getUsers(req, res);
+});
+router.get('/api/report/:userType', function (req, res) {
+    user_controller.getReportUsers(req, res);
 });
 router.get('/api/location', function (req, res) {
     user_controller.getLocation(req, res);

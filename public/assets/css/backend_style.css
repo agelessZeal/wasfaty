@@ -475,6 +475,10 @@ button.dt-button>span{
 }
 
 .ws-label-btn {
+    margin-top: 32px;
+    width: 100%;
+    min-width: 70px;
+
 }
 
 .ws-map-popup {

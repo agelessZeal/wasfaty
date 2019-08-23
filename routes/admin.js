@@ -3,7 +3,7 @@ let salesman_controller, company_controller, pharmacy_controller,client_controll
     doctor_controller,driver_controller,call_center_controller, invite_controller, user_controller;
 let ins_controller, spec_controller, mi_controller, item_controller;
 
-let setting_controller;
+let setting_controller, order_controller;
 
 express = require('express');
 router = express.Router();
@@ -24,12 +24,20 @@ pharmacy_controller = require('../controllers/PharmacyController');
 doctor_controller = require('../controllers/DoctorController');
 driver_controller = require('../controllers/DriverController');
 setting_controller = require('../controllers/SettingController');
-
+order_controller = require('../controllers/OrderController');
 /**
  * Admin Routes
  */
 router.get('/item', function (req, res) {
     item_controller.showItems(req, res)
+});
+
+router.get('/reports', function (req, res) {
+    order_controller.showAdminReports(req, res);
+});
+
+router.get('/commission-stat', function (req, res) {
+    order_controller.showCommissionStat(req, res);
 });
 
 router.get('/specialist', function (req, res) {
@@ -80,13 +88,6 @@ router.post('/item/:op', function (req, res) {
     item_controller.updateItems(req, res);
 });
 
-router.get('/master-item/:mtType', function (req, res) {
-    mi_controller.showMasterItems(req, res)
-});
-
-router.get('/master-item/:mtType/:op', function (req, res) {
-    mi_controller.showAddMasterItems(req, res);
-});
 
 router.post('/specialist/:op', function (req, res) {
     spec_controller.updateSpecItems(req, res);
@@ -118,6 +119,22 @@ router.get('/setting/commissions', function (req, res) {
 
 router.post('/setting/commission/update', function (req, res) {
     setting_controller.updateCommissions(req, res);
+});
+
+router.get('/setting/driver-fee', function (req, res) {
+    setting_controller.showDriverFee(req, res);
+});
+
+router.post('/setting/driver-fee/update', function (req, res) {
+    setting_controller.updateDriverFee(req, res);
+});
+
+router.get('/setting/loyalty-point', function (req, res) {
+    setting_controller.showLoyaltyPoint(req, res);
+});
+
+router.post('/setting/loyalty-point/update', function (req, res) {
+    setting_controller.updateLoyaltyPoint(req, res);
 });
 
 module.exports = router;

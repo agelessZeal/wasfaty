@@ -43,7 +43,7 @@ module.exports = BaseController.extend({
     },
     showAddItems: async function (req, res) {
 
-        let v, opType, itemId, itemInfo, subMasterItems;
+        let v, opType, itemId, itemInfo;
         opType = req.params.op;
         if (req.params.op != 'edit' && req.params.op != 'add' && req.params.op != 'view') {
             return res.redirect('/*');
@@ -117,7 +117,7 @@ module.exports = BaseController.extend({
             await itemInfo.save();
         } else {
             req.body['createdAt'] = new Date();
-            req.body.itemId = this.makeItemCode('', 20);
+            req.body.itemId = this.makeItemCode('', 10);
             req.body.price = Number(req.body.price);
             req.body.comm = Number(req.body.comm);
             await new ItemModel(req.body).save();

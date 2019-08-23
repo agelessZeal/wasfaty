@@ -2,6 +2,8 @@ let _, async, mongoose, BaseController;
 let config, axios, request, fs, ejs, crypto, nodemailer, transporter, View;
 let UserModel, InviteModel, countryList, OrderModel;
 
+let ItemModel, OrderItemHistModel;
+
 async = require("async");
 mongoose = require('mongoose');
 axios = require('axios');
@@ -12,6 +14,8 @@ request = require('request');
 nodemailer = require('nodemailer');
 ejs = require('ejs');
 countryList = require('../config/country');
+ItemModel = require('../models/item');
+OrderItemHistModel = require('../models/OrderItemHistory');
 
 UserModel = require('../models/user');
 InviteModel = require('../models/invite');
@@ -42,12 +46,85 @@ module.exports = BaseController.extend({
         if(!req.session.user.isDoneProfile) {
             return res.redirect('/invite/profile/info');
         }
+
+        let dt = new Date();
+        dt.setUTCHours(0,0,0,0); // Today time
+
+        let todayClosedOrders = await OrderItemHistModel.find({orderDate: {$gte: dt}, email: req.session.user.email});
+        let todayCommissions = 0, i;
+        for (i = 0; i < todayClosedOrders.length; i++) {
+            todayCommissions += Number(todayClosedOrders[i].commAmount);
+        }
+        todayCommissions = Number(todayCommissions.toFixed(2));
+
+        let todayOrders = await OrderModel.countDocuments({createdAt: {$gte: dt}, doctorEmail: req.session.user.email});
+
+        dt.setDate(1);
+        let monthClosedOrders = await OrderItemHistModel.find({orderDate: {$gte: dt}, email: req.session.user.email});
+        let monthCommissions = 0;
+        for (i = 0; i < monthClosedOrders.length; i++) {
+            monthCommissions += Number(monthClosedOrders[i].commAmount);
+        }
+
+        // Doctor Clients
+        let clients = await UserModel.find({role:'Client', isDoneProfile: true});
+        let retClients = 0;
+        let rectClientInfos = [];
+        for (let i = 0; i < clients.length; i++) {
+            if (clients[i].inviterEmailList.indexOf(req.session.user.email) > -1 ) {
+                retClients++;
+                rectClientInfos.push(clients[i]);
+            }
+        }
+
+        let clientGraphData = await this.clientGraphData(rectClientInfos);
+        let commGraphData = await this.commissionGraphData(req.session.user.email);
+
+
+
         let v;
         v = new View(res, 'backend/doctor/dashboard');
         v.render({
             title: 'Dashboard',
             session: req.session,
+            todayCommission: todayCommissions,
+            monthCommission: monthCommissions,
+            todayOrders: todayOrders,
+            clientCount: retClients,
+            commGraphData: commGraphData,
+            clientGraphData: clientGraphData,
         });
+    },
+    commissionGraphData: async function (doctorEmail) {
+
+        let dt = new Date();
+        dt.setMonth(0)
+        dt.setDate(0);
+        dt.setUTCHours(0,0,0,0);
+
+        let commHistData = await OrderItemHistModel.find({email: doctorEmail, orderDate: {$gte: dt}});
+
+        let graphData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; //Total 12 Month
+        let i;
+        for (i = 0; i < commHistData.length; i++) {
+            let month = new Date(commHistData[i].orderDate).getMonth();
+            graphData[month] += Number(commHistData[i].commAmount);
+        }
+
+        for (i = 0; i< graphData.length ; i++) {
+            graphData[i] = Number(graphData[i].toFixed(2));
+        }
+
+        return graphData;
+    },
+    clientGraphData: async function (clients) {
+        let graphData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; //Total 12 Month
+        let i;
+        for (i = 0; i < clients.length; i++) {
+            let month = new Date(clients[i].createdAt).getMonth();
+            graphData[month]++;
+        }
+        return graphData;
     },
     list: async function (req, res) {
         let v, users;
@@ -67,7 +144,7 @@ module.exports = BaseController.extend({
             title: 'Doctor List',
             session: req.session,
             countries: countryList,
-            users: users
+            users: users,
         });
     },
     showInviteList: async function (req, res) {
@@ -98,12 +175,19 @@ module.exports = BaseController.extend({
         if(req.session.user.role != 'Doctor') {
             return res.redirect('/*');
         }
-        let clients = await UserModel.find({inviterEmailList: req.session.user.email});
+        let clients = await UserModel.find({role:'Client', isDoneProfile: true});
+        let retClients = [];
+        for (let i = 0; i < clients.length; i++) {
+            if (clients[i].inviterEmailList.indexOf(req.session.user.email) > -1 ) {
+                retClients.push(clients[i])
+            }
+        }
+
         v = new View(res, 'backend/doctor/client-list');
         v.render({
             title: 'Clients',
             session: req.session,
-            clients:clients,
+            clients:retClients,
             error: req.flash("error"),
             success: req.flash("success"),
         });
@@ -123,17 +207,46 @@ module.exports = BaseController.extend({
         return res.redirect('/admin/doctor');
     },
     showMyOrderReports: async function (req, res) {
-        let v, orders;
         if (!this.isLogin(req)) {
             req.session.redirectTo = '/doctor/reports';
             return res.redirect('/auth/login');
         }
-        orders = await OrderModel.find({doctorEmail: req.session.user.email, status: 'Closed'}).sort({createdAt: -1});
-        v = new View(res, 'backend/doctor/my-report');
+
+        if (req.session.user.role != "Doctor") {
+            return res.redirect('/*');
+        }
+
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59,0,0);
+            dtQuery['$lte'] = toDate;
+        }
+
+        let items = await ItemModel.find();
+        let itemObj = {};
+        for (let i = 0; i<items.length; i++) {
+            itemObj[items[i].itemId] = items[i];
+        }
+        let orderItemHist = await OrderItemHistModel.find({email: req.session.user.email, orderDate: dtQuery}).sort({orderDate: -1});
+
+        console.log(dtQuery);
+
+        let v = new View(res, 'backend/doctor/my-reports');
         v.render({
             title: 'Order Reports',
             session: req.session,
-            data_list: orders
+            data_list: orderItemHist,
+            itemObj: itemObj,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate
         });
     }
 });

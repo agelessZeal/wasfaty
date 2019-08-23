@@ -1,7 +1,7 @@
 let _, async, mongoose, BaseController;
 let config, axios, request, fs, ejs, crypto,
     nodemailer, transporter, View, ItemModel;
-let UserModel, countryList, OrderModel;
+let UserModel, countryList, OrderModel, OrderItemHistModel;
 
 async = require("async");
 mongoose = require('mongoose');
@@ -16,6 +16,7 @@ UserModel = require('../models/user');
 OrderModel = require('../models/order');
 countryList = require('../config/country');
 ItemModel = require('../models/item');
+OrderItemHistModel = require('../models/OrderItemHistory');
 
 BaseController = require('./BaseController');
 View = require('../views/base');
@@ -45,7 +46,7 @@ module.exports = BaseController.extend({
         let totalItemCnt = await ItemModel.countDocuments();
         let totalAmount = 0;
         let totalQty = 0;
-        let i = 0, j = 0;
+        let i, j = 0;
         let closedOrders = await OrderModel.find({status: 'Closed'});
         for (i = 0; i < closedOrders.length; i++) {
             for (j = 0; j < closedOrders[i].items.length; j++) {
@@ -114,7 +115,12 @@ module.exports = BaseController.extend({
         return graphData;
     },
     itemQtyGraphData: async function (companyId) {
-        let closedOrders = await OrderModel.find({status: 'Closed'});
+        let dt = new Date();
+        dt.setMonth(0)
+        dt.setDate(0);
+        dt.setUTCHours(0,0,0,0);
+
+        let closedOrders = await OrderModel.find({status: 'Closed', closedAt: {$gte: dt}});
         let graphData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; //Total 12 Month
         let i, j;
         for (i = 0; i < closedOrders.length; i++) {
@@ -144,6 +150,49 @@ module.exports = BaseController.extend({
             session: req.session,
             countries: countryList,
             users: users
+        });
+    },
+    showCompanyReports: async function (req, res) {
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/company/reports';
+            return res.redirect('/auth/login');
+        }
+
+        if (req.session.user.role != "Company") {
+            return res.redirect('/*');
+        }
+
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59,0,0);
+            dtQuery['$lte'] = toDate;
+        }
+
+        let items = await ItemModel.find();
+        let itemObj = {};
+        for (let i = 0; i<items.length; i++) {
+            itemObj[items[i].itemId] = items[i];
+        }
+        let orderItemHist = await OrderItemHistModel.find({email: req.session.user.email, orderDate: dtQuery}).sort({orderDate: -1});
+
+        console.log(dtQuery);
+
+        let v = new View(res, 'backend/company/my-reports');
+        v.render({
+            title: 'Order Reports',
+            session: req.session,
+            data_list: orderItemHist,
+            itemObj: itemObj,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate
         });
     },
     showCompanyDoctors: async function (req, res) {

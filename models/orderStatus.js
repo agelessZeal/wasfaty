@@ -7,6 +7,7 @@ let OrderStatusSchema = new Schema({
     driverId: String,
     description: String,
     orderType: String, // PhPicked, PhAccepted, Rejected,  DriverPicked, DriverAccepted, DriverRejected,  PhClosed, DriverClosed.....
+    phInfoId: String,
     createdAt: Date,
     updatedAt: Date,
     closedAt: Date,

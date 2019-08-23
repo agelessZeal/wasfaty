@@ -3,6 +3,8 @@ let config, axios, request, fs, crypto, ejs,
     nodemailer, transporter;
 let UserModel, View;
 
+let SettingModel;
+
 async = require("async");
 mongoose = require('mongoose');
 axios = require('axios');
@@ -14,6 +16,7 @@ fs = require('fs');
 ejs = require('ejs');
 
 UserModel = require('../models/user');
+SettingModel = require('../models/setting');
 BaseController = require('./BaseController');
 View = require('../views/base');
 
@@ -114,8 +117,14 @@ module.exports = BaseController.extend({
         password = crypto.createHash('md5').update(password).digest("hex");
         let token = this.makeID('');
 
+        let defaultComms = await SettingModel.findOne({settingKey: "commissions"});
+        let defaultSalesman = await UserModel.findOne({role:'Salesman', isDefault: true});
+        let defaultCompany = await UserModel.findOne({role:'Company', isDefault: true});
+        let defaultDoctor = await UserModel.findOne({role:'Doctor', isDefault: true});
+        let defaultPharmacy = await UserModel.findOne({role:'Pharmacy', isDefault: true});
+
         if (config.isEmailAuth) {
-            await UserModel.collection.insertOne({
+            let userObj = {
                 email: email.trim(),
                 password: password,
                 phone: req.body.phone,
@@ -131,7 +140,19 @@ module.exports = BaseController.extend({
                 isDoneProfile: false,
                 loginCount: 0,
                 emailActive: 'Enabled',
-            });
+                isDefault: false,
+                commissions: defaultComms.content[req.body.role] // Default user commissions
+            };
+
+            if (req.body.role == 'Doctor') {
+                userObj.inviterEmailList = [defaultSalesman.email];
+            } else if (req.body.role == 'Client') {
+                userObj.inviterEmailList = [defaultDoctor.email];
+            } else if (req.body.role == 'Salesman') {
+                userObj.companyName = defaultCompany._id.toString();
+            }
+
+            await UserModel.collection.insertOne(userObj);
 
             let confirmURL = `${config.info.site_url}auth/confirm_account?token=${token}`;
             ejs.renderFile("views/email/template.ejs",
@@ -169,7 +190,8 @@ module.exports = BaseController.extend({
                     }
                 });
         } else {
-            await UserModel.collection.insertOne({
+
+            let userObj = {
                 email: email.trim(),
                 password: password,
                 phone: req.body.phone,
@@ -182,7 +204,20 @@ module.exports = BaseController.extend({
                 role: req.body.role,
                 token: token,
                 emailActive: 'Enabled',
-            });
+                isDefault: false,
+                commissions: defaultComms.content[req.body.role] // Default user commissions
+            };
+
+            await UserModel.collection.insertOne();
+
+            if (req.body.role == 'Doctor') {
+                userObj.inviterEmailList = [defaultSalesman.email];
+            } else if (req.body.role == 'Client') {
+                userObj.inviterEmailList = [defaultDoctor.email];
+            } else if (req.body.role == 'Salesman') {
+                userObj.companyName = defaultCompany._id.toString();
+            }
+
             req.flash('success', 'Registered successfully');
             return res.redirect('/auth/login');
         }

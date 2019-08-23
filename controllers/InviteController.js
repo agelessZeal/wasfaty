@@ -193,6 +193,20 @@ module.exports = BaseController.extend({
 
         let backURL = '/invite/profile/info';
 
+        //Get sender inviter email and right role for the user profile saving
+        let adminInfo = await UserModel.findOne({role:'Admin'});
+        let senderEmail = "";
+        if (adminInfo.email == inviteInfo.senderEmail) {
+            if (inviteInfo.receiverRole == 'Doctor') {
+                // Get default salesman
+                let defaultSalesman = await UserModel.findOne({role:'Salesman', isDefault: true});
+                senderEmail = defaultSalesman.email;
+            } else if (inviteInfo.receiverRole == 'Client') {
+                let defaultDoctor = await UserModel.findOne({role:'Doctor', isDefault: true});
+                senderEmail = defaultDoctor.email;
+            }
+        }
+
         if (inviteInfo.status == 'Awaiting') {
             // add / update user from users table
             let userInfo = await UserModel.findOne({email: inviteInfo.receiverEmail});
@@ -238,10 +252,11 @@ module.exports = BaseController.extend({
                 gender: 'Male',
 
                 status: 'Enabled',
-                inviterEmailList: [inviteInfo.senderEmail], //Inviter Email
+                inviterEmailList: [senderEmail], //Inviter Email
                 createdAt: new Date,  //Time Stamp,
                 loginCount: 0,
                 isDoneProfile: false,
+                isDefault: false,
                 emailActive: 'Enabled',
                 token: '',//Password Reset Token
             };

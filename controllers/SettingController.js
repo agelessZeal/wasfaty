@@ -48,5 +48,73 @@ module.exports = BaseController.extend({
         await comms.save();
         req.flash("success", "Updated Default Commissions!");
         return res.redirect('/admin/setting/commissions');
+    },
+    showDriverFee: async function (req, res) {
+        if(!this.isLogin(req)){
+            req.session.redirectTo = '/admin/setting/driver-fee';
+            return res.redirect('/auth/login');
+        }
+        if (req.session.user.role  != 'Admin') {
+            return  res.redirect('/*');
+        }
+        let v;
+        let driverFee = await SettingModel.findOne({settingKey: "driver_fee"});
+        v = new View(res, 'backend/setting/driver-fee');
+        v.render({
+            title: 'Driver fees',
+            driverFee: driverFee.content,
+            session: req.session,
+            error: req.flash("error"),
+            success: req.flash("success"),
+
+        });
+    },
+    updateDriverFee: async function(req, res) {
+        if(!this.isLogin(req)){
+            req.session.redirectTo = '/admin/setting/driver-fee';
+            return res.redirect('/auth/login');
+        }
+        if (req.session.user.role  != 'Admin') {
+            return  res.redirect('/*');
+        }
+        let driverFee = await SettingModel.findOne({settingKey: "driver_fee"});
+        driverFee.content = req.body.driverFee;
+        await driverFee.save();
+        req.flash("success", "Updated Default driver fee!");
+        return res.redirect('/admin/setting/driver-fee');
+    },
+    showLoyaltyPoint: async function (req, res) {
+        if(!this.isLogin(req)){
+            req.session.redirectTo = '/admin/setting/loyalty-fee';
+            return res.redirect('/auth/login');
+        }
+        if (req.session.user.role  != 'Admin') {
+            return  res.redirect('/*');
+        }
+        let v;
+        let loyaltyPoint = await SettingModel.findOne({settingKey: "loyalty_point"});
+        v = new View(res, 'backend/setting/loyalty-point');
+        v.render({
+            title: 'Loyalty Point',
+            loyaltyPoint: loyaltyPoint.content,
+            session: req.session,
+            error: req.flash("error"),
+            success: req.flash("success"),
+
+        });
+    },
+    updateLoyaltyPoint: async function(req, res) {
+        if(!this.isLogin(req)){
+            req.session.redirectTo = '/admin/setting/loyalty-point';
+            return res.redirect('/auth/login');
+        }
+        if (req.session.user.role  != 'Admin') {
+            return  res.redirect('/*');
+        }
+        let loyaltyPoint = await SettingModel.findOne({settingKey: "loyalty_point"});
+        loyaltyPoint.content = req.body.loyaltyPoint;
+        await loyaltyPoint.save();
+        req.flash("success", "Updated Default Loyalty Point!");
+        return res.redirect('/admin/setting/loyalty-point');
     }
 });

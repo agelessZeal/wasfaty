@@ -9,12 +9,46 @@ var formatTime = function (ts) {
     var year = date.getFullYear();
     // Month part from the timestamp
     var month = date.getMonth() + 1;
-    if (month<10){ month = '0' + month;}
+    if (month < 10) {
+        month = '0' + month;
+    }
     // Day part from the timestamp
     var day = date.getDate();
-    if (day<10){ day = '0' + day;}
-    return year+"-"+month + "-"+day;
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return year + "-" + month + "-" + day;
 }
+function formatMoney(n, c, d, t) {
+    var c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+            j = (j = i.length) > 3 ? j % 3 : 0;
+
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+}
+var formatTimeWithOffset = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    date  = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return month + "/" + day + "/" + year;
+}
+
+var myPoints = 0;
+
 %>
 <body>
 <div class="main-wrapper">
@@ -24,48 +58,79 @@ var formatTime = function (ts) {
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title"><%= title %></h4>
+                    <h4 class="page-title">Loyalty Points</h4>
                 </div>
-                <% if(session.user.role == 'Doctor') {  %>
-                    <div class="col-sm-8 col-9 text-right m-b-20">
-                        <a href="/orders/add" class="btn btn btn-primary btn-rounded float-right">
-                            <i class="fa fa-plus"></i> Add Order
-                        </a>
-                    </div>
-                <% } %>
             </div>
+            <!-----------Search Filter------------->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>From Date</label>
+                                <div class="cal-icon">
+                                    <input type="text" name="fromDate" value="<%= (fromDate)? formatTimeWithOffset(fromDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>To Date</label>
+                                <div class="cal-icon">
+                                    <input type="text" name="toDate" value="<%= (toDate)? formatTimeWithOffset(toDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()">Search</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-----------Search Filter------------->
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
-                                <tr>
-                                    <th>Doctor</th>
-                                    <th>Remark</th>
-                                    <th>Mobile</th>
-                                    <th>Order Type</th>
-                                    <th>Status</th>
-                                    <th>CreatedAt</th>
-                                    <th>ClosedAt</th>
-                                    <th class="text-right">Action</th>
-                                </tr>
+                            <tr>
+                                <th>Doctor</th>
+                                <th>Remark</th>
+                                <th>Mobile</th>
+                                <th>Order Type</th>
+                                <th>Loyalty Points</th>
+                                <th>CreatedAt</th>
+                                <th>ClosedAt</th>
+                                <th class="text-right">Action</th>
+                            </tr>
                             </thead>
                             <tbody>
-                            <% for(var i = 0; i<data_list.length; i++) {  %>
+                            <% for(var i = 0; i < data_list.length; i++) {
+
+                                myPoints += data_list[i].lp;
+                            %>
                                 <tr>
                                     <td><%= data_list[i].doctorEmail %></td>
                                     <td><%= data_list[i].remark %></td>
                                     <td><%= data_list[i].clientPhone %></td>
                                     <td>
-                                        <%  if(data_list[i].orderType == 'Rejected') {  %>
+                                        <% if(data_list[i].orderType == 'Rejected') { %>
                                             <span class="custom-badge status-red">Rejected</span>
-                                        <% } else  {  %>
+                                        <% } else  { %>
                                             <span class="custom-badge status-green"><%= data_list[i].orderType %></span>
                                         <% } %>
                                     </td>
-                                    <td><%= data_list[i].status %></td>
+                                    <td><%= formatMoney(data_list[i].lp) %></td>
                                     <td><%= formatTime(data_list[i].createdAt) %></td>
-                                    <td><%= (data_list[i].closedAt) ? formatTime(data_list[i].closedAt):'' %></td>
+                                    <td><%= (data_list[i].closedAt) ? formatTime(data_list[i].closedAt) : '' %></td>
                                     <td class="text-right">
                                         <a class="btn btn-success" href="/orders/view/<%= data_list[i].orderId %>">
                                             <i class="fa fa-eye m-r-5"></i> View Order
@@ -78,11 +143,40 @@ var formatTime = function (ts) {
                     </div>
                 </div>
             </div>
+            <div class="col-12 text-left" style="margin-top: 20px">
+                <div class="form-group">
+                    <h4>Total Orders : <%= data_list.length; %></h4>
+                    <h4>My total points : <%= formatMoney(myPoints, 2); %></h4>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <%- include ../layouts/footer.ejs %>
+<script>
+    function onSearchReport() {
 
+        var fromDate = $('input[name="fromDate"]').val();
+        var toDate = $('input[name="toDate"]').val();
+        if (toDate) {
+            if (fromDate) {
+                location.href = '/client/reports?fromDate=' + formatTime(fromDate) + "&toDate=" + formatTime(toDate);
+            } else {
+                location.href = '/client/reports?toDate=' + formatTime(toDate);
+            }
+        } else {
+            if (fromDate) {
+                fromDate = formatTime(fromDate);
+                location.href = '/client/reports?fromDate=' + fromDate;
+            }
+        }
+
+
+    }
+    function onResetReportFilter() {
+        location.href = '/client/reports';
+    }
+</script>
 </body>
 </html>

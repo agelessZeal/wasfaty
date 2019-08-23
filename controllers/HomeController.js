@@ -129,6 +129,108 @@ module.exports = BaseController.extend({
             });
             await adminInfo.save();
         }
+        // Add default salesman and company
+        let dCompany = await UserModel.findOne({role:'Company', isDefault: true});
+        if (!dCompany) {
+            dCompany = new UserModel({
+                "email" : "company@wasfaty.com",
+                "password" : "c4ca4238a0b923820dcc509a6f75849b", //Password 1
+                "phone" : "1234567890",
+                "pic" : "/uploads/avatar/avatar_2UNlqpFMDB.png",
+                "country" : "Saudi Arabia",
+                "city" : "Jeddah",
+                "address" : "",
+                "status" : "Enabled",
+                "createdAt" : new Date(),
+                "role" : "Company",
+                "token" : "",
+                "emailActive" : "Enabled",
+                "inviterEmailList" : [],
+                "ipAddress" : "127.0.0.1",
+                "loginCount" : 21,
+                "birthDay" : "",
+                "companyName" : "",
+                "gender" : "Male",
+                "gps" : "34",
+                "nameAr" : "Wasfaty Company",
+                "nameEn" : "Wasfaty Company",
+                "nationality" : "Jordan",
+                "gpsLat" : 21.4858,
+                "gpsLong" : 39.1915,
+                "isDoneProfile" : true,
+                "isDefault": true,
+                "commissions" : config.defaultCommissions.Company
+            });
+            await dCompany.save();
+        }
+        let dSalesman = await UserModel.findOne({role:'Salesman', isDefault: true});
+        if (!dSalesman) {
+            dSalesman = new UserModel({
+                "email" : "salesman@wasfaty.com",
+                "password" : "c4ca4238a0b923820dcc509a6f75849b",
+                "phone" : "1234567890",
+                "pic" : "/assets/img/user.jpg",
+                "country" : "Saudi Arabia",
+                "city" : "Jeddah",
+                "address" : "",
+                "status" : "Enabled",
+                "createdAt" : new Date(),
+                "role" : "Salesman",
+                "token" : "",
+                "emailActive" : "Enabled",
+                "inviterEmailList" : [],
+                "ipAddress" : "127.0.0.1",
+                "loginCount" : 9,
+                "birthDay" : "",
+                "companyName" : "5d0cf35dc3f9735620b17c60", // default company
+                "gender" : "Female",
+                "nameAr" : "Wafaty Salesman",
+                "nameEn" : "Wafaty Salesman",
+                "nationality" : "Jordan",
+                "isDoneProfile" : true,
+                "gpsLat" : null,
+                "gpsLong" : null,
+                "isDefault": true,
+                "commissions" : config.defaultCommissions.Salesman
+            });
+            await dSalesman.save();
+        }
+        let dDoctor = await UserModel.findOne({role:'Doctor', isDefault: true});
+        if (!dDoctor) {
+            dDoctor = new UserModel({
+                "email" : "doctor@wasfaty.com",
+                "password" : "c4ca4238a0b923820dcc509a6f75849b",
+                "phone" : "234",
+                "pic" : "/uploads/avatar/avatar_E48uqenvUb.png",
+                "country" : "Saudi Arabia",
+                "city" : "Jeddah",
+                "address" : "Junt",
+                "status" : "Enabled",
+                "createdAt" : new Date(),
+                "role" : "Doctor",
+                "token" : "e5g4Gc8zws",
+                "emailActive" : "Enabled",
+                "__v" : 1,
+                "inviterEmailList" : [
+                    "salesman@wasfaty.com"
+                ],
+                "ipAddress" : "127.0.0.1",
+                "loginCount" : 207,
+                "birthDay" : "05/06/2019",
+                "gender" : "Male",
+                "insuranceCompany" : "company32",
+                "insuranceGrade" : "company32",
+                "insuranceType" : "type-1",
+                "isDoneProfile" : true,
+                "nameAr" : "Wasfaty Doctor",
+                "nameEn" : "Wasfaty Doctor",
+                "nationality" : "Jordan",
+                "spec" : "",
+                "isDefault": true,
+                "commissions" : config.defaultCommissions.Doctor
+            });
+            await dDoctor.save();
+        }
         // Add default commissions
         let commissions = await SettingModel.findOne({settingKey: "commissions"});
         if (!commissions) {
@@ -141,6 +243,22 @@ module.exports = BaseController.extend({
                     Company: 25,
                     Wasfaty: 60
                 }
+            })
+        }
+        // Add default driver fee
+        let driverFee = await SettingModel.findOne({settingKey: "driver_fee"});
+        if (!driverFee) {
+            await SettingModel.collection.insertOne({
+                settingKey: "driver_fee",
+                content: 20
+            })
+        }
+        // Add default Loyalty point
+        let loyaltyPoint = await SettingModel.findOne({settingKey: "loyalty_point"});
+        if (!loyaltyPoint) {
+            await SettingModel.collection.insertOne({
+                settingKey: "loyalty_point",
+                content: 1
             })
         }
     }

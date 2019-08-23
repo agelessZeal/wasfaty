@@ -46,6 +46,8 @@ let UserSchema = new Schema({
     ipAddress: String,
 
     token: String,//Password Reset Token
+
+    isDefault: Boolean,
 });
 
 module.exports = mongoose.model('user', UserSchema);

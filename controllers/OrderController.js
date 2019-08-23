@@ -4,6 +4,9 @@ let UserModel, OrderModel, countryList, ItemModel, InviteModel;
 let CountryModel, InsCompanyModel, OrderStatusModel,
     InsGradeModel, InsTypeModel, MasterItemModel;
 
+let SettingModel;
+let OrderItemHistModel;
+
 let PdfPrinter, printer;
 
 async = require("async");
@@ -25,9 +28,12 @@ InsGradeModel = require('../models/insuranceGrade');
 MasterItemModel = require('../models/masterItem');
 ItemModel = require('../models/item');
 InviteModel = require('../models/invite');
+SettingModel = require('../models/setting');
 
 countryList = require('../config/country');
 CountryModel = require('../models/country');
+
+OrderItemHistModel = require('../models/OrderItemHistory');
 
 BaseController = require('./BaseController');
 View = require('../views/base');
@@ -50,19 +56,208 @@ module.exports = BaseController.extend({
             req.session.redirectTo = '/orders';
             return res.redirect('/auth/login');
         }
+
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59, 0, 0);
+            dtQuery['$lte'] = toDate;
+        }
+
         if (req.session.user.role == 'Admin') {
-            orders = await OrderModel.find({status: {$ne: 'Closed'}}).sort({createdAt: -1});
+            orders = await OrderModel.find({status: {$ne: 'Closed'}, createdAt: dtQuery}).sort({createdAt: -1});
         } else {
             orders = await OrderModel.find({
                 doctorEmail: req.session.user.email,
-                status: {$ne: 'Closed'}
+                status: {$ne: 'Closed'},
+                createdAt: dtQuery
             }).sort({createdAt: -1});
         }
         v = new View(res, 'backend/order/list');
         v.render({
             title: 'Orders',
             session: req.session,
-            data_list: orders
+            data_list: orders,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate
+        });
+    },
+
+    showCommissionStat: async function (req, res) {
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/admin/commission-stat';
+            return res.redirect('/auth/login');
+        }
+
+        if (req.session.user.role != "Admin" && req.session.user.role != 'CallCenter') {
+            return res.redirect('/*');
+        }
+
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59, 0, 0);
+            dtQuery['$lte'] = toDate;
+        }
+
+
+        let items = await ItemModel.find();
+        let itemObj = {};
+        for (let i = 0; i < items.length; i++) {
+            itemObj[items[i].itemId] = items[i];
+        }
+
+        let searchQuery = {};
+        if (typeof req.query.t == 'undefined') {
+            req.query.t = 'All';
+        }
+
+        if (typeof req.query.e == 'undefined') {
+            req.query.e = 'All';
+        }
+
+        if (req.query.t != 'All') {
+            searchQuery.userType = req.query.t;
+        }
+
+        if (req.query.e != 'All') {
+            searchQuery.email = req.query.e;
+        }
+
+        searchQuery.orderDate = dtQuery;
+
+        let orderItemHist = await OrderItemHistModel.find(searchQuery).sort({orderDate: -1});
+        let userEmailList = orderItemHist.map((oitem) => oitem.email);
+        userEmailList = userEmailList.filter(this.onlyUnique);
+
+        let userCommRecs = [];
+        for (let userIdx = 0; userIdx < userEmailList.length; userIdx++) {
+
+            let userType = 'Wasfaty', userInfo;
+            if (userEmailList[userIdx] != 'Wasfaty') {
+                userInfo = await UserModel.findOne({email: userEmailList[userIdx]});
+                userType = userInfo.role;
+            }
+
+            if ((userType == 'Wasfaty') || userInfo) {
+                let userOrderItemRecords = orderItemHist.filter(function (uoItem) {
+                    return uoItem.email == userEmailList[userIdx];
+                });
+
+                let totalOrderAmount = 0;
+                let userCommAmount = 0;
+                let orderIdList = [];
+                for (let i = 0; i < userOrderItemRecords.length; i++) {
+                    if (orderIdList.indexOf(userOrderItemRecords[i].orderId) < 0) {
+                        orderIdList.push(userOrderItemRecords[i].orderId);
+                    }
+                    totalOrderAmount += userOrderItemRecords[i].totalAmount; // total order Amount
+                    userCommAmount += userOrderItemRecords[i].commAmount;
+                }
+
+                userCommRecs.push({
+                    email: userEmailList[userIdx],
+                    userType: userType,
+                    orderCount: orderIdList.length,
+                    totalOrderAmount: totalOrderAmount,
+                    userCommAmount: userCommAmount
+                })
+            }
+        }
+
+        console.log(searchQuery);
+
+        let v = new View(res, 'backend/order/commission-stat');
+        v.render({
+            title: 'Commission statistics',
+            session: req.session,
+            data_list: userCommRecs,
+            itemObj: itemObj,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate,
+            userType: req.query.t,
+            userEmail: req.query.e
+        });
+    },
+
+    showAdminReports: async function (req, res) {
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/admin/reports';
+            return res.redirect('/auth/login');
+        }
+
+        if (req.session.user.role != "Admin" && req.session.user.role != 'CallCenter') {
+            return res.redirect('/*');
+        }
+
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59, 0, 0);
+            dtQuery['$lte'] = toDate;
+        }
+
+
+        let items = await ItemModel.find();
+        let itemObj = {};
+        for (let i = 0; i < items.length; i++) {
+            itemObj[items[i].itemId] = items[i];
+        }
+
+        let searchQuery = {};
+        if (typeof req.query.t == 'undefined') {
+            req.query.t = 'All';
+        }
+
+        if (typeof req.query.e == 'undefined') {
+            req.query.e = 'All';
+        }
+
+        if (req.query.t != 'All') {
+            searchQuery.userType = req.query.t;
+        }
+
+        if (req.query.e != 'All') {
+            searchQuery.email = req.query.e;
+        }
+
+        searchQuery.orderDate = dtQuery;
+
+        let orderItemHist = await OrderItemHistModel.find(searchQuery).sort({orderDate: -1});
+
+        console.log(searchQuery);
+
+        let v = new View(res, 'backend/order/admin-reports');
+        v.render({
+            title: 'Order Reports',
+            session: req.session,
+            data_list: orderItemHist,
+            itemObj: itemObj,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate,
+            userType: req.query.t,
+            userEmail: req.query.e
         });
     },
     showAddOrder: async function (req, res) {
@@ -82,7 +277,7 @@ module.exports = BaseController.extend({
 
         clients = await UserModel.find({status: 'Enabled', role: 'Client'});
 
-        orderId = this.makeOrderId('WO', 15);
+        orderId = this.makeOrderId('WO', 8);
 
 
         let ins_companies = await InsCompanyModel.find().sort({name: 1});
@@ -288,9 +483,13 @@ module.exports = BaseController.extend({
                 v = new View(res, 'backend/order/view');
             }
 
+            let driverFee = await SettingModel.findOne({settingKey: "driver_fee"});
+
+
             v.render({
                 title: 'Orders',
                 session: req.session,
+                driverFee: driverFee.content,
                 orderInfo: orderInfo,
                 orderStInfo: orderStInfo,
                 orderPhInfo: orderPhInfo,
@@ -829,15 +1028,21 @@ module.exports = BaseController.extend({
 
         if (orderInfo) {
 
+            let todaydt = new Date();
             orderInfo.status = "Closed";
-            orderInfo.updatedAt = new Date();
-            orderInfo.closedAt = new Date();
+            orderInfo.updatedAt = todaydt;
+            orderInfo.closedAt = todaydt;
             await orderInfo.save();
 
             orderStInfo.orderType = "PhClosed";
-            orderStInfo.updatedAt = new Date();
+            orderStInfo.updatedAt = todaydt;
+            orderStInfo.phInfoId = req.session.user._id.toString();
+            orderStInfo.closedAt = todaydt;
             // orderStInfo.description = rejectReason;
             await orderStInfo.save();
+
+            // commission calculation.......................
+            await this.calcCommission(orderInfo, orderStInfo);
 
             //Send Email Request
             let callCenterInfo = await UserModel.findOne({role: 'CallCenter'});
@@ -1047,17 +1252,25 @@ module.exports = BaseController.extend({
         let orderInfo = await OrderModel.findOne({orderId: orderId});
         let orderStInfo = await OrderStatusModel.findOne({_id: orderStId, phId: ""}).sort({updatedAt: -1});
 
+        let phInfoId = req.query.phInfoId;
+
         if (orderInfo) {
 
+            let todaydt = new Date();
             orderInfo.status = "Closed";
-            orderInfo.updatedAt = new Date();
-            orderInfo.closedAt = new Date();
+            orderInfo.updatedAt = todaydt;
+            orderInfo.closedAt = todaydt;
             await orderInfo.save();
 
             orderStInfo.orderType = "DriverClosed";
-            orderStInfo.updatedAt = new Date();
+            orderStInfo.updatedAt = todaydt;
+            orderStInfo.phInfoId = phInfoId;
+            orderStInfo.closedAt = todaydt;
             // orderStInfo.description = rejectReason;
             await orderStInfo.save();
+
+            // commission calculation.......................
+            await this.calcCommission(orderInfo, orderStInfo);
 
             //Send Email Request
             let callCenterInfo = await UserModel.findOne({role: 'CallCenter'});
@@ -1120,6 +1333,7 @@ module.exports = BaseController.extend({
             return res.redirect('/*');
         }
     },
+
     printOrder: async function (req, res) {
         let ret = {status: 'fail', data: ''};
         if (!this.isLogin(req)) {
@@ -1280,6 +1494,276 @@ module.exports = BaseController.extend({
         pdfDoc.pipe(fs.createWriteStream(pdfPath));
         pdfDoc.on('end', function () {
             ret.data = {fp: `downloads/pdf/${orderId}.pdf`, name: `${orderId}.pdf`};
+            ret.status = 'success';
+            return res.json(ret);
+        });
+        pdfDoc.end();
+    },
+
+    calcCommission: async function (orderInfo, orderStInfo) {
+
+        // 1. Doctor info an doctor commission
+        // 2. Company commission -> via item information
+        // 3. Salesman commission
+        // 4. Pharmacy info
+
+        // todo user loyalty information
+        let wasfatyCommInfo = await SettingModel.findOne({settingKey: "commissions"});
+
+        let phInfo = await UserModel.findOne({_id: orderStInfo.phInfoId});
+        let doctorInfo = await UserModel.findOne({email: orderInfo.doctorEmail});
+        let clientInfo = await UserModel.findOne({email: orderInfo.clientEmail});
+
+        let wc = Number(wasfatyCommInfo.content.Wasfaty) / 100; // Wasfaty commission value
+        let pc = Number(phInfo.commissions) / 100; // Pharmacy commission
+        let dc = Number(doctorInfo.commissions) / 100; // Doctor commission
+        let orderItems = orderInfo.items;
+        for (let i = 0; i < orderItems.length; i++) {
+            if (orderItems[i].status == "Delivered") {
+                let itemInfo = await ItemModel.findOne({itemId: orderItems[i].code});
+                if (itemInfo) {
+                    let companyInfo = await UserModel.findOne({_id: itemInfo.cpyNameId});
+                    if (companyInfo) {
+                        let salesmanInfo = null;
+                        let companySalesmans = await UserModel.find({role: 'Salesman', companyName: companyInfo._id});
+                        let doctorSalesmans = await UserModel.find({
+                            role: 'Salesman',
+                            email: {$in: doctorInfo.inviterEmailList}
+                        });
+
+                        for (let csIdx = 0; csIdx < companySalesmans.length; csIdx++) {
+                            for (let dsIdx = 0; dsIdx < doctorSalesmans.length; dsIdx++) {
+                                if (companySalesmans[csIdx].email == doctorSalesmans[dsIdx].email) {
+                                    salesmanInfo = doctorSalesmans[dsIdx];
+                                }
+                            }
+                        }
+
+                        if (!salesmanInfo) {
+                            salesmanInfo = await UserModel.findOne({role: 'Salesman', isDefault: true});
+                        }
+
+                        console.log("................User Type and Emails.....................");
+                        let userStr = `Salesman: ${salesmanInfo.email}, Company: ${companyInfo.email}, Pharmacy: ${phInfo.email}, Doctor: ${doctorInfo.email}`;
+                        console.log(userStr);
+
+                        let ic = Number(itemInfo.comm) / 100;
+                        let cc = Number(companyInfo.commissions) / 100;
+                        let sc = Number(salesmanInfo.commissions) / 100; // Salesman commission ......
+
+                        console.log("<----------------Calculating commission-------------------------->");
+
+                        let commissionStr = `Wasfaty:${wc}, Salesman: ${sc}, Company:${cc}, Doctor:${dc}, Pharmacy:${pc}`;
+                        let totalItemCommission = ic * Number(orderItems[i].total);
+                        console.log(commissionStr);
+                        console.log(`Total Item Commission:${totalItemCommission}`);
+                        console.log("Calculate commissions.......");
+
+                        if (wc < 100) {
+                            let wasfatyCommission = totalItemCommission * wc;
+                            let restCommission = totalItemCommission - wasfatyCommission;
+
+                            let pharmacyCommission;
+                            let companyCommission;
+                            let doctorCommission;
+                            let salesmanCommission;
+
+                            console.log("Wasfaty commission amount:  " + wasfatyCommission);
+                            console.log("Rest commission amount:  " + restCommission);
+
+                            console.log("//Calculate commission sum for each user type");
+
+                            let sumCommPercent = sc + cc + dc + pc;
+                            console.log("Sum Commission Percent:" + sumCommPercent);
+                            if (sumCommPercent > 1) {
+                                console.log("Recalculating commission percent for each user......");
+                                sc = sc / sumCommPercent;
+                                dc = dc / sumCommPercent;
+                                cc = cc / sumCommPercent;
+                                pc = pc / sumCommPercent;
+                                commissionStr = `Wasfaty:${wc}, Salesman: ${sc}, Company:${cc}, Doctor:${dc}, Pharmacy:${pc}`;
+                                console.log("Recalculated Commission Percent..........");
+                                console.log(commissionStr);
+
+                            } else {
+                                console.log("Sum commission is less than 1 ......");
+                                wasfatyCommission += (1 - sumCommPercent) * restCommission;
+                                console.log("Added wasfaty commission .... " + wasfatyCommission);
+                            }
+
+                            pharmacyCommission = restCommission * pc;
+                            companyCommission = restCommission * cc;
+                            doctorCommission = restCommission * dc;
+                            salesmanCommission = restCommission * sc;
+
+                            console.log("Salesman commission amount : " + salesmanCommission);
+                            console.log("Company commission amount : " + companyCommission);
+                            console.log("Doctor commission amount : " + doctorCommission);
+                            console.log("Pharmacy commission amount : " + pharmacyCommission);
+
+                            // Saving Wasfaty commission
+                            await OrderItemHistModel({
+                                orderId: orderInfo.orderId,
+                                email: "Wasfaty",
+                                userType: 'Wasfaty',
+                                orderDate: orderInfo.closedAt,
+                                itemId: itemInfo.itemId,
+                                itemName: itemInfo.name_ar,
+                                qty: orderItems[i].qty,
+                                itemPrice: itemInfo.price,
+                                totalAmount: orderItems[i].total,
+                                comm: totalItemCommission,
+                                commAmount: wasfatyCommission
+                            }).save();
+
+                            // Saving Salesman commission
+                            await OrderItemHistModel({
+                                orderId: orderInfo.orderId,
+                                email: salesmanInfo.email,
+                                userType: 'Salesman',
+                                orderDate: orderInfo.closedAt,
+                                itemId: itemInfo.itemId,
+                                itemName: itemInfo.name_ar,
+                                qty: orderItems[i].qty,
+                                itemPrice: itemInfo.price,
+                                totalAmount: orderItems[i].total,
+                                comm: totalItemCommission,
+                                commAmount: salesmanCommission
+                            }).save();
+                            // Saving Company commission
+                            await OrderItemHistModel({
+                                orderId: orderInfo.orderId,
+                                email: companyInfo.email,
+                                userType: 'Company',
+                                orderDate: orderInfo.closedAt,
+                                itemId: itemInfo.itemId,
+                                itemName: itemInfo.name_ar,
+                                qty: orderItems[i].qty,
+                                itemPrice: itemInfo.price,
+                                totalAmount: orderItems[i].total,
+                                comm: totalItemCommission,
+                                commAmount: companyCommission
+                            }).save();
+                            // Saving Doctor commission
+                            await OrderItemHistModel({
+                                orderId: orderInfo.orderId,
+                                email: doctorInfo.email,
+                                userType: 'Doctor',
+                                orderDate: orderInfo.closedAt,
+                                itemId: itemInfo.itemId,
+                                itemName: itemInfo.name_ar,
+                                qty: orderItems[i].qty,
+                                itemPrice: itemInfo.price,
+                                totalAmount: orderItems[i].total,
+                                comm: totalItemCommission,
+                                commAmount: doctorCommission
+                            }).save();
+                            // Saving Pharmacy commission
+                            await OrderItemHistModel({
+                                orderId: orderInfo.orderId,
+                                email: phInfo.email,
+                                userType: 'Pharmacy',
+                                orderDate: orderInfo.closedAt,
+                                itemId: itemInfo.itemId,
+                                itemName: itemInfo.name_ar,
+                                qty: orderItems[i].qty,
+                                itemPrice: itemInfo.price,
+                                totalAmount: orderItems[i].total,
+                                comm: totalItemCommission,
+                                commAmount: pharmacyCommission
+                            }).save();
+
+                            // todo client loyalty......
+
+                        } else {
+                            console.log("Wasfaty Online Commission validation Error: " + wc);
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+    },
+    printUserCommission: async function(req, res) {
+        let ret = {status:'fail', data: ''};
+        if (!this.isLogin(req)) {
+            ret.data = "Please Login!";
+            return res.json(ret);
+        }
+        let userEmail = req.body.userEmail;
+        let userType = req.body.userType;
+        let comm = req.body.comm;
+        let description = req.body.description;
+
+        // Print User Commission
+        //https://www.npmjs.com/package/pdfmake
+        let fonts = {
+            Roboto: {
+                normal: 'public/assets/fonts/Roboto-Regular.ttf',
+                bold: 'public/assets/fonts/Roboto-Medium.ttf',
+                italics: 'public/assets/fonts/Roboto-Italic.ttf',
+                bolditalics: 'public/assets/fonts/Roboto-MediumItalic.ttf'
+            }
+        };
+        let styles = {
+            header: {
+                fontSize: 15,
+                bold: true,
+                margin: [0, 20, 0, 20]
+            },
+            subheader1: {
+                fontSize: 11,
+                bold: true,
+                margin: [0, 5, 0, 5]
+            },
+            subheader2: {
+                fontSize: 11,
+                bold: true,
+                margin: [0, 5, 0, 10]
+            },
+            tblHeader: {
+                fontSize: 11,
+                bold: true,
+            },
+            quote: {
+                italics: true
+            },
+            small: {
+                fontSize: 8
+            }
+        };
+
+        let options = {};
+        let docDefinition = {
+            pageSize: 'B7',
+            pageMargins: [15, 15, 15, 15],
+            pageOrientation: 'landscape',
+            defaultStyle: {
+                fontSize: 10,
+            },
+            content: [
+                {
+                    image: 'public/assets/img/wasfaty_logo_print.png',
+                    width: 150,
+                    height: 50,
+                    alignment: 'center'
+                },
+                {text: `Wasfaty Commission`, alignment: 'center', style: 'header'},
+                {text: `Email : ${userEmail}`, alignment: 'left', style: 'subheader1'},
+                {text: `Amount : ${comm}`, alignment: 'left', style: 'subheader1'},
+                {text: `Description : ${description}`, alignment: 'left', style: 'subheader1'},
+            ],
+            styles: styles
+        };
+        let pdfName = `wasfaty_${new Date().getTime()}.pdf`;
+        let pdfPath = `public/downloads/pdf/${pdfName}`;
+        printer = new PdfPrinter(fonts);
+        let pdfDoc = printer.createPdfKitDocument(docDefinition, options);
+        pdfDoc.pipe(fs.createWriteStream(pdfPath));
+        pdfDoc.on('end', function () {
+            ret.data = {fp: `downloads/pdf/${pdfName}`, name: `${pdfName}`};
             ret.status = 'success';
             return res.json(ret);
         });

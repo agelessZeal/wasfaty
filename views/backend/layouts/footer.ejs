@@ -50,3 +50,27 @@
 
 <script src="/assets/js/notification_ws.js"></script>
 <script src="/assets/js/delivery_ws.js"></script>
+
+
+<script>
+    var formatTime = function (ts) {
+        var offset = new Date().getTimezoneOffset();
+        var date = new Date(ts);
+        // Years part from the timestamp
+
+        date = new Date(date.getTime() - offset * 60 * 1000);
+
+        var year = date.getFullYear();
+        // Month part from the timestamp
+        var month = date.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + month;
+        }
+        // Day part from the timestamp
+        var day = date.getDate();
+        if (day < 10) {
+            day = '0' + day;
+        }
+        return year + "-" + month + "-" + day;
+    }
+</script>

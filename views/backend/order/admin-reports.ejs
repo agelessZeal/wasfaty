@@ -69,15 +69,32 @@ var myCommission = 0;
             <div class="row">
                 <div class="col-md-8">
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>User Type</label>
+                                <select class="form-control" id="filterUserType">
+                                    <option value="All" <%= (userType == 'All')?'selected':'' %> >All</option>
+                                    <option value="Wasfaty" <%= (userType == 'Wasfaty')?'selected':'' %>>Wasfaty</option>
+                                    <option value="Salesman" <%= (userType == 'Salesman')?'selected':'' %>>Salesman</option>
+                                    <option value="Pharmacy" <%= (userType == 'Pharmacy')?'selected':'' %>>Pharmacy</option>
+                                    <option value="Doctor" <%= (userType == 'Doctor')?'selected':'' %>>Doctor</option>
+                                    <option value="Company" <%= (userType == 'Company')?'selected':'' %>>Company</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>User Email</label>
+                                <select class="form-control" id="filterUserEmails">
+                                    <option value="All">All</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
                             <div class="form-group">
                                 <label>From Date</label>
                                 <div class="cal-icon">
                                     <input type="text" name="fromDate" value="<%= (fromDate)? formatTimeWithOffset(fromDate):'' %>" class="form-control datetimepicker">
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-4">
                             <div class="form-group">
                                 <label>To Date</label>
                                 <div class="cal-icon">
@@ -85,12 +102,10 @@ var myCommission = 0;
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <div class="form-group">
                                 <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()">Search</button>
                             </div>
-                        </div>
-                        <div class="col-sm-2">
                             <div class="form-group">
                                 <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset</button>
                             </div>
@@ -106,6 +121,8 @@ var myCommission = 0;
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                             <tr>
+                                <th>Name</th>
+                                <th>UserType</th>
                                 <th>OrderId</th>
                                 <th>OrderDate</th>
                                 <th>ItemNo</th>
@@ -122,9 +139,10 @@ var myCommission = 0;
                             <% for (var i = 0; i < data_list.length; i++) {
                                 itemTotalCommission += data_list[i].comm;
                                 myCommission += data_list[i].commAmount;
-
                             %>
                                 <tr>
+                                    <td><%= data_list[i].email %></td>
+                                    <td><%= data_list[i].userType %></td>
                                     <td><%= data_list[i].orderId %></td>
                                     <td><%= formatTime(data_list[i].orderDate) %></td>
                                     <td><%= data_list[i].itemId %></td>
@@ -150,7 +168,7 @@ var myCommission = 0;
                 <div class="form-group">
                     <h4>Total Order Items : <%= data_list.length; %></h4>
                     <h4>Total Item Commission : <%= formatMoney(itemTotalCommission, 2); %></h4>
-                    <h4>My total Commission : <%= formatMoney(myCommission, 2); %></h4>
+                    <h4>Wasfaty Commission : <%= formatMoney(myCommission, 2); %></h4>
                 </div>
             </div>
         </div>
@@ -159,27 +177,70 @@ var myCommission = 0;
 
 <%- include ../layouts/footer.ejs %>
 <script>
+
+    var filterEmail = '<%= userEmail; %>';
+    var filterType = '<%= userType; %>';
+
+    $('#filterUserType').change(function (e) {
+        var userType = $('#filterUserType').val();
+        getFilterUsers(userType, false);
+    })
+
+    function getFilterUsers(userType, isInit) {
+        $.ajax('/api/report/' + userType, {
+            type:'get',
+            data:{},
+            success: function (res) {
+                if (res.status == 'success') {
+                    var users = res.data;
+                    var userEmailHTML = `<option value="All">All</option>`;
+                    for (var i = 0; i<users.length; i++) {
+                        userEmailHTML += `<option value="${users[i].email}">${users[i].email}</option>`;
+                    }
+                    $('#filterUserEmails').html(userEmailHTML);
+
+                    if (isInit) {
+                        $("#filterUserEmails").val(filterEmail);
+                    }
+
+
+                } else {
+                    alert(res.data);
+                }
+            }
+        })
+    }
+
+    getFilterUsers(filterType, true);
+
     function onSearchReport() {
 
         var fromDate = $('input[name="fromDate"]').val();
         var toDate = $('input[name="toDate"]').val();
+
+        var userType = $('#filterUserType').val();
+        var userEmail = $('#filterUserEmails').val();
+
+        var searchURL = `/admin/reports?t=${userType}&e=${userEmail}`;
+
         if (toDate) {
             if (fromDate) {
-                location.href = '/pharmacy/reports?fromDate=' + formatTime(fromDate) + "&toDate=" + formatTime(toDate);
+                searchURL += `&fromDate=${formatTime(fromDate)}&toDate=${formatTime(toDate)}`;
             } else {
-                location.href = '/pharmacy/reports?toDate=' + formatTime(toDate);
+                searchURL += `&toDate=${formatTime(toDate)}`;
             }
         } else {
             if (fromDate) {
                 fromDate = formatTime(fromDate);
-                location.href = '/pharmacy/reports?fromDate=' + fromDate;
+                searchURL += `&fromDate=${fromDate}`;
             }
         }
 
+        location.href = searchURL;
 
     }
     function onResetReportFilter() {
-        location.href = '/pharmacy/reports';
+        location.href = `/admin/reports`;
     }
 </script>
 </body>

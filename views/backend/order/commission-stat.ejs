@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+var lang = getLocale();
+var suffix = (lang == 'ar') ? 'Ar' : 'En';
+
+var formatTime = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return year + "-" + month + "-" + day;
+}
+function formatMoney(n, c, d, t) {
+    var c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+            j = (j = i.length) > 3 ? j % 3 : 0;
+
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+}
+var formatTimeWithOffset = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    date = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return month + "/" + day + "/" + year;
+}
+
+var itemTotalCommission = 0;
+var myCommission = 0;
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-4 col-3">
+                    <h4 class="page-title">Order Reports</h4>
+                </div>
+            </div>
+            <!-----------Search Filter------------->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>User Type</label>
+                                <select class="form-control" id="filterUserType">
+                                    <option value="All" <%= (userType == 'All') ? 'selected' : '' %> >All</option>
+                                    <option value="Wasfaty" <%= (userType == 'Wasfaty') ? 'selected' : '' %>>Wasfaty
+                                    </option>
+                                    <option value="Salesman" <%= (userType == 'Salesman') ? 'selected' : '' %>>
+                                        Salesman
+                                    </option>
+                                    <option value="Pharmacy" <%= (userType == 'Pharmacy') ? 'selected' : '' %>>
+                                        Pharmacy
+                                    </option>
+                                    <option value="Doctor" <%= (userType == 'Doctor') ? 'selected' : '' %>>Doctor
+                                    </option>
+                                    <option value="Company" <%= (userType == 'Company') ? 'selected' : '' %>>Company
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>User Email</label>
+                                <select class="form-control" id="filterUserEmails">
+                                    <option value="All">All</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>From Date</label>
+                                <div class="cal-icon">
+                                    <input type="text" name="fromDate"
+                                           value="<%= (fromDate) ? formatTimeWithOffset(fromDate) : '' %>"
+                                           class="form-control datetimepicker">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>To Date</label>
+                                <div class="cal-icon">
+                                    <input type="text" name="toDate"
+                                           value="<%= (toDate) ? formatTimeWithOffset(toDate) : '' %>"
+                                           class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()">Search</button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-----------Search Filter------------->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-border table-striped custom-table datatable mb-0">
+                            <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>UserType</th>
+                                <th>No of Orders</th>
+                                <th>Order Total Amount</th>
+                                <th>Total Commission</th>
+                                <th>View</th>
+                                <th>Issue Check</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for (var i = 0; i < data_list.length; i++) { %>
+                                <tr>
+                                    <td><%= data_list[i].email %></td>
+                                    <td><%= data_list[i].userType %></td>
+                                    <td><%= data_list[i].orderCount %></td>
+                                    <td><%= formatMoney(data_list[i].totalOrderAmount) %></td>
+                                    <td><%= formatMoney(data_list[i].userCommAmount) %></td>
+                                    <td>
+                                        <button class="btn btn-secondary"
+                                                onclick="onClickViewDetails('<%= data_list[i].email %>', '<%= data_list[i].userType %>')">
+                                            <i class="fa fa-eye m-r-5"></i> View Details
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary"
+                                                onclick="onClickCheckDetails('<%= data_list[i].email %>', '<%= data_list[i].userType %>', '<%= formatMoney(data_list[i].userCommAmount) %>')">
+                                            <i class="fa fa-eye m-r-5"></i> Issue Check
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+<script>
+
+    var filterEmail = '<%= userEmail; %>';
+    var filterType = '<%= userType; %>';
+    var initFromDate = '<%= (fromDate) ? formatTimeWithOffset(fromDate) : ""; %>';
+    var initToDate = '<%= (toDate) ? formatTimeWithOffset(toDate) : ""; %>';
+
+    $('#filterUserType').change(function (e) {
+        var userType = $('#filterUserType').val();
+        getFilterUsers(userType, false);
+    })
+
+    function getFilterUsers(userType, isInit) {
+        $.ajax('/api/report/' + userType, {
+            type: 'get',
+            data: {},
+            success: function (res) {
+                if (res.status == 'success') {
+                    var users = res.data;
+                    var userEmailHTML = `<option value="All">All</option>`;
+                    for (var i = 0; i < users.length; i++) {
+                        userEmailHTML += `<option value="${users[i].email}">${users[i].email}</option>`;
+                    }
+                    $('#filterUserEmails').html(userEmailHTML);
+
+                    if (isInit) {
+                        $("#filterUserEmails").val(filterEmail);
+                    }
+
+
+                } else {
+                    alert(res.data);
+                }
+            }
+        })
+    }
+
+    getFilterUsers(filterType, true);
+
+
+    function onSearchReport() {
+
+        var fromDate = $('input[name="fromDate"]').val();
+        var toDate = $('input[name="toDate"]').val();
+
+        var userType = $('#filterUserType').val();
+        var userEmail = $('#filterUserEmails').val();
+
+        var searchURL = `/admin/commission-stat?t=${userType}&e=${userEmail}`;
+
+        if (toDate) {
+            if (fromDate) {
+                searchURL += `&fromDate=${formatTime(fromDate)}&toDate=${formatTime(toDate)}`;
+            } else {
+                searchURL += `&toDate=${formatTime(toDate)}`;
+            }
+        } else {
+            if (fromDate) {
+                fromDate = formatTime(fromDate);
+                searchURL += `&fromDate=${fromDate}`;
+            }
+        }
+
+        location.href = searchURL;
+
+    }
+
+    function onResetReportFilter() {
+        location.href = `/admin/commission-stat`;
+    }
+
+    function onClickViewDetails(user_email, user_type) {
+        var viewURL = `/admin/reports?t=${user_type}&e=${user_email}`;
+        if (initToDate) {
+            if (initFromDate) {
+                viewURL += `&fromDate=${formatTime(initFromDate)}&toDate=${formatTime(initToDate)}`;
+            } else {
+                viewURL += `&toDate=${formatTime(initToDate)}`;
+            }
+        } else {
+            if (initFromDate) {
+                viewURL += `&fromDate=${formatTime(initFromDate)}`;
+            }
+        }
+        window.open(viewURL, "_blank");
+    }
+
+    function formatTimeStr() {
+        var date = new Date();
+        // Years part from the timestamp
+        var year = date.getFullYear();
+        // Month part from the timestamp
+        var month = date.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + month;
+        }
+        // Day part from the timestamp
+        var day = date.getDate();
+        if (day < 10) {
+            day = '0' + day;
+        }
+        return month + "/" + day + "/" + year;
+    }
+
+    function onClickCheckDetails(user_email, user_type, comVal) {
+
+        let todtStr = (initToDate)? initToDate : formatTimeStr();
+        let fromdtstr = (initFromDate) ? initFromDate : ' '
+
+        $.ajax('/orders/print/commission', {
+            type: 'post',
+            data: {
+                userEmail: user_email,
+                userType: user_type,
+                description: `${fromdtstr} ~ ${todtStr}`,
+                comm: comVal
+            },
+            success: function (res) {
+                if (res.status == 'success') {
+                    var anchor = document.createElement('a');
+                    anchor.href = '/' + res.data.fp;
+                    anchor.target = '_blank';
+                    anchor.download = res.data.name;
+                    anchor.click();
+                    anchor.remove();
+                } else {
+                    alert(res.data);
+                }
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

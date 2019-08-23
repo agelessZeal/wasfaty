@@ -136,7 +136,7 @@ function calculateTotalPrice() {
     var totalPrice = 0.00;
     trList.each(function () {
        var tdItems = $(this).find('td');
-       totalPrice += Number($(tdItems[5]).text());
+       totalPrice += Number($(tdItems[6]).text());
     });
 
     $('#total-item-price').text(totalPrice);

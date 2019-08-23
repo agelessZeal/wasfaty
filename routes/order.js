@@ -66,6 +66,10 @@ router.get('/delivery/close/:orderId/:orderStId', function (req, res) {
     order_controller.closeDeliveryOrder(req, res);
 });
 
+router.post('/print/commission', function (req, res) {
+    order_controller.printUserCommission(req, res);
+});
+
 //=====================================
 
 router.post('/create', function (req, res) {

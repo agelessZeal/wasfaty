@@ -5,7 +5,7 @@ let UserModel, countryList;
 let OrderModel, OrderStatusModel;
 let InsCompanyModel, InsTypeModel, InsGradeModel;
 
-let ItemModel;
+let ItemModel, OrderItemHistModel;
 
 async = require("async");
 mongoose = require('mongoose');
@@ -21,6 +21,7 @@ countryList = require('../config/country');
 
 OrderModel = require('../models/order');
 OrderStatusModel = require('../models/orderStatus');
+OrderItemHistModel = require('../models/OrderItemHistory');
 
 InsCompanyModel = require('../models/insuranceCompany');
 InsTypeModel = require('../models/insuranceType');
@@ -30,9 +31,6 @@ ItemModel = require('../models/item');
 
 BaseController = require('./BaseController');
 View = require('../views/base');
-
-let d = new Date();
-
 
 transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -56,12 +54,83 @@ module.exports = BaseController.extend({
         if(!req.session.user.isDoneProfile) {
             return res.redirect('/invite/profile/info');
         }
+
         let v;
         v = new View(res, 'backend/pharmacy/dashboard');
+
+        let dt = new Date();
+        dt.setUTCHours(0,0,0,0); // Today time
+
+        let todayClosedOrders = await OrderItemHistModel.find({orderDate: {$gte: dt}, email: req.session.user.email});
+        let todayCommissions = 0, i;
+        for (i = 0; i < todayClosedOrders.length; i++) {
+            todayCommissions += Number(todayClosedOrders[i].commAmount);
+        }
+        todayCommissions = Number(todayCommissions.toFixed(2));
+
+        let orderHistData = await OrderStatusModel.find({phInfoId: req.session.user._id.toString(), orderType: {$in: ["DriverClosed", "PhClosed"]}});
+        let orderIds = orderHistData.map((ohdItem) => ohdItem.orderId);
+
+        let todayOrders = await OrderModel.countDocuments({createdAt: {$gte: dt}, orderId: {$in: orderIds}});
+
+        dt.setDate(1);
+        let monthClosedOrders = await OrderItemHistModel.find({orderDate: {$gte: dt}, email: req.session.user.email});
+        let monthCommissions = 0;
+        for (i = 0; i < monthClosedOrders.length; i++) {
+            monthCommissions += Number(monthClosedOrders[i].commAmount);
+        }
+        monthCommissions = Number(monthCommissions.toFixed(2));
+        // Pharmacy Clients
+        let allPharmacyOrders = await OrderModel.find({orderId: {$in: orderIds}});
+        let allClientEmails = allPharmacyOrders.map((aPItem) => aPItem.clientEmail);
+
+        let clients = await UserModel.find({role:'Client', isDoneProfile: true, email: {$in: allClientEmails}});
+        let clientGraphData = await this.clientGraphData(clients);
+        let commGraphData = await this.commissionGraphData(req.session.user.email);
+
+
         v.render({
             title: 'Dashboard',
             session: req.session,
+            todayCommission: todayCommissions,
+            monthCommission: monthCommissions,
+            todayOrders: todayOrders,
+            clientCount: clients.length,
+            commGraphData: commGraphData,
+            clientGraphData: clientGraphData
         });
+    },
+    commissionGraphData: async function (pharmacyEmail) {
+
+        let dt = new Date();
+        dt.setMonth(0)
+        dt.setDate(0);
+        dt.setUTCHours(0,0,0,0);
+
+        let commHistData = await OrderItemHistModel.find({email: pharmacyEmail, orderDate: {$gte: dt}});
+
+        let graphData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; //Total 12 Month
+        let i;
+        for (i = 0; i < commHistData.length; i++) {
+            let month = new Date(commHistData[i].orderDate).getMonth();
+            graphData[month] += Number(commHistData[i].commAmount);
+        }
+
+        for (i = 0; i< graphData.length ; i++) {
+            graphData[i] = Number(graphData[i].toFixed(2));
+        }
+
+        return graphData;
+    },
+    clientGraphData: async function (clients) {
+        let graphData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; //Total 12 Month
+        let i;
+        for (i = 0; i < clients.length; i++) {
+            let month = new Date(clients[i].createdAt).getMonth();
+
+            graphData[month]++;
+        }
+        return graphData;
     },
     list: async function (req, res) {
         let v, users;
@@ -73,11 +142,19 @@ module.exports = BaseController.extend({
             return res.redirect('/*');
         }
         users = await UserModel.find({role: 'Pharmacy'});
+
+        let companyUsers = await UserModel.find({role:'Company'});
+        let companyObj = {};
+        for ( let i = 0; i < companyUsers.length; i++) {
+            companyObj[companyUsers[i]._id] = companyUsers[i];
+        }
+
         v = new View(res, 'backend/pharmacy/list');
         v.render({
             title: 'Pharmacy List',
             session: req.session,
-            users: users
+            users: users,
+            companyObj:companyObj
         });
     },
 
@@ -86,6 +163,21 @@ module.exports = BaseController.extend({
             req.session.redirectTo = '/pharmacy/orders';
             return res.redirect('/auth/login');
         }
+
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59,0,0);
+            dtQuery['$lte'] = toDate;
+        }
+
         let v, orders, orderStatusObjList = {};
         let orderIds = [];
         let orderStatusList = await OrderStatusModel.find({phId: req.session.user._id}).sort({updatedAt:-1});
@@ -98,7 +190,7 @@ module.exports = BaseController.extend({
             }
         });
 
-        orders = await OrderModel.find({orderId: {$in: orderIds}, status:{$ne:'Closed'}});
+        orders = await OrderModel.find({orderId: {$in: orderIds}, status:{$ne:'Closed'}, createdAt: dtQuery});
         orderStatusList.forEach(function(item) {
             let orderid = item.orderId.toString();
             if (!orderStatusObjList.hasOwnProperty(orderid)) {
@@ -133,7 +225,9 @@ module.exports = BaseController.extend({
         v.render({
             title: 'Orders',
             session: req.session,
-            data_list: orders
+            data_list: orders,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate
         });
     },
     showMyOrderReports: async function(req, res) {
@@ -141,51 +235,42 @@ module.exports = BaseController.extend({
             req.session.redirectTo = '/pharmacy/reports';
             return res.redirect('/auth/login');
         }
-        let v, orders, orderStatusObjList = {};
-        let orderIds = [];
-        let orderStatusList = await OrderStatusModel.find({phId: req.session.user._id}).sort({updatedAt:-1});
 
-        console.log('----------------Pharmacy showMyOrders-------------------------------------');
-        //console.log(orderStatusList);
-        orderStatusList.forEach(function(item) {
-            if (orderIds.indexOf(item.phId)<0) {
-                orderIds.push(item.orderId);
-            }
-        });
-        orders = await OrderModel.find({orderId: {$in: orderIds}, status:'Closed'});
-        orderStatusList.forEach(function(item) {
-            let orderid = item.orderId.toString();
-            if (!orderStatusObjList.hasOwnProperty(orderid)) {
-                orderStatusObjList[orderid] =  item;
-            }
-        });
-        console.log('Show orders.............', orderStatusList.length);
-        for (let i = 0; i<orders.length; i ++) {
-            let orderinfo = orders[i];
-            if (orderStatusObjList.hasOwnProperty(orderinfo.orderId)) {
-                let orderstinfo = orderStatusObjList[orderinfo.orderId];
-                let orderst = orderstinfo.orderType;
-                if ( orderst != 'Rejected') {
-                    if (orderst == 'PhAccepted' || orderst == 'DriverAccepted') {
-                        orderinfo.status = "Under process";
-                    } else if (orderst == 'PhClosed' || orderst == 'DriverClosed') {
-                        orderinfo.status = "Closed";
-                    } else {
-                        //
-                    }
-                } else {
-                    orderinfo.orderType =  'Rejected';
-                }
-            } else {
-                orderinfo.orderType =  'Pending';
-            }
+        if (req.session.user.role != "Pharmacy") {
+            return res.redirect('/*');
         }
 
-        v = new View(res, 'backend/pharmacy/my-reports');
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59,0,0);
+            dtQuery['$lte'] = toDate;
+        }
+
+        let items = await ItemModel.find();
+        let itemObj = {};
+        for (let i = 0; i<items.length; i++) {
+            itemObj[items[i].itemId] = items[i];
+        }
+        let orderItemHist = await OrderItemHistModel.find({email: req.session.user.email, orderDate: dtQuery}).sort({orderDate: -1});
+
+        console.log(dtQuery);
+
+        let v = new View(res, 'backend/pharmacy/my-reports');
         v.render({
             title: 'Order Reports',
             session: req.session,
-            data_list: orders
+            data_list: orderItemHist,
+            itemObj: itemObj,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate
         });
     },
     viewOrderDetail: async function(req, res) {

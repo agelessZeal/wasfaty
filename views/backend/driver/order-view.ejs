@@ -138,16 +138,21 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                                         <td><%= orderInfo.items[i].amount %></td>
                                                         <td><%= orderInfo.items[i].total %></td>
                                                         <td>
-                                                            <select class="form-control order-item-st"
-                                                                    id="<%= `${orderInfo.orderId}-${i}-${orderInfo.items[i].code}` %>">
-                                                                <option value="Delivered"
-                                                                        <%= (orderInfo.items[i].status == 'Delivered')?'selected':'' %>>
-                                                                    Delivered</option>
-                                                                <option value="Not Delivered"
-                                                                        <%= (orderInfo.items[i].status == 'Not Delivered')?'selected':'' %>>
-                                                                    Not Delivered
-                                                                </option>
-                                                            </select>
+                                                            <% if (orderInfo.status == 'Pending') { %>
+                                                               <%= orderInfo.items[i].status %>
+                                                            <%  } else  {  %>
+                                                                <select class="form-control order-item-st"
+                                                                        id="<%= `${orderInfo.orderId}-${i}-${orderInfo.items[i].code}` %>">
+                                                                    <option value="Delivered"
+                                                                            <%= (orderInfo.items[i].status == 'Delivered')?'selected':'' %>>
+                                                                        Delivered</option>
+                                                                    <option value="Not Delivered"
+                                                                            <%= (orderInfo.items[i].status == 'Not Delivered')?'selected':'' %>>
+                                                                        Not Delivered
+                                                                    </option>
+                                                                </select>
+                                                            <%  } %>
+
                                                         </td>
                                                     </tr>
                                                 <% } %>
@@ -182,6 +187,18 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                                     <a class="btn btn-warning"
                                                        onclick="onDriverRejectOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">Reject</a>
                                                 <% } else if (orderStInfo.orderType == 'DriverAccepted') { %>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Please Select Pharmacy</label>
+                                                                <select class="form-control" id="pharmacyInfo">
+                                                                    <% for (var phIndex = 0; phIndex<phUsers.length; phIndex++) {  %>
+                                                                        <option value="<%= phUsers[phIndex]._id %>"><%= phUsers[phIndex]['name' + suffix ] %></option>
+                                                                    <% } %>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <a href="##" class="btn btn-success"
                                                        onclick="onDriverCloseOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">
                                                         Close Order
@@ -286,7 +303,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    location.href = '/orders/delivery/close/' + orderId + '/' + orderStId;
+                    location.href = '/orders/delivery/close/' + orderId + '/' + orderStId + "?phInfoId=" + $('#pharmacyInfo').val();
                 } else {
                     console.log('close modal');
                 }

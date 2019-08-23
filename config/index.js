@@ -4,7 +4,7 @@ let config = {
     ws_port: 2083,
 
     isEmailAuth: true,
-    // isEnableLog: true,
+    isEnableLog: false,
     isUALog: false,
 
     mongo: {
@@ -49,7 +49,7 @@ let config = {
     orderStatus: ['Open', 'Pending', 'Closed', 'Cancelled', 'Under process'],
     orderItemStatus: ['Delivered', 'Not Delivered'],
     defaultPassword: '123',
-    gMapKey: '',
+    gMapKey: 'AIzaSyCuzSBVqvIjrk1KEw-To6D3-TiMqPN1cWg',
     mapCenter: {lat: 21.4858, long: 39.1915}, //Saudi Arabia Jeddah,
     tz: 8 * 60 * 60 * 1000,
     // poTs: 3 * 60 * 1000 // 3 mins , checking time to pending delivery orders

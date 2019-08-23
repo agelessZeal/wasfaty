@@ -15,6 +15,23 @@ var formatTime = function (ts) {
     if (day<10){ day = '0' + day;}
     return year+"-"+month + "-"+day;
 }
+var formatTimeWithOffset = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    date  = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return month + "/" + day + "/" + year;
+}
 %>
 <body>
 <div class="main-wrapper">
@@ -34,6 +51,41 @@ var formatTime = function (ts) {
                     </div>
                 <% } %>
             </div>
+            <!-----------Search Filter------------->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>From Date</label>
+                                <div class="cal-icon">
+                                    <input type="text" name="fromDate" value="<%= (fromDate)? formatTimeWithOffset(fromDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>To Date</label>
+                                <div class="cal-icon">
+                                    <input type="text" name="toDate" value="<%= (toDate)? formatTimeWithOffset(toDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()">Search</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-----------Search Filter------------->
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
@@ -108,6 +160,43 @@ var formatTime = function (ts) {
 </div>
 
 <%- include ../layouts/footer.ejs %>
+<script>
+    function onSearchReport() {
 
+        var fromDate = $('input[name="fromDate"]').val();
+        var toDate = $('input[name="toDate"]').val();
+        if (toDate) {
+            if (fromDate) {
+                if (userRole == 'Client') {
+                    location.href = '/client/orders?fromDate=' + formatTime(fromDate) + "&toDate=" + formatTime(toDate);
+                } else {
+                    location.href = '/orders?fromDate=' + formatTime(fromDate) + "&toDate=" + formatTime(toDate);
+                }
+
+            } else {
+                if (userRole == 'Client') {
+                    location.href = '/client/orders?toDate=' + formatTime(toDate);
+                } else {
+                    location.href = '/orders?toDate=' + formatTime(toDate);
+                }
+            }
+        } else {
+            if (fromDate) {
+                fromDate = formatTime(fromDate);
+                location.href = '/pharmacy/reports?fromDate=' + fromDate;
+            }
+        }
+
+
+    }
+    function onResetReportFilter() {
+        if (userRole == 'Client') {
+            location.href = '/client/orders';
+        } else {
+            location.href = '/orders';
+        }
+
+    }
+</script>
 </body>
 </html>

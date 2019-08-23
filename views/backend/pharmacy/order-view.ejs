@@ -138,16 +138,21 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                                         <td><%= orderInfo.items[i].amount %></td>
                                                         <td><%= orderInfo.items[i].total %></td>
                                                         <td>
-                                                            <select class="form-control order-item-st"
-                                                                    id="<%= `${orderInfo.orderId}-${i}-${orderInfo.items[i].code}` %>">
-                                                                <option value="Delivered"
-                                                                        <%= (orderInfo.items[i].status == 'Delivered')?'selected':'' %>>
-                                                                    Delivered</option>
-                                                                <option value="Not Delivered"
-                                                                        <%= (orderInfo.items[i].status == 'Not Delivered')?'selected':'' %>>
-                                                                    Not Delivered
-                                                                </option>
-                                                            </select>
+                                                            <% if(orderInfo.status != "Under process") {  %>
+                                                                <%= orderInfo.items[i].status %>
+                                                            <% } else {  %>
+                                                                <select class="form-control order-item-st"
+                                                                        id="<%= `${orderInfo.orderId}-${i}-${orderInfo.items[i].code}` %>">
+                                                                    <option value="Delivered"
+                                                                            <%= (orderInfo.items[i].status == 'Delivered')?'selected':'' %>>
+                                                                        Delivered</option>
+                                                                    <option value="Not Delivered"
+                                                                            <%= (orderInfo.items[i].status == 'Not Delivered')?'selected':'' %>>
+                                                                        Not Delivered
+                                                                    </option>
+                                                                </select>
+                                                            <% } %>
+
                                                         </td>
                                                     </tr>
                                                 <% } %>

@@ -139,9 +139,13 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                         </div>
                                         <div class="col-12 text-right">
                                             <div class="form-group">
-                                                <h4>Total: $<span
+                                                <h4>Total : $<span
                                                             id="total-item-price"><%= orderInfo.totalPrice %></span>
                                                 </h4>
+                                                <% if(orderInfo.orderType == 'Delivery' && orderInfo.status == 'Closed') {  %>
+                                                    <h4>Transportation Fee : <%=  driverFee ; %></h4>
+                                                <% } %>
+
                                             </div>
                                         </div>
                                     </div>

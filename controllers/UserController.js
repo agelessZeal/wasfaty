@@ -192,7 +192,33 @@ module.exports = BaseController.extend({
             ret.data = 'Please Login!';
             return  res.json(ret);
         }
-        let users =  await UserModel.find({role: userType, isDoneProfile: true}).sort({createdAt: -1});
+
+        let users;
+        if (userType == 'All') {
+            users =  await UserModel.find({isDoneProfile: true, role: {$ne:'Admin'}}).sort({createdAt: -1});
+        } else {
+            users =  await UserModel.find({role: userType, isDoneProfile: true}).sort({createdAt: -1});
+        }
+        ret.status = 'success';
+        ret.data = users;
+        return res.json(ret);
+    },
+
+    getReportUsers: async function (req, res) {
+        let userType = req.params.userType,
+            ret = {status:'success', data:''};
+
+        if (!this.isLogin(req)) {
+            ret.data = 'Please Login!';
+            return  res.json(ret);
+        }
+
+        let users;
+        if (userType == 'All') {
+            users =  await UserModel.find({isDoneProfile: true, role: {$in: ['Salesman', 'Company', 'Pharmacy', 'Doctor']}}).sort({createdAt: -1});
+        } else {
+            users =  await UserModel.find({role: userType, isDoneProfile: true}).sort({createdAt: -1});
+        }
         ret.status = 'success';
         ret.data = users;
         return res.json(ret);

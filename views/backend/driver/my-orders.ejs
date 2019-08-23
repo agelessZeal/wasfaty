@@ -9,11 +9,34 @@ var formatTime = function (ts) {
     var year = date.getFullYear();
     // Month part from the timestamp
     var month = date.getMonth() + 1;
-    if (month<10){ month = '0' + month;}
+    if (month < 10) {
+        month = '0' + month;
+    }
     // Day part from the timestamp
     var day = date.getDate();
-    if (day<10){ day = '0' + day;}
-    return year+"-"+month + "-"+day;
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return year + "-" + month + "-" + day;
+}
+%>
+<%
+var formatTimeWithOffset = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    date  = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return month + "/" + day + "/" + year;
 }
 %>
 <body>
@@ -24,45 +47,82 @@ var formatTime = function (ts) {
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title"><%= title %></h4>
+                    <h4 class="page-title">Orders</h4>
                 </div>
             </div>
+            <!-----------Search Filter------------->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>From Date</label>
+                                <%= fromDate %>
+                                <div class="cal-icon">
+                                    <input type="text" name="fromDate" value="<%= (typeof fromDate != "undefined" && fromDate)? formatTimeWithOffset(fromDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>To Date</label>
+                                <div class="cal-icon">
+                                    <input type="text" name="toDate" value="<%= (typeof toDate != "undefined" && toDate)? formatTimeWithOffset(toDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()">Search</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-----------Search Filter------------->
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
-                                <tr>
-                                    <th>Doctor</th>
-                                    <th>Client</th>
-                                    <th>Mobile</th>
-                                    <th>Remark</th>
-                                    <th>OrderType</th>
-                                    <th>Status</th>
-                                    <th>CreatedAt</th>
-                                    <th>UpdatedAt</th>
-                                    <th class="text-right">Action</th>
-                                </tr>
+                            <tr>
+                                <th>Doctor</th>
+                                <th>Client</th>
+                                <th>Mobile</th>
+                                <th>Remark</th>
+                                <th>OrderType</th>
+                                <th>Status</th>
+                                <th>CreatedAt</th>
+                                <th>UpdatedAt</th>
+                                <th class="text-right">Action</th>
+                            </tr>
                             </thead>
                             <tbody>
-                            <% for(var i = 0; i<data_list.length; i++) {  %>
+                            <% for(var i = 0; i < data_list.length; i++) { %>
                                 <tr>
                                     <td><%= data_list[i].doctorEmail %></td>
                                     <td><%= data_list[i].clientEmail %></td>
                                     <td><%= data_list[i].clientPhone %></td>
                                     <td><%= data_list[i].remark %></td>
                                     <td>
-                                        <%  if(data_list[i].orderType == 'Rejected') {  %>
+                                        <% if(data_list[i].orderType == 'Rejected') { %>
                                             <span class="custom-badge status-red">Rejected</span>
-                                        <% } else  {  %>
+                                        <% } else  { %>
                                             <span class="custom-badge status-green"><%= data_list[i].orderType %></span>
                                         <% } %>
                                     </td>
                                     <td><%= data_list[i].status %></td>
                                     <td><%= formatTime(data_list[i].createdAt) %></td>
-                                    <td><%= (data_list[i].updatedAt)? formatTime(data_list[i].updatedAt):'' %></td>
+                                    <td><%= (data_list[i].updatedAt) ? formatTime(data_list[i].updatedAt) : '' %></td>
                                     <td class="text-right">
-                                        <a class="btn btn-success" href="/driver/orders/view/<%= data_list[i].orderId %>">
+                                        <a class="btn btn-success"
+                                           href="/driver/orders/view/<%= data_list[i].orderId %>">
                                             <i class="fa fa-eye m-r-5"></i> View Order
                                         </a>
                                     </td>
@@ -78,6 +138,31 @@ var formatTime = function (ts) {
 </div>
 
 <%- include ../layouts/footer.ejs %>
+
+<script>
+    function onSearchReport() {
+
+        var fromDate = $('input[name="fromDate"]').val();
+        var toDate = $('input[name="toDate"]').val();
+        if (toDate) {
+            if (fromDate) {
+                location.href = '/driver/orders?fromDate=' + formatTime(fromDate) + "&toDate=" + formatTime(toDate);
+            } else {
+                location.href = '/driver/orders?toDate=' + formatTime(toDate);
+            }
+        } else {
+            if (fromDate) {
+                fromDate = formatTime(fromDate);
+                location.href = '/driver/orders?fromDate=' + fromDate;
+            }
+        }
+
+
+    }
+    function onResetReportFilter() {
+        location.href = '/driver/orders';
+    }
+</script>
 
 </body>
 </html>

@@ -9,15 +9,11 @@ var formatTime = function (ts) {
     var year = date.getFullYear();
     // Month part from the timestamp
     var month = date.getMonth() + 1;
-    if (month < 10) {
-        month = '0' + month;
-    }
+    if (month<10){ month = '0' + month;}
     // Day part from the timestamp
     var day = date.getDate();
-    if (day < 10) {
-        day = '0' + day;
-    }
-    return year + "-" + month + "-" + day;
+    if (day<10){ day = '0' + day;}
+    return year+"-"+month + "-"+day;
 }
 var formatTimeWithOffset = function (ts) {
     var date = new Date(ts);
@@ -45,7 +41,7 @@ var formatTimeWithOffset = function (ts) {
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title"><%= title %></h4>
+                    <h4 class="page-title">Orders</h4>
                 </div>
             </div>
             <!-----------Search Filter------------->
@@ -56,9 +52,7 @@ var formatTimeWithOffset = function (ts) {
                             <div class="form-group">
                                 <label>From Date</label>
                                 <div class="cal-icon">
-                                    <input type="text" name="fromDate"
-                                           value="<%= (fromDate) ? formatTimeWithOffset(fromDate) : '' %>"
-                                           class="form-control datetimepicker">
+                                    <input type="text" name="fromDate" value="<%= (fromDate)? formatTimeWithOffset(fromDate):'' %>" class="form-control datetimepicker">
                                 </div>
                             </div>
                         </div>
@@ -66,9 +60,7 @@ var formatTimeWithOffset = function (ts) {
                             <div class="form-group">
                                 <label>To Date</label>
                                 <div class="cal-icon">
-                                    <input type="text" name="toDate"
-                                           value="<%= (toDate) ? formatTimeWithOffset(toDate) : '' %>"
-                                           class="form-control datetimepicker">
+                                    <input type="text" name="toDate" value="<%= (toDate)? formatTimeWithOffset(toDate):'' %>" class="form-control datetimepicker">
                                 </div>
                             </div>
                         </div>
@@ -79,8 +71,7 @@ var formatTimeWithOffset = function (ts) {
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
-                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset
-                                </button>
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset</button>
                             </div>
                         </div>
                     </div>
@@ -93,39 +84,61 @@ var formatTimeWithOffset = function (ts) {
                     <div class="table-responsive">
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
-                            <tr>
-                                <th>Doctor</th>
-                                <th>Client</th>
-                                <th>Mobile</th>
-                                <th>Remark</th>
-                                <th>OrderType</th>
-                                <th>Status</th>
-                                <th>CreatedAt</th>
-                                <th>UpdatedAt</th>
-                                <th class="text-right">Action</th>
-                            </tr>
+                                <tr>
+                                    <% if(session.user.role != 'Doctor') { %>
+                                        <th>Doctor</th>
+                                    <% } %>
+                                    <% if(session.user.role != 'Client') { %>
+                                        <th>Client</th>
+                                    <% } %>
+                                    <th>Remark</th>
+                                    <th>Mobile</th>
+                                    <th>Order Type</th>
+                                    <th>Status</th>
+                                    <th>CreatedAt</th>
+                                    <th>UpdatedAt</th>
+                                    <th class="text-right">Action</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <% for(var i = 0; i < data_list.length; i++) { %>
+                            <% for(var i = 0; i<data_list.length; i++) {  %>
                                 <tr>
-                                    <td><%= data_list[i].doctorEmail %></td>
-                                    <td><%= data_list[i].clientEmail %></td>
-                                    <td><%= data_list[i].clientPhone %></td>
+                                    <% if(session.user.role != 'Doctor') { %>
+                                        <td><%= data_list[i].doctorEmail %></td>
+                                    <% } %>
+                                    <% if(session.user.role != 'Client') { %>
+                                        <td><%= data_list[i].clientEmail %></td>
+                                    <% } %>
                                     <td><%= data_list[i].remark %></td>
+                                    <td><%= data_list[i].clientPhone %></td>
                                     <td>
-                                        <% if(data_list[i].orderType == 'Rejected') { %>
+                                        <%  if(data_list[i].orderType == 'Rejected') {  %>
                                             <span class="custom-badge status-red">Rejected</span>
-                                        <% } else  { %>
+                                        <% } else  {  %>
                                             <span class="custom-badge status-green"><%= data_list[i].orderType %></span>
                                         <% } %>
                                     </td>
                                     <td><%= data_list[i].status %></td>
                                     <td><%= formatTime(data_list[i].createdAt) %></td>
-                                    <td><%= (data_list[i].updatedAt) ? formatTime(data_list[i].updatedAt) : '' %></td>
+                                    <td><%= (data_list[i].updatedAt) ? formatTime(data_list[i].updatedAt):'' %></td>
                                     <td class="text-right">
-                                        <a class="btn btn-success"
-                                           href="/pharmacy/orders/view/<%= data_list[i].orderId %>">
+                                        <a class="btn btn-success" href="/orders/view/<%= data_list[i].orderId %>">
                                             <i class="fa fa-eye m-r-5"></i> View Order
+                                        </a>
+                                        <% if(session.user.role == 'Admin') {  %>
+                                            <a style="display: none" class="btn btn-primary"
+                                               href="/doctor/order/edit?id=<%= data_list[i].orderId %>">
+                                                <i class="fa fa-pencil m-r-5"></i> Edit
+                                            </a>
+                                        <% }%>
+                                        <a class="btn btn-danger ws-delete-link" style="display: none"
+                                           href="#"
+                                           data-msg="Order"
+                                           data-url="/order/delete/<%= data_list[i]._id %>"
+                                           data-toggle="modal"
+                                           data-target="#delete_box">
+                                            <i class="fa fa-trash-o m-r-5"></i>
+                                            Delete
                                         </a>
                                     </td>
                                 </tr>
@@ -147,21 +160,22 @@ var formatTimeWithOffset = function (ts) {
         var toDate = $('input[name="toDate"]').val();
         if (toDate) {
             if (fromDate) {
-                location.href = '/pharmacy/orders?fromDate=' + formatTime(fromDate) + "&toDate=" + formatTime(toDate);
+                location.href = '/salesman/orders?fromDate=' + formatTime(fromDate) + "&toDate=" + formatTime(toDate);
+
             } else {
-                location.href = '/pharmacy/orders?toDate=' + formatTime(toDate);
+                location.href = '/salesman/orders?toDate=' + formatTime(toDate);
             }
         } else {
             if (fromDate) {
                 fromDate = formatTime(fromDate);
-                location.href = '/pharmacy/orders?fromDate=' + fromDate;
+                location.href = '/salesman/orders?fromDate=' + fromDate;
             }
         }
 
 
     }
     function onResetReportFilter() {
-        location.href = '/pharmacy/orders';
+        location.href = '/salesman/orders';
     }
 </script>
 </body>

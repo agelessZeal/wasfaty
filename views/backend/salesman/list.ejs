@@ -9,13 +9,23 @@ var formatTime = function (ts) {
     var year = date.getFullYear();
     // Month part from the timestamp
     var month = date.getMonth() + 1;
-    if (month<10){ month = '0' + month;}
+    if (month < 10) {
+        month = '0' + month;
+    }
     // Day part from the timestamp
     var day = date.getDate();
-    if (day<10){ day = '0' + day;}
-    return year+"-"+month + "-"+day;
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return year + "-" + month + "-" + day;
 }
 %>
+
+<%
+var lang = getLocale();
+var suffix = (lang == 'ar') ? 'Ar' : 'En';
+%>
+
 <body>
 <div class="main-wrapper">
     <%- include ../layouts/menubar.ejs %>
@@ -35,55 +45,60 @@ var formatTime = function (ts) {
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="table table-border table-striped custom-table datatable mb-0"  id="datatable">
+                        <table class="table table-border table-striped custom-table datatable mb-0" id="datatable">
                             <thead>
-                                <tr>
-                                    <th>Name(EN/AR)</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>BirthDay</th>
-                                    <th>Company</th>
-                                    <th>Country</th>
-                                    <th>City</th>
-                                    <th>Status</th>
-                                    <th>CreatedAt</th>
-                                    <th class="text-right">Action</th>
-                                </tr>
+                            <tr>
+                                <th>Name(EN/AR)</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>BirthDay</th>
+                                <th>Company</th>
+                                <th>Country</th>
+                                <th>City</th>
+                                <th>Status</th>
+                                <th>CreatedAt</th>
+                                <th class="text-right">Action</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <% for(var i = 0; i<users.length; i++) {  %>
-                                    <tr>
-                                        <td>
-                                            <img width="28" height="28" src="<%= users[i].pic %>" class="rounded-circle m-r-5" alt="">
-                                            <%= (getLocale()== 'en')? users[i].nameEn: users[i].nameAr %>
-                                        </td>
-                                        <td><%= users[i].email %></td>
-                                        <td><%= users[i].phone %></td>
-                                        <td><%= (users[i].birthDay)? users[i].birthDay:'N/A' %></td>
-                                        <td><%= users[i].companyName %></td>
-                                        <td><%= users[i].country %></td>
-                                        <td><%= users[i].city %></td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm <%= (users[i].status == "Enabled")?"btn-primary":"btn-secondary" %>"><%= users[i].status %></button>
-                                        </td>
-                                        <td><%= formatTime(users[i].createdAt) %></td>
-                                        <td class="text-right">
-                                            <div class="dropdown dropdown-action">
-                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="/users/profile?m=edit&id=<%= users[i]._id %>"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                    <a class="dropdown-item ws-delete-link"
-                                                       href="#"
-                                                       data-msg="Salesman"
-                                                       data-url="/users/delete/<%= users[i]._id %>"
-                                                       data-toggle="modal"
-                                                       data-target="#delete_box">
-                                                        <i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                                </div>
+                            <% for(var i = 0; i < users.length; i++) { %>
+                                <tr>
+                                    <td>
+                                        <img width="28" height="28" src="<%= users[i].pic %>"
+                                             class="rounded-circle m-r-5" alt="">
+                                        <%= (getLocale() == 'en') ? users[i].nameEn : users[i].nameAr %>
+                                    </td>
+                                    <td><%= users[i].email %></td>
+                                    <td><%= users[i].phone %></td>
+                                    <td><%= (users[i].birthDay) ? users[i].birthDay : 'N/A' %></td>
+                                    <td><%= companyObj[users[i].companyName]['name' + suffix] %></td>
+                                    <td><%= users[i].country %></td>
+                                    <td><%= users[i].city %></td>
+                                    <td>
+                                        <button type="button"
+                                                class="btn btn-sm <%= (users[i].status == "Enabled") ? "btn-primary" : "btn-secondary" %>"><%= users[i].status %></button>
+                                    </td>
+                                    <td><%= formatTime(users[i].createdAt) %></td>
+                                    <td class="text-right">
+                                        <div class="dropdown dropdown-action">
+                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
+                                               aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item"
+                                                   href="/users/profile?m=edit&id=<%= users[i]._id %>"><i
+                                                            class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                <a class="dropdown-item ws-delete-link"
+                                                   href="#"
+                                                   data-msg="Salesman"
+                                                   data-url="/users/delete/<%= users[i]._id %>"
+                                                   data-toggle="modal"
+                                                   data-target="#delete_box">
+                                                    <i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                             </div>
-                                        </td>
-                                    </tr>
-                                <% } %>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
                             </tbody>
                         </table>
                     </div>
