@@ -11,7 +11,7 @@
         <div class="content">
             <div class="row">
                 <div class="col-lg-8">
-                    <h4 class="page-title"><%= (page_mode == 'add')? 'Add':'Edit' %> <%= title %></h4>
+                    <h4 class="page-title"><%= (page_mode == 'add')? i18n.__('Add ' + title):i18n.__('Edit ' + title) %></h4>
                 </div>
             </div>
             <div class="row">
@@ -23,24 +23,24 @@
                                     <div class="col-sm-12">
                                         <% if(error && error.length>0) {  %>
                                             <div class="alert alert-danger">
-                                                <strong>Error!</strong> <%= error %>
+                                                <strong><%= i18n.__("Error!") %></strong> <%= i18n.__(error) %>
                                             </div>
                                         <% } %>
                                         <% if(success && success.length>0) {  %>
                                             <div class="alert alert-success">
-                                                <strong>Success!</strong> <%= success %>
+                                                <strong><%= i18n.__("Success!") %></strong> <%= i18n.__(success) %>
                                             </div>
                                         <% } %>
                                         <div class="form-group">
-                                            <label>Name (English)</label>
+                                            <label><%= i18n.__("Name (English)") %></label>
                                             <input class="form-control" type="text" name="name_en" required value="<%= (page_mode=='edit')?item_info.name_en:'' %>">
                                         </div>
                                         <div class="form-group">
-                                            <label>Name (Arabic)</label>
+                                            <label><%= i18n.__("Name (Arabic)") %></label>
                                             <input class="form-control" type="text" name="name_ar" required value="<%= (page_mode=='edit')?item_info.name_ar:'' %>">
                                         </div>
                                         <div class="form-group text-center">
-                                            <button class="btn btn-primary submit-btn">Save</button>
+                                            <button class="btn btn-primary submit-btn"><%= i18n.__("Save") %></button>
                                         </div>
                                     </div>
                                 </div>

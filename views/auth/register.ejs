@@ -25,11 +25,11 @@
                                 </div>
                             <% } %>
                             <div class="form-group text-left">
-                                <label for="email">Email</label>
+                                <label for="email"><%= i18n.__("Email") %></label>
                                 <input class="form-control" name="email" type="email" required id="email">
                             </div>
                             <div class="form-group text-left">
-                                <label for="password">Password</label>
+                                <label for="password"><%= i18n.__("Password") %></label>
                                 <input type="password" name="password" id="password" class="form-control" required>
                             </div>
                             <div class="form-group text-left">
@@ -39,24 +39,22 @@
                             <div class="form-group text-left">
                                 <label for="role">Account Type</label>
                                 <select  name="role" id="role" class="form-control">
-                                    <option value="Company">Company</option>
-                                    <option value="Pharmacy">Pharmacy</option>
-                                    <option value="Salesman">Salesman</option>
-                                    <option value="Doctor">Doctor</option>
-                                    <option value="Client">Client</option>
-                                    <option value="Driver">Driver</option>
+                                    <option value="Company"><%= i18n.__("Company") %></option>
+                                    <option value="Pharmacy"><%= i18n.__("Pharmacy") %></option>
+                                    <option value="Salesman"><%= i18n.__("Salesman") %></option>
+                                    <option value="Doctor"><%= i18n.__("Doctor") %></option>
+                                    <option value="Client"><%= i18n.__("Client") %></option>
+                                    <option value="Driver"><%= i18n.__("Driver") %></option>
                                 </select>
                             </div>
                             <div class="form-group text-left terms-service-agree">
-                                <label class="checkbox">
-                                    <input type="checkbox" required/>
-                                    I have read and agree the Terms & Conditions
-                                </label>
+                                <input type="checkbox" required/>
+                                <%= i18n.__('I have read and agree the ') %><a href="/terms-and-conditions" target="_blank" style="color: #0b2e13;text-decoration: underline;"><%= i18n.__('Terms & Conditions') %></a> <%=  %>
                             </div>
                             <div class="login-register-btns">
                                 <button class="btn register-submit-btn">
                                     <div>
-                                        SIGNUP
+                                        SIGN UP
                                     </div>
                                 </button>
                             </div>

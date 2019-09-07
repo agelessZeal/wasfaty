@@ -27,19 +27,19 @@ var isAdmin = session.user.role == 'Admin';
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">Announcement Details</h4>
+                    <h4 class="page-title"><%= i18n.__("Announcement Details") %></h4>
                 </div>
                 <% if(error && error.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-danger" role="alert">
-                            <strong>Error!</strong> <%= error %>
+                            <strong><%= i18n.__("Error!") %></strong> <%= i18n.__(error) %>
                         </div>
                     </div>
                 <% } %>
                 <% if(success && success.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-success" role="alert">
-                            <strong>Success!</strong> <%= success %>
+                            <strong><%= i18n.__("Success!") %></strong> <%= i18n.__(success) %>
                         </div>
                     </div>
                 <% } %>
@@ -48,9 +48,9 @@ var isAdmin = session.user.role == 'Admin';
                 <div class="col-md-4">
                     <form action="/announcement/<%= (!pg_type)? 'update/' + annInfo.annId:'create'  %>" method="post">
                         <div class="form-group">
-                            <label>User Types</label>
+                            <label><%= i18n.__("User Types") %></label>
                             <select name="userType" class="form-control" <%= (isAdmin)?'':'disabled' %>>
-                                <option value="" <%= (!pg_type && !annInfo.userType)?'selected':'' %>>All</option>
+                                <option value="" <%= (!pg_type && !annInfo.userType)?'selected':'' %>><%= i18n.__("All") %></option>
                                 <% for(var i = 0; i<config.userLevels.length; i++) {  %>
                                     <option value="<%= config.userLevels[i] %>" <%= (!pg_type && annInfo.userType == config.userLevels[i])?'selected':'' %> ><%= config.userLevels[i] %></option>
                                 <% } %>
@@ -58,19 +58,19 @@ var isAdmin = session.user.role == 'Admin';
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Title</label>
+                            <label><%= i18n.__("Title") %></label>
                             <input class="form-control" maxlength="50"
                                    value="<%= (pg_type)?'':annInfo.title %>"
                                    required name="title" <%= (isAdmin)?'':'disabled' %>>
                         </div>
                         <div class="form-group">
-                            <label>Description</label>
+                            <label><%= i18n.__("Description") %></label>
                             <textarea class="form-control" name="description"
                                       rows="10" required <%= (isAdmin)?'':'disabled' %>><%= (pg_type)?'':annInfo.description %></textarea>
                         </div>
                         <% if (isAdmin) {  %>
                             <div class="form-group">
-                                <button class="btn btn-primary">Submit</button>
+                                <button class="btn btn-primary"><%= i18n.__("Submit") %></button>
                             </div>
                         <% } %>
                     </form>

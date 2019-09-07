@@ -9,11 +9,15 @@ var formatTime = function (ts) {
     var year = date.getFullYear();
     // Month part from the timestamp
     var month = date.getMonth() + 1;
-    if (month<10){ month = '0' + month;}
+    if (month < 10) {
+        month = '0' + month;
+    }
     // Day part from the timestamp
     var day = date.getDate();
-    if (day<10){ day = '0' + day;}
-    return year+"-"+month + "-"+day;
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return year + "-" + month + "-" + day;
 }
 %>
 <body>
@@ -24,19 +28,19 @@ var formatTime = function (ts) {
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">My Invitation</h4>
+                    <h4 class="page-title"><%= i18n.__("My Invitation") %></h4>
                 </div>
                 <% if(error && error.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-danger" role="alert">
-                            <strong>Error!</strong> <%= error %>
+                            <strong><%= i18n.__("Error!") %></strong> <%= i18n.__(error) %>
                         </div>
                     </div>
                 <% } %>
                 <% if(success && success.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-success" role="alert">
-                            <strong>Success!</strong> <%= success %>
+                            <strong><%= i18n.__("Success!") %></strong> <%= i18n.__(success) %>
                         </div>
                     </div>
                 <% } %>
@@ -46,39 +50,47 @@ var formatTime = function (ts) {
                     <div class="table-responsive">
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
-                                <tr>
-                                    <th>Sender Email</th>
-                                    <th>Sender Role</th>
-                                    <th>Receiver Email</th>
-                                    <th>Receiver Role</th>
-                                    <th>Password</th>
-                                    <th>Accept Status</th>
-                                    <th>CreatedAt</th>
-                                    <th>AcceptedAt</th>
-                                </tr>
+                            <tr>
+                                <th><%= i18n.__("Sender Email") %></th>
+                                <th><%= i18n.__("Sender Role") %></th>
+                                <th><%= i18n.__("Receiver Email") %></th>
+                                <th><%= i18n.__("Receiver Role") %></th>
+                                <th><%= i18n.__("Password") %></th>
+                                <th><%= i18n.__("Accept Status") %></th>
+                                <th><%= i18n.__("CreatedAt") %></th>
+                                <th><%= i18n.__("AcceptedAt") %></th>
+                                <th><%= i18n.__("Action") %></th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <% for(var i = 0; i<invites.length; i++) {  %>
-                                    <tr>
-                                        <td><%= invites[i].senderEmail %></td>
-                                        <td><%= invites[i].senderRole %></td>
-                                        <td><%= invites[i].receiverEmail %></td>
-                                        <td><%= invites[i].receiverRole %></td>
-                                        <td><%= invites[i].password %></td>
-                                        <td>
-                                            <% if(invites[i].status == "Accepted") {  %>
-                                                <a class="btn btn-sm btn-primary" href="#"><%= invites[i].status %></a>
-                                            <% } else {  %>
-                                                <a class="btn btn-sm btn-secondary"
-                                                   href="/invite/list/accept/<%= invites[i]._id %>?redirect_url=/doctor/my-invitation">
-                                                    <%= invites[i].status %>
-                                                </a>
-                                            <% } %>
-                                        </td>
-                                        <td><%= formatTime(invites[i].createdAt) %></td>
-                                        <td><%= (invites[i].acceptedAt)? formatTime(invites[i].acceptedAt):'N/A' %></td>
-                                    </tr>
-                                <% } %>
+                            <% for(var i = 0; i < invites.length; i++) { %>
+                                <tr>
+                                    <td><%= invites[i].senderEmail %></td>
+                                    <td><%= invites[i].senderRole %></td>
+                                    <td><%= invites[i].receiverEmail %></td>
+                                    <td><%= invites[i].receiverRole %></td>
+                                    <td><%= invites[i].password %></td>
+                                    <td>
+                                        <% if(invites[i].status == 'Accepted') { %>
+                                            <span class="custom-badge status-green"><%= invites[i].status %></span>
+                                        <% } else  { %>
+                                            <span class="custom-badge status-red"><%= invites[i].status %></span>
+                                        <% } %>
+                                    </td>
+                                    <td><%= formatTime(invites[i].createdAt) %></td>
+                                    <td><%= (invites[i].acceptedAt) ? formatTime(invites[i].acceptedAt) : 'N/A' %></td>
+                                    <td>
+                                        <% if(invites[i].status == "Accepted") { %>
+                                            <%= "" %>
+                                        <% } else { %>
+                                            <a class="btn btn-sm btn-secondary"
+                                               href="/invite/list/accept/<%= invites[i]._id %>?redirect_url=/doctor/my-invitation">
+                                                <%= i18n.__("Accept") %>
+                                            </a>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% } %>
                             </tbody>
                         </table>
                     </div>

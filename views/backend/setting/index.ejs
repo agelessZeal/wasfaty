@@ -9,30 +9,30 @@
     <%- include ../layouts/sidebar.ejs %>
     <div class="page-wrapper">
         <div class="content">
-            <h3>Default Commission Settings</h3>
+            <h3><%= i18n.__("Default Commission Settings") %></h3>
             <div class="row">
                 <div class="col-md-4">
                     <form action="/admin/setting/commission/update" method="post">
                         <% if(error && error.length > 0){ %>
                             <div class="alert alert-danger">
-                                <%= error %>
+                                <%= i18n.__(error) %>
                             </div>
                         <% } else if(success && success.length > 0 ){ %>
                             <div class="alert alert-success">
-                                <%= success %>
+                                <%= i18n.__(success) %>
                             </div>
                         <% } %>
                         <% for(var key in config.defaultCommissions) { %>
                             <div class="form-group">
-                                <label><%= key %></label>
+                                <label><%= i18n.__(key) %></label>
                                 <input class="form-control" name="<%= key %>" type="number" value="<%= comms[key] %>" required>
                             </div>
                         <% } %>
                         <div class="form-group">
-                            <label>Wasfaty Online</label>
+                            <label><%= i18n.__("Wasfaty Online") %></label>
                             <input class="form-control" name="Wasfaty" value="<%= comms.Wasfaty %>" type="number" required>
                         </div>
-                        <button class="btn btn-primary" style="width: 100%">Save</button>
+                        <button class="btn btn-primary" style="width: 100%"><%= i18n.__("Save") %></button>
                     </form>
                 </div>
             </div>
@@ -42,4 +42,4 @@
 <%- include ../layouts/footer.ejs %>
 </body>
 </html>
-users/profile
+

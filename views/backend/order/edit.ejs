@@ -6,6 +6,7 @@
 
 var lang = getLocale();
 var suffix = (lang == 'ar')?'Ar':'En';
+var totalAmount = 0;
 %>
 <body>
 <div class="main-wrapper">
@@ -15,7 +16,7 @@ var suffix = (lang == 'ar')?'Ar':'En';
         <div class="content">
             <div class="row">
                 <div class="col-lg-12">
-                    <h4 class="page-title">Add Order</h4>
+                    <h4 class="page-title"><%= i18n.__("Edit Order") %></h4>
                 </div>
             </div>
             <div class="row">
@@ -25,9 +26,9 @@ var suffix = (lang == 'ar')?'Ar':'En';
                             <div class="col-6">
                                 <div class="btn-group" id="check-existing-user">
                                     <button type="button" data-toggle="modal" data-target="#chooseClient"
-                                            class="btn btn-outline-primary" id="ws-existing-user" onclick="onChangeUserMode('existing')">Existing User</button>
+                                            class="btn btn-outline-primary" id="ws-existing-user" onclick="onChangeUserMode('existing')"><%= i18n.__("Existing User") %></button>
                                     <button type="button"
-                                            class="btn btn-outline-primary" id="ws-new-user" onclick="onChangeUserMode('new')">New User</button>
+                                            class="btn btn-outline-primary" id="ws-new-user" onclick="onChangeUserMode('new')"><%= i18n.__("New User") %></button>
                                 </div>
                             </div>
                         </div>
@@ -36,64 +37,71 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>OrderNo</label>
+                                            <label><%= i18n.__("OrderNo") %></label>
                                             <input class="form-control" type="text" name="orderId" value="<%= orderId %>" required disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Email</label>
-                                            <input class="form-control ws-order-ctl" type="text" name="clientEmail" required>
+                                            <label><%= i18n.__("Email") %></label>
+                                            <input class="form-control ws-order-ctl" value="<%= orderInfo.clientEmail %>"
+                                                   type="email" name="clientEmail" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Mobile</label>
-                                            <input class="form-control ws-order-ctl" type="text" name="clientPhone" required>
+                                            <label><%= i18n.__("Mobile") %></label>
+                                            <input class="form-control ws-order-ctl" value="<%= orderInfo.clientPhone %>"
+                                                   type="text" name="clientPhone" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Name</label>
-                                            <input class="form-control ws-order-ctl" type="text" name="clientName">
+                                            <label><%= i18n.__("Name") %></label>
+                                            <input class="form-control ws-order-ctl"  value="<%= orderInfo.clientName %>"
+                                                   type="text" name="clientName">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Type</label>
+                                            <label><%= i18n.__("Insurance Type") %></label>
                                             <select class="form-control floating ws-order-ctl" id="insuranceType" name="insuranceType">
                                                 <% for(i = 0 ; i<ins_types.length; i++) { %>
-                                                    <option value="<%= ins_types[i].name %>"><%= ins_types[i].name %></option>
+                                                    <option value="<%= ins_types[i].name %>"
+                                                            <%= (ins_companies[i].name == orderInfo.insuranceType)?"selected":"" %> ><%= ins_types[i].name %></option>
                                                 <% } %>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Grade</label>
+                                            <label><%= i18n.__("Insurance Grade") %></label>
                                             <select class="form-control floating ws-order-ctl" id="insuranceGrade" name="insuranceGrade">
                                                 <% for(i = 0 ; i<ins_grades.length; i++) { %>
-                                                    <option value="<%= ins_grades[i].name %>"><%= ins_grades[i].name %></option>
+                                                    <option value="<%= ins_grades[i].name %>"
+                                                            <%= (ins_grades[i].name == orderInfo.insuranceGrade)?"selected":"" %>><%= ins_grades[i].name %></option>
                                                 <% } %>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Company</label>
+                                            <label><%= i18n.__("Insurance Company") %></label>
                                             <select class="form-control floating ws-order-ctl"  id="insuranceCompany" name="insuranceCompany">
                                                 <% for(i = 0 ; i<ins_companies.length; i++) { %>
-                                                    <option value="<%= ins_companies[i].name %>"><%= ins_companies[i].name %></option>
+                                                    <option value="<%= ins_companies[i].name %>"
+                                                            <%= (ins_companies[i].name == orderInfo.insuranceCompany)?"selected":"" %> ><%= ins_companies[i].name %></option>
                                                 <% } %>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Remark</label>
-                                            <input class="form-control" type="text" name="remark">
+                                            <label><%= i18n.__("Remark") %></label>
+                                            <input class="form-control" value="<%= orderInfo.clientName %>"
+                                                   type="text" name="remark">
                                         </div>
                                     </div>
                                 </div>
@@ -102,8 +110,8 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                 <div class="row">
                                     <div class="col-12 text-right">
                                         <div class="form-group">
-                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addItemModal"
-                                                    id="order-item-add-btn">+ Add Item</button>
+                                            <button class="btn btn-primary" type="button" onclick="showAddOrderModal()"
+                                                    id="order-item-add-btn"><%= i18n.__("+ Add Item") %></button>
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -111,43 +119,52 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                             <table class="table table-bordered" id="order-item-list">
                                                 <thead>
                                                 <tr>
-                                                    <th>Item Code</th>
-                                                    <th>Item Description</th>
-                                                    <th>Item Dosage</th>
-                                                    <th>QTY</th>
-                                                    <th>Amount</th>
-                                                    <th>Total</th>
-                                                    <th>Status</th>
-                                                    <th>Action</th>
+                                                    <th style="width: 82px"><%= i18n.__("Picture") %></th>
+                                                    <th><%= i18n.__("Item Code") %></th>
+                                                    <th><%= i18n.__("Item Description") %></th>
+                                                    <th><%= i18n.__("Item Dosage") %></th>
+                                                    <th><%= i18n.__("Qty") %></th>
+                                                    <th><%= i18n.__("Amount") %></th>
+                                                    <th><%= i18n.__("Total") %></th>
+                                                    <th><%= i18n.__("Status") %></th>
+                                                    <th><%= i18n.__("Action") %></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="order-items-body">
-                                                <!--                                                    <tr>-->
-                                                <!--                                                        <td>Item Code</td>-->
-                                                <!--                                                        <td>Item Description</td>-->
-                                                <!--                                                        <td>Item Dosage</td>-->
-                                                <!--                                                        <td>QTY</td>-->
-                                                <!--                                                        <td>Amount</td>-->
-                                                <!--                                                        <td>Total</td>-->
-                                                <!--                                                        <td>Status</td>-->
-                                                <!--                                                        <td>-->
-                                                <!--                                                            <button class="btn btn-danger" type="button">-->
-                                                <!--                                                                <i class="fa fa-close"></i>-->
-                                                <!--                                                            </button>-->
-                                                <!--                                                        </td>-->
-                                                <!--                                                    </tr>-->
+                                                    <% for (var j = 0; j<orderInfo.items.length; j++) { %>
+                                                        <% if(itemObj[orderInfo.items[j].code]) {
+                                                            totalAmount += Number(orderInfo.items[j].amount); %>
+                                                            <tr id="<%= orderInfo.items[j].code %>">
+                                                                <td style="width: 82px">
+                                                                    <img class="itemPic" src="<%= itemObj[orderInfo.items[j].code].pic %>">
+                                                                </td>
+                                                                <td><%= orderInfo.items[j].code %></td>
+                                                                <td><%= orderInfo.items[j].description %></td>
+                                                                <td><%= orderInfo.items[j].dosage %></td>
+                                                                <td><%= orderInfo.items[j].qty %></td>
+                                                                <td><%= orderInfo.items[j].amount %></td>
+                                                                <td><%= orderInfo.items[j].total %></td>
+                                                                <td><%= i18n.__("Not Delivered") %></td>
+                                                                <td>
+                                                                    <button class="btn btn-danger" type="button" onclick="onDeleteItem('<%= orderInfo.items[j].code %>')">
+                                                                        <i class="fa fa-close"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        <% } %>
+                                                    <% } %>
                                                 </tbody>
                                             </table>
                                         </div>
                                         <div class="col-12 text-right">
                                             <div class="form-group">
-                                                <h4>Total: $<span id="total-item-price">0.00</span></h4>
+                                                <h4><%= i18n.__("Total") %>: <span id="total-item-price"><%= totalAmount %></span></h4>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-primary submit-btn" id="order-save-btn" >Save</button>
+                                    <button type="button" class="btn btn-primary submit-btn" id="order-update-btn" ><%= i18n.__("Save") %></button>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +177,7 @@ var suffix = (lang == 'ar')?'Ar':'En';
 
 <!-- The Modal -->
 <div class="modal fade" id="addItemModal">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
@@ -172,50 +189,155 @@ var suffix = (lang == 'ar')?'Ar':'En';
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>Dosage</label>
-                            <select class="form-control" id="add-item-dosage">
-                                <% for(i=0; i<dosages.length; i++) {%>
-                                    <option value="<%= dosages[i]['name_' + lang] %>"><%= dosages[i]['name_' + lang] %></option>
-                                <% } %>
-                            </select>
+                            <label><%= i18n.__("Dosage") %></label>
+                            <% if(dosages.length>0) {  %>
+                                <select class="form-control chosen" id="add-item-dosage">
+                                    <% for(i=0; i<dosages.length; i++) {%>
+                                        <option value="<%= dosages[i]['name_' + lang] %>"><%= dosages[i]['name_' + lang] %></option>
+                                    <% } %>
+                                </select>
+                            <% } else { %>
+                                <input type="text" class="form-control" id="add-item-dosage">
+                            <% } %>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>QTY</label>
+                            <label><%= i18n.__("Qty") %></label>
                             <input type="number" min="1" class="form-control" id="add-item-qty" value="1">
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-border table-striped custom-table my-datatable-item mb-0">
-                        <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <% for (var i = 0; i<items.length; i++) { %>
-                            <tr
-                                    data-code="<%= items[i].itemId %>"
-                                    data-name="<%= items[i]['name_' + lang] %>"
-                                    data-description="<%= items[i]['description_' + lang] %>"
-                                    data-price="<%= items[i].price %>">
-                                <td><%= items[i].itemId %></td>
-                                <td><%= items[i]['name_' + lang] %></td>
-                                <td><%= items[i]['description_' + lang] %></td>
-                            </tr>
-                        <% }  %>
-                        </tbody>
-                    </table>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="filter-options-outer">
+                            <h3><i class="fa fa-align-left"></i>&nbsp;Filter Options</h3>
+                            <div class="op-btns">
+                                <button class="btn btn-outline-primary" onclick="resetFilters()"><%= i18n.__("Reset") %></button>
+                                <button class="btn btn-primary" onclick="searchProduct(1)"><%= i18n.__("Search") %></button>
+                            </div>
+                            <input class="form-control" placeholder="<%= i18n.__("Barcode") %>" id="itemBarcode" type="text">
+                            <input class="form-control" placeholder="<%= i18n.__("Keyword") %>" id="itemName" type="text">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card">
+                                    <button type="button" class="btn btn-link filter-group-btn" data-toggle="collapse"
+                                            data-target="#collapseOne">
+                                        <%= i18n.__("Main Classification") %> <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                         data-parent="#accordionExample">
+                                        <div class="card-body" id="mainClassification">
+                                            <% for(i = 0; i < mainCs.length; i++) { %>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="<%= mainCs[i].mtId %>">
+                                                    <label for="<%= mainCs[i].mtId %>"><%= mainCs[i]['name_' + lang]; %></label>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                            data-target="#collapseTwo">
+                                        <%= i18n.__("Sub Classification") %> <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+                                        <div class="card-body"  id="subClassification">
+                                            <% for(i = 0; i < subCs.length; i++) { %>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="<%= subCs[i].mtId %>">
+                                                    <label for="<%= subCs[i].mtId %>"><%= subCs[i]['name_' + lang]; %></label>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                            data-target="#collapseThree">
+                                        <%= i18n.__("Brand Name") %> <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+                                        <div class="card-body" id="brand">
+                                            <% for(i = 0; i < brands.length; i++) { %>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="<%= brands[i].mtId %>">
+                                                    <label for="<%= brands[i].mtId %>"><%= brands[i]['name_' + lang]; %></label>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                            data-target="#headingFour">
+                                        <%= i18n.__("Company Name") %> <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="headingFour" class="collapse" aria-labelledby="headingFour">
+                                        <div class="card-body" id="company">
+                                            <% for(i = 0; i < companies.length; i++) { %>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="<%= companies[i].mtId %>">
+                                                    <label for="<%= companies[i].mtId %>"><%= companies[i]['name_' + lang]; %></label>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
+                                            data-target="#headingFive">
+                                        <%= i18n.__("Price") %> <i class="fa fa-plus"></i>
+                                    </button>
+                                    <div id="headingFive" class="collapse" aria-labelledby="headingFive">
+                                        <div class="card-body">
+                                            <div class="input-group mb-3">
+                                                <input type="number" class="form-control" placeholder="From" id="fromPrice">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">SAR</span>
+                                                </div>
+                                                <input type="number" class="form-control" placeholder="To" id="toPrice">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="search-item-wrapper">
+                            <div id="loadingScreen" class="ws-hide">
+                                <img src="/assets/img/ajax-loader.gif">
+                            </div>
+                            <div id="search-items-body">
+                                <div class="no-items-box"><%= i18n.__("No available Items") %></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="pagination-bar">
+                                    <!--                            <span class="pgBtn" id="pgFirstBtn"><i class="fa fa-angle-double-left"></i></span>-->
+                                    <!--                            <span class="pgBtn" id="pgPrevBtn"><i class="fa fa-angle-left"></i></span>-->
+                                    <!--                            <select class="form-control" onchange="onChangePageNumber(this)" id="pgSelector">-->
+                                    <!--                                <option>1</option>-->
+                                    <!--                                <option>2</option>-->
+                                    <!--                                <option>3</option>-->
+                                    <!--                            </select>-->
+                                    <!--                            <span id="pgSlash">/</span>-->
+                                    <!--                            <span id="pgTotalBtn">5</span>-->
+                                    <!--                            <span class="pgBtn" id="pgNextBtn"><i class="fa fa-angle-right"></i></span>-->
+                                    <!--                            <span class="pgBtn" id="pgLastBtn"><i class="fa fa-angle-double-right"></i></span>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="onAddItem(this)">Add</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="onAddItem(this)"><%= i18n.__("Add") %></button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><%= i18n.__("Close") %></button>
             </div>
         </div>
     </div>
@@ -227,7 +349,7 @@ var suffix = (lang == 'ar')?'Ar':'En';
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Please choose one client!</h4>
+                <h4 class="modal-title"><%= i18n.__("Please choose one client!") %></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <!-- Modal body -->
@@ -236,9 +358,9 @@ var suffix = (lang == 'ar')?'Ar':'En';
                     <table class="table table-border table-striped custom-table my-datatable mb-0">
                         <thead>
                         <tr>
-                            <th>Email</th>
-                            <th>Name</th>
-                            <th>Mobile</th>
+                            <th><%= i18n.__("Email") %></th>
+                            <th><%= i18n.__("Name") %></th>
+                            <th><%= i18n.__("Mobile") %></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -261,8 +383,8 @@ var suffix = (lang == 'ar')?'Ar':'En';
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="onSelectClient(this)">Done</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="onSelectClient(this)"><%= i18n.__("Done") %></button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><%= i18n.__("Close") %></button>
             </div>
         </div>
     </div>
@@ -270,5 +392,221 @@ var suffix = (lang == 'ar')?'Ar':'En';
 
 <%- include ../layouts/footer.ejs %>
 <script src="/assets/js/order.js"></script>
+
+<script type="text/javascript">
+    $(".chosen").chosen();
+</script>
+
+<script>
+
+    var lang = '<%= getLocale(); %>';
+    function showAddOrderModal() {
+        $('#addItemModal').modal({backdrop:'static', keyboard: false});
+    }
+    $(document).ready(function () {
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.show").each(function () {
+            $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+        });
+
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function () {
+            $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function () {
+            $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
+    });
+
+    function searchProduct(page) {
+        var mainIds = [], subIds = [], brandIds = [], companyIds = [];
+        var fromPrice = 0, toPrice = Infinity, keyword = "", barcode = "";
+
+        $('#mainClassification input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                mainIds.push($(this).attr('id'));
+            }
+        });
+
+        $('#subClassification input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                subIds.push($(this).attr('id'));
+            }
+        });
+
+        $('#brand input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                brandIds.push($(this).attr('id'));
+            }
+        });
+
+        $('#company input[type="checkbox"]').each(function () {
+            if ($(this).is(':checked')) {
+                companyIds.push($(this).attr('id'));
+            }
+        });
+
+        fromPrice = $('#fromPrice').val();
+        toPrice = $('#toPrice').val();
+        barcode = $('#itemBarcode').val();
+        keyword = $('#itemName').val();
+
+        page = 1;
+
+        $.ajax('/product/search/product', {
+            type:'post',
+            data:{
+                page: page,
+                companyIds: companyIds,
+                brandIds: brandIds,
+                subIds: subIds,
+                mainIds: mainIds,
+                fromPrice: fromPrice,
+                toPrice: toPrice,
+                barcode: barcode,
+                q: keyword,
+            },
+            beforeSend: function(xhr) {
+                $('#loadingScreen').removeClass('ws-hide');
+            }
+        }).done(function (res) {
+            console.log(res);
+            if(res.status == 'success') {
+                showProductHtml(res.data.docs);
+                showPaginationBar(res.data);
+            } else {
+                alert(res.data);
+                showProductHtml([]);
+                showPaginationBar({totalPages: 0});
+            }
+        }).always(function (res) {
+            console.log('done');
+            $('#loadingScreen').addClass('ws-hide');
+        });
+    }
+
+    function showProductHtml(itemList) {
+        var itemHTML = ''
+        for (var i = 0; i<itemList.length; i++) {
+            var itemInfo = itemList[i];
+            itemHTML += `<div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="item-info-outer">
+                                    <div class="item-info-wrapper">
+                                        <div>
+                                            <img src="${itemInfo.pic}">
+                                        </div>
+                                    </div>
+                                    <div class="item-info-text">
+                                        ${itemInfo['name_' + lang]}
+                                    </div>
+                                    <div class="item-info-price">
+                                        ${formatMoney(itemInfo.price, 2)} SAR
+                                    </div>
+                                    <div class="item-add-cart">
+                                        <button class="btn add-cart-btn"
+                                            data-pic=${itemInfo.pic}
+                                            data-code=${itemInfo.itemId}
+                                            data-name=${itemInfo['name_' + lang]}
+                                            data-description=${itemInfo['description_' + lang]}
+                                            data-price=${itemInfo.price}
+                                            onclick="addToCart(this)">${globalMsg['Select']}</button>
+                                    </div>
+                                </div>
+                            </div>`;
+        }
+        if (itemHTML != "") {
+            $('#search-items-body').html(`<div class="row">${itemHTML}</div>`);
+        } else {
+            $('#search-items-body').html(`<div class="no-items-box"><%= i18n.__("No available Items") %></div>`);
+        }
+
+    }
+
+    /// Pagination function
+    /**
+     * Show pagination Bar
+     * @param info
+     */
+    function showPaginationBar(info) {
+
+        // Make Select box
+        var pgHtml = '';
+
+        if (info.totalPages > 1) {
+            if (info.hasPrevPage) {
+                pgHtml += `<span class="pgBtn" id="pgFirstBtn" onclick="searchProduct('1')">First</span>`;
+                pgHtml += `<span class="pgBtn" id="pgPrevBtn" onclick="searchProduct('${info.prevPage}')">Prev</span>`;
+            }
+
+            pgHtml += `<select class="form-control" id="product-page-select" onchange="onChangePageNumber(this)">`;
+            for (var i = 1; i <= info.totalPages; i++) {
+                pgHtml += `<option value="${i}" ${(i == info.page) ? 'selected' : ''}>${i}</option>`;
+            }
+            pgHtml += '</select>';
+            pgHtml += '<span id="pgSlash"> / </span>';
+            pgHtml += `<span id="pgTotalBtn">${info.totalPages}</span>`;
+
+            if (info.hasNextPage) {
+                pgHtml += `<span class="pgBtns" id="pgNextBtn" onclick="searchProduct('${info.nextPage}')">Next</span>`;
+                pgHtml += `<span class="pgBtn" id="pgLastBtn" onclick="searchProduct('${info.totalPages}')">Last</span>`;
+            }
+        }
+
+        $('.pagination-bar').html(pgHtml);
+    }
+
+    function onChangePageNumber(self) {
+        searchProduct($('#product-page-select').val());
+    }
+
+    function resetFilters () {
+        $('.filter-options-outer').find('input[type="text"]').val('');
+        $('.filter-options-outer').find('input[type="number"]').val('');
+        $('.filter-options-outer').find('input[type="checkbox"]').prop('checked', false);
+        searchProduct(1);
+    }
+
+
+    function addToCart(self) {
+        $('.add-cart-btn').removeClass('active');
+        $(self).addClass('active');
+    }
+
+    searchProduct(1); // Initial Loading
+
+</script>
+
+<script>
+
+    var clientEmails = [];
+    var clientPhones = [];
+
+    function getClientPhoneAndEmails() {
+        var trTags = $('#chooseClient table tbody tr');
+        trTags.each(function () {
+            clientEmails.push($(this).data('email'));
+            clientPhones.push($(this).data('phone'));
+        })
+    }
+
+    $('input[name="clientEmail"]').bind('input paste' ,function(){
+        var userEmail =  $(this).val();
+        if (clientEmails.indexOf(userEmail)> -1) {
+            alert("User email exist already!, please select the user by searching in 'Existing User' to avoid user duplication.");
+            $(this).val("");
+        }
+    });
+
+    $('input[name="clientPhone"]').bind('input paste' ,function(){
+        var userPhone =  $(this).val();
+        if (clientEmails.indexOf(userPhone)> -1) {
+            alert("User phone exist already!, please select the user by searching in 'Existing User' to avoid user duplication.");
+            $(this).val("");
+        }
+    });
+
+    getClientPhoneAndEmails();
+
+</script>
+
 </body>
 </html>

@@ -18,6 +18,22 @@ router.get('/add', function (req, res) {
     order_controller.showAddOrder(req, res);
 });
 
+router.get('/delete/:orderId', function (req, res) {
+    order_controller.deleteOrder(req, res);
+});
+
+router.get('/edit/:orderId', function (req, res) {
+    order_controller.showEditOrder(req, res);
+});
+
+router.get('/closed-edit/:orderId', function (req, res) {
+    order_controller.showClosedEditOrder(req, res);
+});
+
+router.post('/orders-item/closed-update', function (req, res) {
+    order_controller.updateClosedOrder(req, res);
+});
+
 router.get('/view/:orderId', function (req, res) {
     order_controller.viewOrder(req, res);
 });
@@ -75,6 +91,11 @@ router.post('/print/commission', function (req, res) {
 router.post('/create', function (req, res) {
     order_controller.createOrder(req, res);
 });
+
+router.post('/update/:orderId', function (req, res) {
+    order_controller.updateOrder(req, res);
+});
+
 
 router.get('/canceled/:orderId', function (req, res) {
     order_controller.cancelOrder(req, res);

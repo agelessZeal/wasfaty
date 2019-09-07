@@ -24,11 +24,11 @@ var formatTime = function (ts) {
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title"><%= title %></h4>
+                    <h4 class="page-title"><%= i18n.__(title)  %></h4>
                 </div>
                 <div class="col-sm-8 col-9 text-right m-b-20">
                     <a href="/admin/specialist/add" class="btn btn btn-primary btn-rounded float-right">
-                        <i class="fa fa-plus"></i> Add Specialist
+                        <i class="fa fa-plus"></i> <%= i18n.__("Add Specialist") %>
                     </a>
                 </div>
             </div>
@@ -38,11 +38,11 @@ var formatTime = function (ts) {
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Name(English)</th>
-                                <th>Name(Arabic)</th>
-                                <th>CreatedAt</th>
-                                <th class="text-right">Action</th>
+                                <th><%= i18n.__("No") %></th>
+                                <th><%= i18n.__("Name(English)") %></th>
+                                <th><%= i18n.__("Name(Arabic)") %></th>
+                                <th><%= i18n.__("CreatedAt") %></th>
+                                <th class="text-right"><%= i18n.__("Action") %></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -54,15 +54,15 @@ var formatTime = function (ts) {
                                     <td><%= formatTime(data_list[i].createdAt) %></td>
                                     <td class="text-right">
                                         <a class="btn btn-primary" href="/admin/specialist/edit?id=<%= data_list[i].specId %>">
-                                            <i class="fa fa-pencil m-r-5"></i> Edit
+                                            <i class="fa fa-pencil m-r-5"></i> <%= i18n.__("Edit") %>
                                         </a>
                                         <a class="btn btn-danger  ws-delete-link"
                                            href="#"
-                                           data-msg="Specialist"
+                                           data-msg="<%= i18n.__("Specialist") %>"
                                            data-url="/specialist/delete/<%= data_list[i].specId %>"
                                            data-toggle="modal"
                                            data-target="#delete_box">
-                                            <i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                            <i class="fa fa-trash-o m-r-5"></i> <%= i18n.__("Delete") %></a>
                                     </td>
                                 </tr>
                             <% } %>

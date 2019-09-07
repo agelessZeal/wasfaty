@@ -8,6 +8,7 @@
 <% var lang = getLocale(); var i = 0; %>
 <% var suffix = (lang == 'en')?'En':'Ar'; %>
 <body>
+
 <section class="ws-header">
     <img src="/assets/img/banner.png" class="banner-image">
     <div class="ws-header-content">
@@ -16,39 +17,7 @@
                 <img src="/assets/img/logo_white.png">
             </a>
         </div>
-        <div class="menu-list">
-            <nav class="navbar navbar-expand-lg navbar-dark">
-                <div class="container">
-                    <button class="navbar-toggler ml-auto ws-toggle-btn" type="button">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse right" id="navbarNav">
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">About</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Services</a>
-                            </li>
-                            <li class="nav-item active">
-                                <a class="nav-link" href="/product">Products</a>
-                            </li>
-                            <% if(session.login) { %>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/dashboard">Dasboard</a>
-                                </li>
-                            <% } %>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Contact Us</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
+        <%- include ../layouts/menu.ejs %>
         <div class="container">
             <div class="banner-description">
                 <h1>Experience</h1>
@@ -60,11 +29,11 @@
                 <div class="offset-sm-6 col-sm-6 text-center">
                     <% if(!session.login) { %>
                         <div class="auth-btn-areas">
-                            <a class="btn ws-login-btn" href="/auth/login">Login</a>
+                            <a class="btn ws-login-btn" href="/auth/login"><%= i18n.__("Login") %></a>
                             <a class="btn ws-register-btn" href="/auth/register">
-                                <div>Create Account</div>
+                                <div><%= i18n.__("Create Account") %></div>
                             </a>
-                            <div> Forgot your password? <a href="/auth/forgot-password">click here</a></div>
+                            <div> <%= i18n.__("Forgot your password?") %> <a href="/auth/forgot-password"><%= i18n.__("click here") %></a></div>
                         </div>
                     <% } %>
                     <div class="google-apple-btns ">
@@ -82,18 +51,18 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="filter-options-outer">
-                    <h3><i class="fa fa-align-left"></i>&nbsp;Filter Options</h3>
+                    <h3><i class="fa fa-align-left"></i>&nbsp;<%= i18n.__("Filter Options") %>&nbsp;</h3>
                     <div class="op-btns">
-                        <button class="btn btn-outline-primary" onclick="resetFilters()">Reset</button>
-                        <button class="btn btn-primary" onclick="searchProduct(1)">Search</button>
+                        <button class="btn btn-outline-primary" onclick="resetFilters()"><%= i18n.__("Reset") %></button>
+                        <button class="btn btn-primary" onclick="searchProduct(1)"><%= i18n.__("Search") %></button>
                     </div>
-                    <input class="form-control" placeholder="Barcode" id="itemBarcode" type="text">
-                    <input class="form-control" placeholder="Keyword" id="itemName" type="text">
+                    <input class="form-control" placeholder="<%= i18n.__("Barcode") %>" id="itemBarcode" type="text">
+                    <input class="form-control" placeholder="<%= i18n.__("Keyword") %>" id="itemName" type="text">
                     <div class="accordion" id="accordionExample">
                         <div class="card">
                             <button type="button" class="btn btn-link filter-group-btn" data-toggle="collapse"
                                     data-target="#collapseOne">
-                                Main Classification <i class="fa fa-plus"></i>
+                                <%= i18n.__("Main Classification") %> <i class="fa fa-plus"></i>
                             </button>
                             <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
                                  data-parent="#accordionExample">
@@ -110,7 +79,7 @@
                         <div class="card">
                             <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
                                     data-target="#collapseTwo">
-                                Sub Classification <i class="fa fa-plus"></i>
+                                <%= i18n.__("Sub Classification") %> <i class="fa fa-plus"></i>
                             </button>
                             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
                                 <div class="card-body"  id="subClassification">
@@ -126,7 +95,7 @@
                         <div class="card">
                             <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
                                     data-target="#collapseThree">
-                                Brand Name <i class="fa fa-plus"></i>
+                                <%= i18n.__("Brand Name") %> <i class="fa fa-plus"></i>
                             </button>
                             <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
                                 <div class="card-body" id="brand">
@@ -142,7 +111,7 @@
                         <div class="card">
                             <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
                                     data-target="#headingFour">
-                                Company Name <i class="fa fa-plus"></i>
+                                <%= i18n.__("Company Name") %> <i class="fa fa-plus"></i>
                             </button>
                             <div id="headingFour" class="collapse" aria-labelledby="headingFour">
                                 <div class="card-body" id="company">
@@ -158,7 +127,7 @@
                         <div class="card">
                             <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
                                     data-target="#headingFive">
-                                Price <i class="fa fa-plus"></i>
+                                <%= i18n.__("Price") %> <i class="fa fa-plus"></i>
                             </button>
                             <div id="headingFive" class="collapse" aria-labelledby="headingFive">
                                 <div class="card-body">
@@ -182,7 +151,7 @@
                         <img src="/assets/img/ajax-loader.gif">
                     </div>
                     <div id="search-items-body">
-                        <div class="no-items-box">No available Items</div>
+                        <div class="no-items-box"><%= i18n.__("No available Items") %></div>
                     </div>
                 </div>
                 <div class="row">
@@ -207,76 +176,7 @@
     </div>
 </section>
 
-<section class="ws-content text-center" id="ws-about-us">
-    <img src="/assets/img/arc.png" class="about-arc-img">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="ws-about-us-item">
-                    <h3>Contact Us</h3>
-                    <div class="bottom-line"></div>
-                    <p>BROOKYLN, NY 10036, UNITED STATES</p>
-                    <p>1-800-123-1234</p>
-                    <p>EXAMPLE@MEDICINE-PLUS.COM</p>
-                    <div class="mapouter">
-                        <div class="gmap_canvas">
-                            <iframe height="200" id="gmap_canvas"
-                                    src="https://maps.google.com/maps?q=Saudi%20Araiba%20jddah&t=&z=11&ie=UTF8&iwloc=&output=embed"
-                                    frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-                            <a href="https://www.pureblack.de"></a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="ws-about-us-item">
-                    <h3>Our Laboratory</h3>
-                    <div class="bottom-line"></div>
-                    <p>The world pharmacy is derived from its root word pharma which was term used since the 15rh-17th
-                        centuries.
-                        However, the original Greek roots from pharmaks imply sorcery or even poison. In addition to
-                        pharma responsibilities,
-                        the pharma offered general medical advice and a range of services that are now performed solely
-                    </p>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="ws-about-us-item">
-                    <h3>Additional info</h3>
-                    <div class="bottom-line"></div>
-                    <p>Synthetic Natural Products Chemistry</p>
-                    <p>Organic Chemistry for Drug Development</p>
-                    <p>Pharmaceutics Physical Chemistry for Drug</p>
-                    <p>Design</p>
-                    <p>Radioisotope Research Laboratory</p>
-                    <p>Social Pharmacy (Student Learning Support)</p>
-                    <p>Pharmacutical Informatics</p>
-                    <p>Clinical Pharmacokinetics</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="ws-footer text-center">
-    <img src="/assets/img/wasfaty_logo_color.png" alt="wasfaty-logo-color" class="ws-logo-color-img">
-    <div class="app-icons-wrap">
-        <a href="#">
-            <img src="/assets/img/google_play.png">
-        </a>
-        <a href="#">
-            <img src="/assets/img/apple.png">
-        </a>
-    </div>
-    <div class="ws-social-icons">
-        <a href="#"><img src="/assets/img/google_plus.png"></a>
-        <a href="#"><img src="/assets/img/facebook.png"></a>
-        <a href="#"><img src="/assets/img/twitter.png"></a>
-        <a href="#"><img src="/assets/img/instagram.png"></a>
-        <a href="#"><img src="/assets/img/pint.png"></a>
-        <a href="#"><img src="/assets/img/link.png"></a>
-        <a href="#"><img src="/assets/img/youtube.png"></a>
-    </div>
-</section>
+<%- include ../layouts/social-links.ejs %>
 
 <%- include ../layouts/footer.ejs %>
 
@@ -402,7 +302,7 @@
         if (itemHTML != "") {
             $('#search-items-body').html(`<div class="row">${itemHTML}</div>`);
         } else {
-            $('#search-items-body').html(`<div class="no-items-box">No available Items</div>`);
+            $('#search-items-body').html(`<div class="no-items-box"><%= i18n.__("No available Items") %></div>`);
         }
 
     }

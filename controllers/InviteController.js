@@ -1,8 +1,9 @@
 let _, async, mongoose, BaseController, View;
 let config, axios, request, fs, crypto, countryList;
 let UserModel, InviteModel, CountryModel, SpecModel,
-    InsCompanyModel, InsGradeModel, InsTypeModel;
+    InsCompanyModel, InsGradeModel, InsTypeModel, SettingModel;
 
+let OrderModel;
 
 let nodemailer, ejs, transporter;
 
@@ -23,6 +24,8 @@ SpecModel = require('../models/specialist');
 InsCompanyModel = require('../models/insuranceCompany');
 InsTypeModel = require('../models/insuranceType');
 InsGradeModel = require('../models/insuranceGrade');
+SettingModel = require('../models/setting');
+OrderModel = require('../models/order');
 
 BaseController = require('./BaseController');
 View = require('../views/base');
@@ -204,8 +207,15 @@ module.exports = BaseController.extend({
             } else if (inviteInfo.receiverRole == 'Client') {
                 let defaultDoctor = await UserModel.findOne({role:'Doctor', isDefault: true});
                 senderEmail = defaultDoctor.email;
+            } else {
+                senderEmail = inviteInfo.senderEmail;
             }
+        } else {
+            senderEmail = inviteInfo.senderEmail;
         }
+
+        console.log("--------------11111------Invite Info--------");
+        console.log(inviteInfo);
 
         if (inviteInfo.status == 'Awaiting') {
             // add / update user from users table
@@ -240,6 +250,9 @@ module.exports = BaseController.extend({
                 req.flash('success', "Accept Invitation Successfully!");
                 return res.redirect(backURL);
             }
+
+            // If receiver role is client and sender role is Doctor, system get client info from order....
+
             let password = crypto.createHash('md5').update(inviteInfo.password).digest("hex");
             userInfo = {
                 email: inviteInfo.receiverEmail,
@@ -260,6 +273,31 @@ module.exports = BaseController.extend({
                 emailActive: 'Enabled',
                 token: '',//Password Reset Token
             };
+
+            console.log("---------222-----Accepted User Info--------");
+            console.log(userInfo);
+
+            if (inviteInfo.senderRole == 'Doctor' && inviteInfo.receiverRole == 'Client') {
+                let lastOrderInfo = await OrderModel.findOne({doctorEmail: inviteInfo.senderEmail, clientEmail: inviteInfo.receiverEmail});
+                if (lastOrderInfo) {
+                    userInfo.phone = lastOrderInfo.clientPhone;
+                    userInfo.nameAr = lastOrderInfo.clientName;
+                    userInfo.nameEn = lastOrderInfo.clientName;
+                    // Get Insurance company, grade, type
+                    userInfo.insuranceCompany = lastOrderInfo.insuranceCompany;
+                    userInfo.insuranceType = lastOrderInfo.insuranceType;
+                    userInfo.insuranceGrade = lastOrderInfo.insuranceGrade;
+                }
+            }
+
+            if (inviteInfo.senderRole == 'Admin' && inviteInfo.receiverRole == 'Salesman') {
+                let defaultCompany = await UserModel.findOne({role:'Company', isDefault: true});
+                userInfo.companyName = defaultCompany._id.toString();
+            }
+
+            console.log("---------333-----Accepted User Info--------");
+            console.log(userInfo);
+
             await UserModel.collection.insertOne(userInfo);
 
             // Force Login
@@ -272,6 +310,7 @@ module.exports = BaseController.extend({
             await inviteInfo.save();
 
             console.log(`=====> ${userInfo.email} accepted invitation from ${inviteInfo.senderEmail}`);
+
             req.flash('success', "Accept Invitation Successfully!");
             return res.redirect(backURL);
         } else { //Already accepted invitation
@@ -313,7 +352,7 @@ module.exports = BaseController.extend({
         }
         let v = new View(res, 'backend/invite/info');
         if (req.session.user.isDoneProfile) {
-            return res.redirect('/users/profile?m=view');
+            return res.redirect('/dashboard');
         }
         let nationalities = await CountryModel.find().sort({name:1});
         let spec_list = await SpecModel.find().sort({name:1});
@@ -331,6 +370,9 @@ module.exports = BaseController.extend({
         }
 
         console.log(curIp, geo);
+
+        console.log('=====================');
+        console.log(spec_list);
 
         v.render({
             title: 'Profile Information',
@@ -363,13 +405,32 @@ module.exports = BaseController.extend({
         rq.gpsLong = (rq.gpsLong) ? Number(rq.gpsLong) : config.mapCenter.long;
 
         userInfo = Object.assign(userInfo, rq);
+
+        let defaultComms = await SettingModel.findOne({settingKey: "commissions"});
+        let defaultSalesman = await UserModel.findOne({role:'Salesman', isDefault: true});
+        let defaultCompany = await UserModel.findOne({role:'Company', isDefault: true});
+        let defaultDoctor = await UserModel.findOne({role:'Doctor', isDefault: true});
+        let defaultPharmacy = await UserModel.findOne({role:'Pharmacy', isDefault: true});
+
+        let dComm = 0;
+        if (userInfo.role == 'Salesman') {
+            dComm = defaultComms.content.Salesman;
+        } else if(userInfo.role == 'Company') {
+            dComm = defaultComms.content.Company;
+        } else if(userInfo.role == 'Doctor') {
+            dComm = defaultComms.content.Doctor;
+        } else if (userInfo.role == 'Pharmacy') {
+            dComm = defaultComms.content.Pharmacy;
+        }
+
+        userInfo.commissions = dComm;
         await UserModel.updateOne({_id: userInfo._id}, userInfo);
 
         req.session.user = userInfo;
         await req.session.save();
 
         req.flash('success', 'Updated Profile Information Successfully!');
-        return res.redirect('/users/profile?m=edit');
+        return res.redirect('/dashboard');
     },
 
     deleteInvite: async function (req, res) {

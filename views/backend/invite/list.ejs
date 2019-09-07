@@ -24,30 +24,30 @@ var formatTime = function (ts) {
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">Invitation List</h4>
+                    <h4 class="page-title"><%= i18n.__("Invitation List") %></h4>
                 </div>
                 <div class="col-sm-8 col-9 text-right m-b-20">
                     <% if(session.user.role == 'Salesman') { //Salesman Invitation  %>
-                        <a href="/salesman/invite/add" class="btn btn btn-primary btn-rounded float-right">
-                            <i class="fa fa-plus"></i> Invite New User
-                        </a>
+                    <a href="/salesman/invite/add" class="btn btn btn-primary btn-rounded float-right">
+                        <i class="fa fa-plus"></i> <%= i18n.__("Invite New User") %>
+                    </a>
                     <% } else { // Admin Invitation %>
-                        <a href="/admin/member/add?s=all" class="btn btn btn-primary btn-rounded float-right">
-                            <i class="fa fa-plus"></i> Invite New User
-                        </a>
+                    <a href="/admin/member/add?s=all" class="btn btn btn-primary btn-rounded float-right">
+                        <i class="fa fa-plus"></i> <%= i18n.__("Invite New User") %>
+                    </a>
                     <% } %>
                 </div>
                 <% if(error && error.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-danger" role="alert">
-                            <strong>Error!</strong> <%= error %>
+                            <strong><%= i18n.__("Error!") %></strong> <%= i18n.__(error) %>
                         </div>
                     </div>
                 <% } %>
                 <% if(success && success.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-success" role="alert">
-                            <strong>Success!</strong> <%= success %>
+                            <strong><%= i18n.__("Success!") %></strong> <%= i18n.__(success) %>
                         </div>
                     </div>
                 <% } %>
@@ -58,15 +58,15 @@ var formatTime = function (ts) {
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                                 <tr>
-                                    <th>Sender Email</th>
-                                    <th>Sender Role</th>
-                                    <th>Receiver Email</th>
-                                    <th>Receiver Role</th>
-                                    <th>Password</th>
-                                    <th>Status</th>
-                                    <th>CreatedAt</th>
-                                    <th>AcceptedAt</th>
-                                    <th>Action</th>
+                                    <th><%= i18n.__("Sender Email") %></th>
+                                    <th><%= i18n.__("Sender Role") %></th>
+                                    <th><%= i18n.__("Receiver Email") %></th>
+                                    <th><%= i18n.__("Receiver Role") %></th>
+                                    <th><%= i18n.__("Password") %></th>
+                                    <th><%= i18n.__("Status") %></th>
+                                    <th><%= i18n.__("CreatedAt") %></th>
+                                    <th><%= i18n.__("AcceptedAt") %></th>
+                                    <th><%= i18n.__("Action") %></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -78,7 +78,11 @@ var formatTime = function (ts) {
                                         <td><%= invites[i].receiverRole %></td>
                                         <td><%= invites[i].password %></td>
                                         <td>
-                                            <button type="button" class="btn btn-sm <%= (invites[i].status == "Accepted")?"btn-primary":"btn-secondary" %>"><%= invites[i].status %></button>
+                                            <%  if(invites[i].status == 'Accepted') {  %>
+                                                <span class="custom-badge status-green"><%= invites[i].status %></span>
+                                            <% } else  {  %>
+                                                <span class="custom-badge status-red"><%= invites[i].status %></span>
+                                            <% } %>
                                         </td>
                                         <td><%= formatTime(invites[i].createdAt) %></td>
                                         <td><%= (invites[i].acceptedAt)? formatTime(invites[i].acceptedAt):'N/A' %></td>
@@ -87,7 +91,7 @@ var formatTime = function (ts) {
                                                data-msg="Invitation"
                                                data-url="/invite/delete/<%= invites[i]._id %>"
                                                data-id="<%= invites[i]._id %>"
-                                               data-toggle="modal" data-target="#delete_box">Delete</a>
+                                               data-toggle="modal" data-target="#delete_box"><%= i18n.__("Delete") %></a>
                                         </td>
                                     </tr>
                                 <% } %>

@@ -14,38 +14,38 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
         <div class="content">
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                    <div class="dash-widget">
+                    <div class="dash-widget" style="cursor: pointer" onclick="location.href='/admin/doctor'">
                         <span class="dash-widget-bg1"><i class="fa fa-stethoscope" aria-hidden="true"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3><%= doctorsCount %></h3>
-                            <span class="widget-title1">Doctors <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title1"><%= i18n.__("Doctors") %> <i class="fa fa-check" aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                    <div class="dash-widget">
+                    <div class="dash-widget" style="cursor: pointer" onclick="location.href='/admin/company'">
                         <span class="dash-widget-bg2"><i class="fa fa-user-o"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3><%= companyCount %></h3>
-                            <span class="widget-title2">Companies <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title2"><%= i18n.__("Companies") %> <i class="fa fa-check" aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                    <div class="dash-widget">
+                    <div class="dash-widget" style="cursor: pointer" onclick="location.href='/admin/pharmacy'">
                         <span class="dash-widget-bg3"><i class="fa fa-user-md" aria-hidden="true"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3><%= pharmacyCount %></h3>
-                            <span class="widget-title3">Pharmacies <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title3"><%= i18n.__("Pharmacies") %> <i class="fa fa-check" aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                    <div class="dash-widget">
+                    <div class="dash-widget" style="cursor: pointer" onclick="location.href='/admin/commission-stat'">
                         <span class="dash-widget-bg4"><i class="fa fa-heartbeat" aria-hidden="true"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3><%= ordersCount %></h3>
-                            <span class="widget-title4">Total Closed Orders <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title4"><%= i18n.__("Total Closed Orders") %> <i class="fa fa-check" aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                     <div class="card">
                         <div class="card-body">
                             <div class="chart-title">
-                                <h4>Monthly Completed Orders</h4>
+                                <h4><%= i18n.__("Monthly Completed Orders") %></h4>
                             </div>
                             <canvas id="total_commissions_graph"></canvas>
                         </div>
@@ -65,7 +65,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                     <div class="card">
                         <div class="card-body">
                             <div class="chart-title">
-                                <h4>Monthly Registered Clients</h4>
+                                <h4><%= i18n.__("Monthly Registered Clients") %></h4>
                             </div>
                             <canvas id="client_bargraph"></canvas>
                         </div>
@@ -76,7 +76,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                 <div class="col-12 col-md-6 col-lg-6 col-xl-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title d-inline-block">New Clients </h4> <a href="/admin/client" class="btn btn-primary float-right">View all</a>
+                            <h4 class="card-title d-inline-block"><%= i18n.__("New Clients") %> </h4> <a href="/admin/client" class="btn btn-primary float-right"><%= i18n.__("View all") %></a>
                         </div>
                         <div class="card-block">
                             <div class="table-responsive">
@@ -91,7 +91,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                                 <td><%= newClients[i].email %></td>
                                                 <td><%= newClients[i].phone %></td>
                                                 <td>
-                                                    <a class="btn btn-primary btn-primary-one float-right" href="users/profile?m=edit&id=<%= newClients[i]._id %>">View</a>
+                                                    <a class="btn btn-primary btn-primary-one float-right" href="users/profile?m=edit&id=<%= newClients[i]._id %>"><%= i18n.__("View") %></a>
                                                 </td>
                                             </tr>
                                         <% } %>
@@ -104,8 +104,8 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                 <div class="col-12 col-md-6 col-lg-6 col-xl-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title d-inline-block">Doctors </h4>
-                            <a href="/admin/doctor" class="btn btn-primary float-right">View all</a>
+                            <h4 class="card-title d-inline-block"><%= i18n.__("Doctors") %> </h4>
+                            <a href="/admin/doctor" class="btn btn-primary float-right"><%= i18n.__("View all") %></a>
                         </div>
                         <div class="card-block">
                             <div class="table-responsive">
@@ -120,7 +120,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                             <td><%= doctors[i].email %></td>
                                             <td><%= doctors[i].phone %></td>
                                             <td>
-                                                <a class="btn btn-primary btn-primary-one float-right" href="users/profile?m=edit&id=<%= doctors[i]._id %>">View</a>
+                                                <a class="btn btn-primary btn-primary-one float-right" href="users/profile?m=edit&id=<%= doctors[i]._id %>"><%= i18n.__("View") %></a>
                                             </td>
                                         </tr>
                                     <% } %>

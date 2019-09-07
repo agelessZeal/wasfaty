@@ -2,6 +2,7 @@ let _, async, mongoose, BaseController, View;
 let config, axios, request, fs;
 let UserModel, MasterItemModel, ProductModel;
 let SettingModel;
+let FavProductModel;
 
 let nodemailer, ejs, transporter;
 
@@ -15,6 +16,7 @@ UserModel = require('../models/user');
 SettingModel = require('../models/setting');
 MasterItemModel = require('../models/masterItem');
 ProductModel = require('../models/item');
+FavProductModel = require('../models/favitem');
 
 BaseController = require('./BaseController');
 View = require('../views/base');
@@ -43,7 +45,71 @@ module.exports = BaseController.extend({
             session: req.session,
         });
     },
-
+    showTerms: async function (req, res) {
+        await this.config();///Make Demo Database...
+        let v;
+        v = new View(res, 'frontend/home/terms');
+        v.render({
+            title: 'Terms',
+            session: req.session,
+        });
+    },
+    showContactUs: async function (req, res) {
+        await this.config();///Make Demo Database...
+        let v;
+        v = new View(res, 'frontend/home/contact-us');
+        v.render({
+            title: 'Contact Us',
+            session: req.session,
+            error: req.flash('error'),
+            success: req.flash('success')
+        });
+    },
+    sendContactUsDetails: async function(req, res) {
+        let email = req.body.email.trim();
+        let contactDetails = req.body.contactDetail.trim();
+        if (!contactDetails) {
+            req.flash('error','Error');
+            return res.redirect('/contact-us');
+        }
+        ejs.renderFile("views/email/send-contact.ejs",
+            {
+                site_url: config.info.site_url,
+                msgTitle: 'Contact Message',
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                userEmail: email,
+                userPhone: req.body.phone,
+                msg: contactDetails,
+            },
+            function (err, data) {
+                if (err) {
+                    console.log(err);
+                    req.flash('error', 'Email Sending Failed');
+                    return res.redirect('/contact-us');
+                } else {
+                    var mailOptions = {
+                        from: config.node_mail.mail_account, // sender address
+                        to: config.contactEmail, // list of receivers
+                        subject: '[' + config.info.site_name + '] Contact Message', // Subject line
+                        text: `${config.info.site_name} ✔`, // plaintext body
+                        html: data // html body
+                    };
+                    // send mail with defined transport object
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            console.log(error);
+                            req.flash('error', 'Email Sending Failed');
+                            return res.redirect('/contact-us');
+                        } else {
+                            console.log('Message sent: ' + info.response);
+                            req.flash('success', 'Sent your message to the service owner!');
+                            return res.redirect('/contact-us');
+                        }
+                    });
+                }
+            });
+    },
     showProducts: async function (req, res) {
         let v;
         v = new View(res, 'frontend/home/product');
@@ -112,6 +178,91 @@ module.exports = BaseController.extend({
         });
     },
 
+    searchFavProducts: async function (req, res) {
+        let page, companyIds, brandIds, subIds,
+            mainIds, fromPrice = 0, toPrice = Infinity,
+            barcode, keyword, query = {}, pgOptions = {},
+            ret = {status:'fail', data:''};
+
+        page = (req.body.page)? req.body.page : 1 ;
+        companyIds = (req.body.companyIds)? req.body.companyIds: [];
+        brandIds = (req.body.brandIds)? req.body.brandIds:[];
+        subIds = (req.body.subIds)? req.body.subIds:[];
+        mainIds = (req.body.mainIds)? req.body.mainIds: [];
+
+        fromPrice = (req.body.fromPrice)? req.body.fromPrice : 0;
+        toPrice = (req.body.toPrice)? req.body.toPrice : Infinity;
+
+        keyword = (req.body.q)? req.body.q: '';
+        barcode = (req.body.barcode)? req.body.barcode: '';
+
+        pgOptions = {page: page, limit: 20, sort: {createdAt: -1}};
+
+        if (companyIds.length > 0)  query.cpyNameId = {$in: companyIds};
+        if (brandIds.length > 0)  query.brandId = {$in: brandIds};
+        if (subIds.length > 0)  query.subClassId = {$in: subIds};
+        if (mainIds.length > 0)  query.mainClassId = {$in: mainIds};
+
+        query.price = {$gte: Number(fromPrice), $lte: toPrice};
+
+        if (barcode) {
+            query.barcode = {$regex: `.*${barcode}.*`, '$options': 'i'};
+        }
+
+        if (keyword) {
+            query.$or = [{name_en: {$regex: `.*${keyword}.*`, '$options': 'i'}}, {name_ar: {$regex: `.*${keyword}.*`, '$options': 'i'}}];
+        }
+
+        if (!this.isLogin(req)) {
+            res.data = 'Please Login!';
+            return res.json(ret);
+        }
+
+        let favItems = await FavProductModel.find({createdBy: req.session.user._id.toString()});
+        let favIds = favItems.map((favitem) => favitem.itemId);
+        query.itemId = {$in: favIds};
+
+        ProductModel.paginate(query, pgOptions, function (err, result) {
+            if (err) {
+                ret.data = "Database Error";
+            } else {
+                ret.status = 'success';
+                ret.data = result;
+            }
+            res.json(ret);
+        });
+
+    },
+
+    addFavProduct: async function(req, res) {
+        let ret = {status:'fail', data:''};
+        let itemId = req.body.itemId;
+
+        if (!this.isLogin(req)) {
+            ret.data = 'Please login!';
+            return res.json(ret);
+        }
+
+        let itemInfo = await ProductModel.findOne({itemId: itemId});
+        if (itemInfo) {
+            ret.status = 'success';
+            ret.data = 'success';
+            let prevItemInfo = await FavProductModel.findOne({createdBy: req.session.user._id, itemId: itemId});
+            if (!prevItemInfo) {
+                await FavProductModel({
+                    itemId: itemId,
+                    createdBy: req.session.user._id.toString(),
+                    createdAt: new Date()
+                }).save();
+            } else {
+                console.log("Fav Item added already!.....");
+            }
+        } else {
+            ret.data = "Invalid Item!";
+        }
+        return res.json(ret);
+    },
+
     config: async function () {
         ///Add Admin
         let adminInfo = await UserModel.findOne({role: 'Admin'});
@@ -161,7 +312,7 @@ module.exports = BaseController.extend({
                 "isDefault": true,
                 "commissions" : config.defaultCommissions.Company
             });
-            await dCompany.save();
+            dCompany = await dCompany.save();
         }
         let dSalesman = await UserModel.findOne({role:'Salesman', isDefault: true});
         if (!dSalesman) {
@@ -182,7 +333,7 @@ module.exports = BaseController.extend({
                 "ipAddress" : "127.0.0.1",
                 "loginCount" : 9,
                 "birthDay" : "",
-                "companyName" : "5d0cf35dc3f9735620b17c60", // default company
+                "companyName": dCompany._id.toString(),
                 "gender" : "Female",
                 "nameAr" : "Wafaty Salesman",
                 "nameEn" : "Wafaty Salesman",
@@ -230,6 +381,41 @@ module.exports = BaseController.extend({
                 "commissions" : config.defaultCommissions.Doctor
             });
             await dDoctor.save();
+        }
+        let dPharmacy = await UserModel.findOne({role:'Pharmacy', isDefault: true});
+        if (!dPharmacy) {
+            dPharmacy = new UserModel({
+                "email" : "pharmacy@wasfaty.com",
+                "password" : "c4ca4238a0b923820dcc509a6f75849b",
+                "phone" : "234",
+                "pic" : "/uploads/avatar/avatar_E48uqenvUb.png",
+                "country" : "Saudi Arabia",
+                "city" : "Jeddah",
+                "address" : "Junt",
+                "status" : "Enabled",
+                "createdAt" : new Date(),
+                "role" : "Pharmacy",
+                "token" : "e5g4Gc8zws",
+                "emailActive" : "Enabled",
+                "__v" : 1,
+                "inviterEmailList" : [],
+                "ipAddress" : "127.0.0.1",
+                "loginCount" : 207,
+                "birthDay" : "05/06/2019",
+                "gender" : "Male",
+                "insuranceCompany" : "company32",
+                "insuranceGrade" : "company32",
+                "insuranceType" : "type-1",
+                "isDoneProfile" : true,
+                "nameAr" : "Wasfaty Pharmacy",
+                "nameEn" : "Wasfaty Pharmacy",
+                "nationality" : "Jordan",
+                "spec" : "",
+                "isDefault": true,
+                "companyName": dCompany._id.toString(),
+                "commissions" : config.defaultCommissions.Pharmacy
+            });
+            await dPharmacy.save();
         }
         // Add default commissions
         let commissions = await SettingModel.findOne({settingKey: "commissions"});

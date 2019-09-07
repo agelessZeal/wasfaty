@@ -9,40 +9,57 @@
     <%- include ../layouts/sidebar.ejs %>
     <div class="page-wrapper">
         <div class="content">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                    <div class="dash-widget" style="cursor: pointer" onclick="onClickTodayCommission()">
+                        <span class="dash-widget-bg2" style="background: #6955ce;"><i class="fa fa-line-chart"></i></span>
+                        <div class="dash-widget-info text-right">
+                            <h3><%= marketIndicator %></h3>
+                            <span class="widget-title2" style="background: #6955ce;">
+                                       <%= i18n.__("Market Indicator") %>
+                                       <i class="fa fa-check" aria-hidden="true"></i>
+                                    </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                    <div class="dash-widget">
+                    <div class="dash-widget" style="cursor: pointer" onclick="onClickTodayCommission()">
                         <span class="dash-widget-bg2"><i class="fa fa-money"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3><%= todayCommission %></h3>
-                            <span class="widget-title2">Today Commissions <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title2">
+                                       <%= i18n.__("Today Commissions") %>
+                                       <i class="fa fa-check" aria-hidden="true"></i>
+                                    </span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                    <div class="dash-widget">
+                    <div class="dash-widget" style="cursor: pointer" onclick="onClickMonthCommission()">
                         <span class="dash-widget-bg1"><i class="fa fa-money" aria-hidden="true"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3><%= monthCommission %></h3>
-                            <span class="widget-title1">Commissions in this month <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title1"><%= i18n.__("Commissions in this month") %> <i class="fa fa-check" aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                    <div class="dash-widget">
+                    <div class="dash-widget"  style="cursor: pointer" onclick="onClickTodayOrders()">
                         <span class="dash-widget-bg3"><i class="fa fa-database" aria-hidden="true"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3><%= todayOrders %></h3>
-                            <span class="widget-title3">Today Orders <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title3"><%= i18n.__("Today Orders") %> <i class="fa fa-check" aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                    <div class="dash-widget">
+                    <div class="dash-widget" style="cursor: pointer" onclick="location.href='/doctor/clients'">
                         <span class="dash-widget-bg4"><i class="fa fa-users" aria-hidden="true"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3><%= clientCount %></h3>
-                            <span class="widget-title4">Client Counts <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title4"><%= i18n.__("Client Counts") %> <i class="fa fa-check" aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
@@ -52,7 +69,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="chart-title">
-                                <h4>Monthly Total Commission For This Year</h4>
+                                <h4><%= i18n.__("Monthly Total Commission For This Year") %></h4>
                             </div>
                             <canvas id="total_commissions_graph"></canvas>
                         </div>
@@ -62,7 +79,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="chart-title">
-                                <h4>Monthly No of Clients For This Year</h4>
+                                <h4><%= i18n.__("Monthly No of Clients For This Year") %></h4>
                             </div>
                             <canvas id="client_bargraph"></canvas>
                         </div>
@@ -76,7 +93,27 @@
 <div class="sidebar-overlay" data-reff=""></div>
 
 <%- include ../layouts/footer.ejs %>
-
+<script>
+    function onClickTodayCommission() {
+        var todayDt = new Date();
+        todayDt.setHours(0, 0, 0, 0);
+        todayDt = formatTime(todayDt);
+        location.href = "/doctor/reports?fromDate=" + todayDt;
+    }
+    function onClickMonthCommission() {
+        var todayDt = new Date();
+        todayDt.setDate(1);
+        todayDt.setHours(0, 0, 0, 0);
+        todayDt = formatTime(todayDt);
+        location.href = "/doctor/reports?fromDate=" + todayDt;
+    }
+    function onClickTodayOrders() {
+        var todayDt = new Date();
+        todayDt.setHours(0, 0, 0, 0);
+        todayDt = formatTime(todayDt);
+        location.href = "/orders?fromDate=" + todayDt;
+    }
+</script>
 <script>
     // Line Chart
     var commGraphData = JSON.parse('<%- JSON.stringify(commGraphData) %>');

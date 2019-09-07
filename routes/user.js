@@ -29,8 +29,16 @@ router.get('/change-password', function (req, res) {
     user_controller.changePassword(req, res);
 });
 
+router.get('/reset-password', function (req, res) {
+    user_controller.resetPassword(req, res);
+});
+
 router.post('/change-password', function (req, res) {
     user_controller.updatePassword(req, res);
+});
+
+router.post('/reset-password/:userId', function (req, res) {
+    user_controller.updateUserPassword(req, res);
 });
 
 module.exports = router;

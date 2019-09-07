@@ -9,7 +9,7 @@
     <%- include ../layouts/sidebar.ejs %>
     <div class="page-wrapper">
         <div class="content">
-            <h3>Loyalty Point Settings</h3>
+            <h3><%= i18n.__("Loyalty Point Settings") %></h3>
             <div class="row">
                 <div class="col-md-4">
                     <form action="/admin/setting/loyalty-point/update" method="post">
@@ -23,10 +23,10 @@
                             </div>
                         <% } %>
                         <div class="form-group">
-                            <label>Loyalty Fee</label>
+                            <label><%= i18n.__("Loyalty Fee") %></label>
                             <input class="form-control" name="loyaltyPoint" value="<%= loyaltyPoint %>" type="number" step=".01" required>
                         </div>
-                        <button class="btn btn-primary" style="width: 100%">Save</button>
+                        <button class="btn btn-primary" style="width: 100%"><%= i18n.__("Save") %></button>
                     </form>
                 </div>
             </div>

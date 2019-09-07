@@ -28,6 +28,11 @@ order_controller = require('../controllers/OrderController');
 /**
  * Admin Routes
  */
+
+router.get('/closed-orders', function (req, res) {
+    order_controller.adminClosedOrders(req, res)
+});
+
 router.get('/item', function (req, res) {
     item_controller.showItems(req, res)
 });

@@ -13,8 +13,6 @@
     {"sub": true, "name": "Master Files", "icon": "fa fa-flag-o", "children": [
       {"name": "Item List", "url": "/admin/item", "title": "Item List"},
       {"name": "Countries", "url": "/country/list", "title": "Country List"},
-      {"name": "Cities", "url": "#", "title": ""},
-      {"name": "Areas", "url": "#", "title": ""},
       {"name": "Doctor Sub Specialist", "url": "/admin/specialist", "title": "Doctor Specialist"},
       {"name": "Insurance Companies", "url": "/admin/insurance/companies", "title": "Insurance Companies"},
       {"name": "Insurance Grades", "url": "/admin/insurance/grades", "title": "Insurance Grades"},
@@ -35,6 +33,7 @@
     ]},
     {"sub": false, "name": "Orders", "icon": "fa fa-calendar", "url": "/orders", "title": "Orders"},
     {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
+      {"name": "Closed Orders", "url": "/admin/closed-orders", "title": "Closed Orders"},
       {"name": "Commission statistics", "url": "/admin/commission-stat", "title": "Commission statistics"},
       {"name": "Order Reports", "url": "/admin/reports", "title": "Order Reports"}
     ]},
@@ -55,7 +54,9 @@
     {"sub": false, "name": "Orders", "url": "/pharmacy/orders", "title": "Orders", "icon": "fa fa-list"},
     {"sub": false, "name": "Item Catalog", "url": "/product", "title": "Item Catalog", "icon": "fa fa-list"},
     {"sub": true, "name": "Reports", "icon": "fa fa-flag-o", "children": [
-      {"name": "Orders", "url": "/pharmacy/reports", "title": "Order Reports"}
+      {"name": "My Reports", "url": "/pharmacy/reports", "title": "My Reports"},
+      {"name": "Doctor Commission statistics", "url": "/pharmacy/doctor/commission-stat", "title": "Commission statistics"},
+      {"name": "Doctor Order Reports", "url": "/pharmacy/doctor/reports", "title": "Doctor Order Reports"}
     ]}
   ],
   "Company" : [

@@ -11,10 +11,7 @@ var hideNotifications = function () {
     })
 };
 
-$('.ws-delete-link').click(function () {
-    $('#delete_box h3').text('Are you sure want to delete this ' + $(this).data('msg') + '?');
-    $('#delete_box a.btn-danger').attr('href', $(this).data('url'));
-});
+
 
 function showPosition(position) {
     $('input[name="gpsLat"]').val(position.coords.latitude);

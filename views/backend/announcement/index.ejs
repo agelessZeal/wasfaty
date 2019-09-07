@@ -30,26 +30,26 @@ var formatTime = function (ts) {
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">Announcement</h4>
+                    <h4 class="page-title"><%= i18n.__("Announcement") %></h4>
                 </div>
                 <% if(session.user.role == 'Admin') { %>
                     <div class="col-sm-8 col-9 text-right m-b-20">
                         <a href="/announcement/add" class="btn btn btn-primary btn-rounded float-right">
-                            <i class="fa fa-plus"></i> Add New Announcement
+                            <i class="fa fa-plus"></i> <%= i18n.__("Add New Announcement") %>
                         </a>
                     </div>
                 <% } %>
                 <% if(error && error.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-danger" role="alert">
-                            <strong>Error!</strong> <%= error %>
+                            <strong><%= i18n.__("Error!") %></strong> <%= i18n.__(error) %>
                         </div>
                     </div>
                 <% } %>
                 <% if(success && success.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-success" role="alert">
-                            <strong>Success!</strong> <%= success %>
+                            <strong><%= i18n.__("Success!") %></strong> <%= i18n.__(success) %>
                         </div>
                     </div>
                 <% } %>
@@ -60,12 +60,12 @@ var formatTime = function (ts) {
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>UserType</th>
-                                <th>CreatedAt</th>
-                                <th>Action</th>
+                                <th><%= i18n.__("ID") %></th>
+                                <th><%= i18n.__("Title") %></th>
+                                <th><%= i18n.__("Description") %></th>
+                                <th><%= i18n.__("UserType") %></th>
+                                <th><%= i18n.__("CreatedAt") %></th>
+                                <th><%= i18n.__("Action") %></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -74,15 +74,15 @@ var formatTime = function (ts) {
                                     <td><%= news_list[i].annId %></td>
                                     <td><%= news_list[i].title %></td>
                                     <td><%= (news_list[i].description.length > 50) ? news_list[i].description.substr(0, 50) + '...':news_list[i].description %></td>
-                                    <td><%= (news_list[i].userType) ? news_list[i].userType : 'All' %></td>
+                                    <td><%= (news_list[i].userType) ? i18n.__(news_list[i].userType): i18n.__('All') %></td>
                                     <td><%= formatTime(news_list[i].createdAt) %></td>
                                     <td>
                                         <% if(session.user.role == 'Admin') { %>
-                                            <a href="/announcement/edit/<%= news_list[i].annId %>" class="btn btn-primary">Edit</a>
+                                            <a href="/announcement/edit/<%= news_list[i].annId %>" class="btn btn-primary"><%= i18n.__("Edit") %></a>
                                             <a href="#" onclick="onDeleteMessage('<%= news_list[i].annId %>')"
-                                               class="btn btn-danger">Delete</a>
+                                               class="btn btn-danger"><%= i18n.__("Delete") %></a>
                                         <% } else { %>
-                                            <a href="/announcement/edit/<%= news_list[i].annId %>" class="btn btn-primary">View Details</a>
+                                            <a href="/announcement/edit/<%= news_list[i].annId %>" class="btn btn-primary"><%= i18n.__("View Details") %></a>
                                         <% } %>
                                     </td>
                                 </tr>

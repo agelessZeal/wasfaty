@@ -55,19 +55,19 @@ module.exports = BaseController.extend({
         } else { //My Profile Mode
             userInfo = req.session.user;
             // Redirect user into Profile Information View where user should complete his profile.
-            if(!userInfo.isDoneProfile) {
+            if (!userInfo.isDoneProfile) {
                 return res.redirect('/invite/profile/info');
             }
         }
-        let nationalities = await CountryModel.find().sort({name:1});
-        let spec_list = await SpecModel.find().sort({name:1});
-        let ins_companies = await InsCompanyModel.find().sort({name:1});
-        let ins_grades = await InsGradeModel.find().sort({name:1});
-        let ins_types = await InsTypeModel.find().sort({name:1});
-        let companies = await UserModel.find({role:'Company', status:'Enabled'}).sort({nameEn:1});
+        let nationalities = await CountryModel.find().sort({name: 1});
+        let spec_list = await SpecModel.find().sort({name: 1});
+        let ins_companies = await InsCompanyModel.find().sort({name: 1});
+        let ins_grades = await InsGradeModel.find().sort({name: 1});
+        let ins_types = await InsTypeModel.find().sort({name: 1});
+        let companies = await UserModel.find({role: 'Company', status: 'Enabled'}).sort({nameEn: 1});
 
-        if(userInfo.role != req.session.user.role) {
-            if(req.session.user.role != 'Admin' && pgMode == 'edit') {
+        if (userInfo.role != req.session.user.role) {
+            if (req.session.user.role != 'Admin' && pgMode == 'edit') {
                 req.flash('error', 'Permission Denied!');
                 pgMode = 'view'; // force change into view mode
             }
@@ -116,8 +116,8 @@ module.exports = BaseController.extend({
         let userInfo = await UserModel.findOne({_id: userId});
         if (userInfo) {
 
-            req.body.gpsLat = (req.body.gpsLat)?Number(req.body.gpsLat):'';
-            req.body.gpsLong = (req.body.gpsLong)?Number(req.body.gpsLong):'';
+            req.body.gpsLat = (req.body.gpsLat) ? Number(req.body.gpsLat) : '';
+            req.body.gpsLong = (req.body.gpsLong) ? Number(req.body.gpsLong) : '';
 
             userInfo = Object.assign(userInfo, req.body);
             await userInfo.save();
@@ -148,6 +148,32 @@ module.exports = BaseController.extend({
             success: req.flash("success"),
         });
     },
+    resetPassword: async function (req, res) {
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/users/change-password';
+            return res.redirect('/auth/login');
+        }
+        if (req.session.user.role != "Admin") {
+            return res.redirect('/*');
+        }
+
+        if (!req.query.id) {
+            return res.redirect('/*');
+        }
+
+        let userId = req.query.id;
+        let userInfo = await UserModel.findOne({_id: userId});
+        let v;
+        v = new View(res, 'backend/user/reset-password');
+        v.render({
+            title: `Reset Password`,
+            session: req.session,
+            userId: userId,
+            userInfo: userInfo,
+            error: req.flash("error"),
+            success: req.flash("success"),
+        });
+    },
     updatePassword: function (req, res) {
         if (!this.isLogin(req)) {
             req.session.redirectTo = '/users/change-password';
@@ -168,6 +194,27 @@ module.exports = BaseController.extend({
             return res.redirect('/users/change-password');
         })
     },
+    updateUserPassword: async function (req, res) {
+        let userId = req.params.userId;
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/users/reset-password?id=' + userId;
+            return res.redirect('/auth/login');
+        }
+        let password = req.body.password;
+        if (password.length < config.pwd_length) {
+            req.flash('error', 'Password length must be at least 6 characters');
+            return res.redirect('/users/reset-password?id=' + userId);
+        }
+        password = crypto.createHash('md5').update(password).digest("hex");
+        UserModel.updateOne({_id: userId}, {password: password}, function (err, data) {
+            if (err) {
+                req.flash('error', "Database Error");
+                return res.redirect('/users/reset-password?id=' + userId);
+            }
+            req.flash('success', "Password changed successfully!");
+            return res.redirect('/users/reset-password?id=' + userId);
+        })
+    },
     deleteUser: async function (req, res) {
         if (!this.isLogin(req)) {
             return res.redirect('/auth/login');
@@ -186,18 +233,18 @@ module.exports = BaseController.extend({
 
     getUsers: async function (req, res) {
         let userType = req.params.userType,
-            ret = {status:'success', data:''};
+            ret = {status: 'success', data: ''};
 
         if (!this.isLogin(req)) {
             ret.data = 'Please Login!';
-            return  res.json(ret);
+            return res.json(ret);
         }
 
         let users;
         if (userType == 'All') {
-            users =  await UserModel.find({isDoneProfile: true, role: {$ne:'Admin'}}).sort({createdAt: -1});
+            users = await UserModel.find({isDoneProfile: true, role: {$ne: 'Admin'}}).sort({createdAt: -1});
         } else {
-            users =  await UserModel.find({role: userType, isDoneProfile: true}).sort({createdAt: -1});
+            users = await UserModel.find({role: userType, isDoneProfile: true}).sort({createdAt: -1});
         }
         ret.status = 'success';
         ret.data = users;
@@ -206,18 +253,21 @@ module.exports = BaseController.extend({
 
     getReportUsers: async function (req, res) {
         let userType = req.params.userType,
-            ret = {status:'success', data:''};
+            ret = {status: 'success', data: ''};
 
         if (!this.isLogin(req)) {
             ret.data = 'Please Login!';
-            return  res.json(ret);
+            return res.json(ret);
         }
 
         let users;
         if (userType == 'All') {
-            users =  await UserModel.find({isDoneProfile: true, role: {$in: ['Salesman', 'Company', 'Pharmacy', 'Doctor']}}).sort({createdAt: -1});
+            users = await UserModel.find({
+                isDoneProfile: true,
+                role: {$in: ['Salesman', 'Company', 'Pharmacy', 'Doctor']}
+            }).sort({createdAt: -1});
         } else {
-            users =  await UserModel.find({role: userType, isDoneProfile: true}).sort({createdAt: -1});
+            users = await UserModel.find({role: userType, isDoneProfile: true}).sort({createdAt: -1});
         }
         ret.status = 'success';
         ret.data = users;
@@ -228,7 +278,7 @@ module.exports = BaseController.extend({
         let ip = this.getClientIp(req);
         let geo = geoip.lookup(ip);
         if (geo) {
-            return res.json({gpsLat:geo.ll[0], gpsLong: geo.ll[1]});
+            return res.json({gpsLat: geo.ll[0], gpsLong: geo.ll[1]});
         } else {
             return res.json({gpsLat: config.mapCenter.lat, gpsLong: config.mapCenter.long});
         }

@@ -25,7 +25,7 @@
                         <span class="dash-widget-bg1"><i class="fa fa-stethoscope" aria-hidden="true"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3>98</h3>
-                            <span class="widget-title1">Doctors <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title1"><%= i18n.__("Doctors") %> <i class="fa fa-check" aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                         <span class="dash-widget-bg4"><i class="fa fa-heartbeat" aria-hidden="true"></i></span>
                         <div class="dash-widget-info text-right">
                             <h3>618</h3>
-                            <span class="widget-title4">Orders <i class="fa fa-check" aria-hidden="true"></i></span>
+                            <span class="widget-title4"><%= i18n.__("Orders") %> <i class="fa fa-check" aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title d-inline-block">Open Orders</h4>
-                            <a href="appointments.html" class="btn btn-primary float-right">View all</a>
+                            <a href="appointments.html" class="btn btn-primary float-right"><%= i18n.__("View all") %></a>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -90,9 +90,9 @@
                                     <thead class="d-none">
                                     <tr>
                                         <th>Patient Name</th>
-                                        <th>Doctor Name</th>
+                                        <th><%= i18n.__("Doctor Name") %></th>
                                         <th>Timing</th>
-                                        <th class="text-right">Status</th>
+                                        <th class="text-right"><%= i18n.__("Status") %></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -200,7 +200,7 @@
                 <div class="col-12 col-md-6 col-lg-4 col-xl-4">
                     <div class="card member-panel">
                         <div class="card-header bg-white">
-                            <h4 class="card-title mb-0">Doctors</h4>
+                            <h4 class="card-title mb-0"><%= i18n.__("Doctors") %></h4>
                         </div>
                         <div class="card-body">
                             <ul class="contact-list">
@@ -291,7 +291,7 @@
                             </ul>
                         </div>
                         <div class="card-footer text-center bg-white">
-                            <a href="doctors.html" class="text-muted">View all Doctors</a>
+                            <a href="doctors.html" class="text-muted"><%= i18n.__("View all Doctors") %></a>
                         </div>
                     </div>
                 </div>
@@ -301,7 +301,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title d-inline-block">New Patients </h4>
-                            <a href="patients.html" class="btn btn-primary float-right">View all</a>
+                            <a href="patients.html" class="btn btn-primary float-right"><%= i18n.__("View all") %></a>
                         </div>
                         <div class="card-block">
                             <div class="table-responsive">

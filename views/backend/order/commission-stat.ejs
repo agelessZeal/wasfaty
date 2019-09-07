@@ -61,7 +61,7 @@ var myCommission = 0;
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">Order Reports</h4>
+                    <h4 class="page-title"><%= i18n.__("Order Reports") %></h4>
                 </div>
             </div>
             <!-----------Search Filter------------->
@@ -70,33 +70,26 @@ var myCommission = 0;
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group">
-                                <label>User Type</label>
+                                <label><%= i18n.__("User Type") %></label>
                                 <select class="form-control" id="filterUserType">
-                                    <option value="All" <%= (userType == 'All') ? 'selected' : '' %> >All</option>
-                                    <option value="Wasfaty" <%= (userType == 'Wasfaty') ? 'selected' : '' %>>Wasfaty
-                                    </option>
-                                    <option value="Salesman" <%= (userType == 'Salesman') ? 'selected' : '' %>>
-                                        Salesman
-                                    </option>
-                                    <option value="Pharmacy" <%= (userType == 'Pharmacy') ? 'selected' : '' %>>
-                                        Pharmacy
-                                    </option>
-                                    <option value="Doctor" <%= (userType == 'Doctor') ? 'selected' : '' %>>Doctor
-                                    </option>
-                                    <option value="Company" <%= (userType == 'Company') ? 'selected' : '' %>>Company
-                                    </option>
+                                    <option value="All" <%= (userType == 'All') ? 'selected' : '' %> ><%= i18n.__("All") %></option>
+                                    <option value="Wasfaty" <%= (userType == 'Wasfaty') ? 'selected' : '' %>><%= i18n.__("Wasfaty") %></option>
+                                    <option value="Salesman" <%= (userType == 'Salesman') ? 'selected' : '' %>><%= i18n.__("Salesman") %></option>
+                                    <option value="Pharmacy" <%= (userType == 'Pharmacy') ? 'selected' : '' %>><%= i18n.__("Pharmacy") %></option>
+                                    <option value="Doctor" <%= (userType == 'Doctor') ? 'selected' : '' %>><%= i18n.__("Doctor") %></option>
+                                    <option value="Company" <%= (userType == 'Company') ? 'selected' : '' %>><%= i18n.__("Company") %></option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>User Email</label>
+                                <label><%= i18n.__("User Email") %></label>
                                 <select class="form-control" id="filterUserEmails">
-                                    <option value="All">All</option>
+                                    <option value="All"><%= i18n.__("All") %></option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
-                                <label>From Date</label>
+                                <label><%= i18n.__("From Date") %></label>
                                 <div class="cal-icon">
                                     <input type="text" name="fromDate"
                                            value="<%= (fromDate) ? formatTimeWithOffset(fromDate) : '' %>"
@@ -104,7 +97,7 @@ var myCommission = 0;
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>To Date</label>
+                                <label><%= i18n.__("To Date") %></label>
                                 <div class="cal-icon">
                                     <input type="text" name="toDate"
                                            value="<%= (toDate) ? formatTimeWithOffset(toDate) : '' %>"
@@ -114,10 +107,10 @@ var myCommission = 0;
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
-                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()">Search</button>
+                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()"><%= i18n.__("Search") %></button>
                             </div>
                             <div class="form-group">
-                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()"><%= i18n.__("Reset") %>
                                 </button>
                             </div>
                         </div>
@@ -132,13 +125,13 @@ var myCommission = 0;
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                             <tr>
-                                <th>User</th>
-                                <th>UserType</th>
-                                <th>No of Orders</th>
-                                <th>Order Total Amount</th>
-                                <th>Total Commission</th>
-                                <th>View</th>
-                                <th>Issue Check</th>
+                                <th><%= i18n.__("User") %></th>
+                                <th><%= i18n.__("UserType") %></th>
+                                <th><%= i18n.__("No of Orders") %></th>
+                                <th><%= i18n.__("Order Total Amount") %></th>
+                                <th><%= i18n.__("Total Commission") %></th>
+                                <th><%= i18n.__("View") %></th>
+                                <th><%= i18n.__("Issue Check") %></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -152,13 +145,13 @@ var myCommission = 0;
                                     <td>
                                         <button class="btn btn-secondary"
                                                 onclick="onClickViewDetails('<%= data_list[i].email %>', '<%= data_list[i].userType %>')">
-                                            <i class="fa fa-eye m-r-5"></i> View Details
+                                            <i class="fa fa-eye m-r-5"></i> <%= i18n.__("View") %>
                                         </button>
                                     </td>
                                     <td>
                                         <button class="btn btn-primary"
                                                 onclick="onClickCheckDetails('<%= data_list[i].email %>', '<%= data_list[i].userType %>', '<%= formatMoney(data_list[i].userCommAmount) %>')">
-                                            <i class="fa fa-eye m-r-5"></i> Issue Check
+                                            <i class="fa fa-eye m-r-5"></i> <%= i18n.__("Issue Check") %>
                                         </button>
                                     </td>
                                 </tr>
@@ -192,7 +185,7 @@ var myCommission = 0;
             success: function (res) {
                 if (res.status == 'success') {
                     var users = res.data;
-                    var userEmailHTML = `<option value="All">All</option>`;
+                    var userEmailHTML = `<option value="All"><%= i18n.__("All") %></option>`;
                     for (var i = 0; i < users.length; i++) {
                         userEmailHTML += `<option value="${users[i].email}">${users[i].email}</option>`;
                     }

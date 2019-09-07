@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+var formatTime = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month<10){ month = '0' + month;}
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day<10){ day = '0' + day;}
+    return year+"-"+month + "-"+day;
+}
+var formatTimeWithOffset = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    date  = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return month + "/" + day + "/" + year;
+}
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-4 col-3">
+                    <h4 class="page-title"><%= i18n.__(title) %></h4>
+                </div>
+            </div>
+            <!-----------Search Filter------------->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label><%= i18n.__("From Date") %></label>
+                                <div class="cal-icon">
+                                    <input type="text" name="fromDate" value="<%= (fromDate)? formatTimeWithOffset(fromDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label><%= i18n.__("To Date") %></label>
+                                <div class="cal-icon">
+                                    <input type="text" name="toDate" value="<%= (toDate)? formatTimeWithOffset(toDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()"><%= i18n.__("Search") %></button>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()"><%= i18n.__("Reset") %></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-----------Search Filter------------->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-border table-striped custom-table datatable mb-0">
+                            <thead>
+                                <tr>
+                                    <% if(session.user.role != 'Doctor') { %>
+                                        <th><%= i18n.__("Doctor") %></th>
+                                    <% } %>
+                                    <% if(session.user.role != 'Client') { %>
+                                        <th><%= i18n.__("Client") %></th>
+                                    <% } %>
+                                    <th><%= i18n.__("Remark") %></th>
+                                    <th><%= i18n.__("Mobile") %></th>
+                                    <th><%= i18n.__("Order Type") %></th>
+                                    <th><%= i18n.__("Status") %></th>
+                                    <th><%= i18n.__("CreatedAt") %></th>
+                                    <th><%= i18n.__("UpdatedAt") %></th>
+                                    <th class="text-right"><%= i18n.__("Action") %></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <% for(var i = 0; i<data_list.length; i++) {  %>
+                                <tr>
+                                    <% if(session.user.role != 'Doctor') { %>
+                                        <td><%= data_list[i].doctorEmail %></td>
+                                    <% } %>
+                                    <% if(session.user.role != 'Client') { %>
+                                        <td><%= data_list[i].clientEmail %></td>
+                                    <% } %>
+                                    <td><%= data_list[i].remark %></td>
+                                    <td><%= data_list[i].clientPhone %></td>
+                                    <td>
+                                        <%  if(data_list[i].orderType == 'Rejected') {  %>
+                                            <span class="custom-badge status-red"><%= i18n.__("Rejected") %></span>
+                                        <% } else  {  %>
+                                            <span class="custom-badge status-green"><%= i18n.__(data_list[i].orderType) %></span>
+                                        <% } %>
+                                    </td>
+                                    <td><%= i18n.__(data_list[i].status) %></td>
+                                    <td><%= formatTime(data_list[i].createdAt) %></td>
+                                    <td><%= (data_list[i].updatedAt) ? formatTime(data_list[i].updatedAt):'' %></td>
+                                    <td class="text-right">
+                                        <a class="btn btn-success" href="/orders/view/<%= data_list[i].orderId %>">
+                                            <i class="fa fa-eye m-r-5"></i> <%= i18n.__("View") %>
+                                        </a>
+                                        <% if(session.user.role == 'Admin') {  %>
+                                            <a class="btn btn-primary"
+                                               href="/orders/closed-edit/<%= data_list[i].orderId %>">
+                                                <i class="fa fa-pencil m-r-5"></i> <%= i18n.__("Edit") %>
+                                            </a>
+                                            <a class="btn btn-danger ws-delete-link" style="display: none"
+                                               href="#"
+                                               data-msg="<%= i18n.__("order") %>"
+                                               data-url="/orders/delete/<%= data_list[i].orderId %>"
+                                               data-toggle="modal"
+                                               data-target="#delete_box">
+                                                <i class="fa fa-trash-o m-r-5"></i>
+                                                <%= i18n.__("Delete") %>
+                                            </a>
+                                        <% }%>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+<script>
+    function onSearchReport() {
+
+        var fromDate = $('input[name="fromDate"]').val();
+        var toDate = $('input[name="toDate"]').val();
+        if (toDate) {
+            if (fromDate) {
+                location.href = '/admin/closed-orders?fromDate=' + formatTime(fromDate) + "&toDate=" + formatTime(toDate);
+
+            } else {
+                location.href = '/admin/closed-orders?toDate=' + formatTime(toDate);
+            }
+        } else {
+            if (fromDate) {
+                fromDate = formatTime(fromDate);
+                location.href = '/admin/closed-orders?fromDate=' + fromDate;
+            }
+        }
+
+
+    }
+    function onResetReportFilter() {
+        location.href = '/admin/closed-orders';
+    }
+</script>
+</body>
+</html>

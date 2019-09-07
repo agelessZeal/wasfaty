@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include ../layouts/header.ejs %>
+<%
+var lang = getLocale();
+var suffix = (lang == 'ar') ? 'Ar' : 'En';
+
+var formatTime = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return year + "-" + month + "-" + day;
+}
+function formatMoney(n, c, d, t) {
+    var c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+            j = (j = i.length) > 3 ? j % 3 : 0;
+
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+}
+var formatTimeWithOffset = function (ts) {
+    var date = new Date(ts);
+    // Years part from the timestamp
+    date  = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+    var year = date.getFullYear();
+    // Month part from the timestamp
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = '0' + month;
+    }
+    // Day part from the timestamp
+    var day = date.getDate();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    return month + "/" + day + "/" + year;
+}
+
+var itemTotalCommission = 0;
+var myCommission = 0;
+
+%>
+<body>
+<div class="main-wrapper">
+    <%- include ../layouts/menubar.ejs %>
+    <%- include ../layouts/sidebar.ejs %>
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-4 col-3">
+                    <h4 class="page-title"><%= i18n.__("Doctor Order Reports") %></h4>
+                </div>
+            </div>
+            <!-----------Search Filter------------->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label><%= i18n.__("Doctor Email") %></label>
+                                    <select class="form-control" id="filterUserEmails">
+                                        <option value="All" <%= (userEmail == 'All' || userEmail == '') ? 'selected':'' %>><%= i18n.__("All") %></option>
+                                        <% for (var i = 0; i<doctorEmailList.length; i++) {  %>
+                                            <option value="<%= doctorEmailList[i] %>" <%= (userEmail == doctorEmailList[i]) ? 'selected':'' %>><%= doctorEmailList[i] %></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label><%= i18n.__("From Date") %></label>
+                                <div class="cal-icon">
+                                    <input type="text" name="fromDate" value="<%= (fromDate)? formatTimeWithOffset(fromDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><%= i18n.__("To Date") %></label>
+                                <div class="cal-icon">
+                                    <input type="text" name="toDate" value="<%= (toDate)? formatTimeWithOffset(toDate):'' %>" class="form-control datetimepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()"><%= i18n.__("Search") %></button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()"><%= i18n.__("Reset") %></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-----------Search Filter------------->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-border table-striped custom-table datatable mb-0">
+                            <thead>
+                            <tr>
+                                <th><%= i18n.__("Name") %></th>
+                                <th><%= i18n.__("Doctor") %></th>
+                                <th><%= i18n.__("OrderId") %></th>
+                                <th><%= i18n.__("OrderDate") %></th>
+                                <th><%= i18n.__("ItemNo") %></th>
+                                <th><%= i18n.__("ItemName") %></th>
+                                <th><%= i18n.__("Qty") %></th>
+                                <th><%= i18n.__("ItemPrice") %></th>
+                                <th><%= i18n.__("Amount") %></th>
+                                <th><%= i18n.__("Item") %><br><%= i18n.__("Commission(%)") %></th>
+                                <th><%= i18n.__("My") %><br><%= i18n.__("Commission") %></th>
+                                <th class="text-right"><%= i18n.__("Action") %></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for (var i = 0; i < data_list.length; i++) {
+                                itemTotalCommission += data_list[i].comm;
+                                myCommission += data_list[i].commAmount;
+                            %>
+                                <tr>
+                                    <td><%= data_list[i].email %></td>
+                                    <td><%= i18n.__("Doctor") %></td>
+                                    <td><%= data_list[i].orderId %></td>
+                                    <td><%= formatTime(data_list[i].orderDate) %></td>
+                                    <td><%= data_list[i].itemId %></td>
+                                    <td><%= itemObj[data_list[i].itemId]['name_' + lang] %></td>
+                                    <td><%= data_list[i].qty %></td>
+                                    <td><%= data_list[i].itemPrice %></td>
+                                    <td><%= data_list[i].totalAmount %></td>
+                                    <td><%= formatMoney(data_list[i].comm, 2) %></td>
+                                    <td><%= formatMoney(data_list[i].commAmount, 2) %></td>
+                                    <td class="text-right">
+                                        <a class="btn btn-success" href="/orders/view/<%= data_list[i].orderId %>">
+                                            <i class="fa fa-eye m-r-5"></i> <%= i18n.__("View") %>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-left" style="margin-top: 20px">
+                <div class="form-group">
+                    <h4><%= i18n.__("Total Order Items") %> <%= data_list.length; %></h4>
+                    <h4><%= i18n.__("Total Item Commission :") %> <%= formatMoney(itemTotalCommission, 2); %></h4>
+                    <h4><%= i18n.__("Wasfaty Commission :") %> <%= formatMoney(myCommission, 2); %></h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../layouts/footer.ejs %>
+<script>
+
+    var filterEmail = '<%= userEmail; %>';
+     function onSearchReport() {
+
+        var fromDate = $('input[name="fromDate"]').val();
+        var toDate = $('input[name="toDate"]').val();
+
+        var userEmail = $('#filterUserEmails').val();
+
+        var searchURL = `/pharmacy/doctor/reports?e=${userEmail}`;
+
+        if (toDate) {
+            if (fromDate) {
+                searchURL += `&fromDate=${formatTime(fromDate)}&toDate=${formatTime(toDate)}`;
+            } else {
+                searchURL += `&toDate=${formatTime(toDate)}`;
+            }
+        } else {
+            if (fromDate) {
+                fromDate = formatTime(fromDate);
+                searchURL += `&fromDate=${fromDate}`;
+            }
+        }
+
+        location.href = searchURL;
+
+    }
+    function onResetReportFilter() {
+        location.href = `/pharmacy/doctor/reports`;
+    }
+</script>
+</body>
+</html>

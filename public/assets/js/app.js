@@ -148,19 +148,7 @@ $(document).ready(function($) {
 		});
 	}
 
-	// Datatable
-	if($('.datatable').length > 0) {
-		$('.datatable').DataTable({
-            // "bFilter": false, //hide search box
-            "aaSorting": [], // Disable Initial Sorting
-            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]], //Page Length Menu
-            dom: 'lBfrtip', // https://datatables.net/reference/option/dom
-            buttons: [ // https://datatables.net/reference/option/buttons.buttons.text
-                // 'copy', 'csv', 'excel', 'pdf', 'print'
-                { extend: 'excel', text: 'Export To Excel' }
-            ]
-        });
-	}
+
 
 	// Bootstrap Tooltip
 	if($('[data-toggle="tooltip"]').length > 0) {

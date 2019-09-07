@@ -44,8 +44,29 @@ router.get('/product', function (req, res) {
     home_controller.showProducts(req, res);
 });
 
+router.get('/contact-us', function (req, res) {
+    home_controller.showContactUs(req, res);
+});
+
+router.post('/contact-us', function (req, res) {
+    home_controller.sendContactUsDetails(req, res);
+});
+
+router.get('/terms-and-conditions', function (req, res) {
+    home_controller.showTerms(req, res);
+});
+
+
 router.post('/product/search/product', function (req, res) {
     home_controller.searchProducts(req, res);
+});
+
+router.post('/product/search/fav-product', function (req, res) {
+    home_controller.searchFavProducts(req, res);
+});
+
+router.post('/product/add/fav-product', function (req, res) {
+    home_controller.addFavProduct(req, res);
 });
 
 router.get('/dashboard', function (req, res) {
@@ -113,6 +134,14 @@ router.get('/pharmacy/reports', function (req, res) {
 
 router.get('/pharmacy/orders/view/:orderId', function (req, res) {
     pharmacy_controller.viewOrderDetail(req, res);
+});
+
+router.get('/pharmacy/doctor/commission-stat', function (req, res) {
+    pharmacy_controller.showCommissionStat(req, res);
+});
+
+router.get('/pharmacy/doctor/reports', function (req, res) {
+    pharmacy_controller.showDoctorReports(req, res);
 });
 
 router.post('/pharmacy/orders-item/update', function (req, res) {

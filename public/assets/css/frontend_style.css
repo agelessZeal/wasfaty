@@ -13,6 +13,26 @@ body {
 	height: 100%;
 	/*background-color: #1b1e21;*/
 }
+#termsAndCondition {
+	margin-top: 20px;
+}
+#termsAndCondition h2 {
+	color: #067386;
+}
+.contact-form-wrapper {
+	margin-top: 150px;
+	text-align: center;
+	max-width: 540px;
+	min-width: 320px;
+	width: 100%;
+}
+.contact-form-wrapper h2 {
+	color: white;
+}
+
+.contact-form-wrapper button {
+	width: 100%;
+}
 
 .ws-hide {
 	display: none !important;
@@ -1139,3 +1159,9 @@ Slick style
 	}
 }
 
+@media (max-width: 996px) {
+	.contact-form-wrapper {
+		margin-top: 20px;
+	}
+
+}

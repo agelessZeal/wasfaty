@@ -70,6 +70,7 @@ module.exports = BaseController.extend({
         for (i = 0; i < monthClosedOrders.length; i++) {
             monthCommissions += Number(monthClosedOrders[i].commAmount);
         }
+        monthCommissions = Number(monthCommissions.toFixed(2));
 
         let doctorCount = 0;
         let salesmanDoctors = [];
@@ -178,12 +179,19 @@ module.exports = BaseController.extend({
         if(req.session.user.role != 'Salesman') {
             return res.redirect('/*');
         }
-        users = await UserModel.find({role: 'Doctor','inviterEmailList':{$in:[req.session.user.email]}});
+        users = await UserModel.find({role: 'Doctor'});
+        let retUsers = [];
+        for (let i = 0; i<users.length; i++) {
+            if (users[i].inviterEmailList.indexOf(req.session.user.email) > -1) {
+                retUsers.push(users[i]);
+            }
+
+        }
         v = new View(res, 'backend/doctor/doctor-list');
         v.render({
             title: 'Doctor List',
             session: req.session,
-            users: users
+            users: retUsers
         });
     },
     addInvite: async function(req, res) {

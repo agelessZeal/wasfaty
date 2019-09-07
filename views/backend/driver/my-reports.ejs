@@ -49,7 +49,7 @@ var formatTimeWithOffset = function (ts) {
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">My Order Reports</h4>
+                    <h4 class="page-title"><%= i18n.__("My Order Reports") %></h4>
                 </div>
             </div>
             <!-----------Search Filter------------->
@@ -58,7 +58,7 @@ var formatTimeWithOffset = function (ts) {
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label>From Date</label>
+                                <label><%= i18n.__("From Date") %></label>
                                 <div class="cal-icon">
                                     <input type="text" name="fromDate" value="<%= (fromDate)? formatTimeWithOffset(fromDate):'' %>" class="form-control datetimepicker">
                                 </div>
@@ -66,7 +66,7 @@ var formatTimeWithOffset = function (ts) {
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label>To Date</label>
+                                <label><%= i18n.__("To Date") %></label>
                                 <div class="cal-icon">
                                     <input type="text" name="toDate" value="<%= (toDate)? formatTimeWithOffset(toDate):'' %>" class="form-control datetimepicker">
                                 </div>
@@ -74,12 +74,12 @@ var formatTimeWithOffset = function (ts) {
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
-                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()">Search</button>
+                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()"><%= i18n.__("Search") %></button>
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
-                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset</button>
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()"><%= i18n.__("Reset") %></button>
                             </div>
                         </div>
                     </div>
@@ -93,13 +93,13 @@ var formatTimeWithOffset = function (ts) {
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                             <tr>
-                                <th>Doctor</th>
-                                <th>Client</th>
-                                <th>Mobile</th>
-                                <th>Remark</th>
-                                <th>ClosedAt</th>
-                                <th>Transportation Fee</th>
-                                <th class="text-right">Action</th>
+                                <th><%= i18n.__("Doctor") %></th>
+                                <th><%= i18n.__("Client") %></th>
+                                <th><%= i18n.__("Mobile") %></th>
+                                <th><%= i18n.__("Remark") %></th>
+                                <th><%= i18n.__("ClosedAt") %></th>
+                                <th><%= i18n.__("Transportation Fee") %></th>
+                                <th class="text-right"><%= i18n.__("Action") %></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -113,7 +113,7 @@ var formatTimeWithOffset = function (ts) {
                                     <td><%= driverFee %></td>
                                     <td class="text-right">
                                         <a class="btn btn-success" href="/orders/view/<%= data_list[i].orderId %>">
-                                            <i class="fa fa-eye m-r-5"></i> View Order
+                                            <i class="fa fa-eye m-r-5"></i> <%= i18n.__("View") %>
                                         </a>
                                     </td>
                                 </tr>
@@ -124,8 +124,8 @@ var formatTimeWithOffset = function (ts) {
                 </div>
                 <div class="col-12 text-left" style="margin-top: 20px">
                     <div class="form-group">
-                        <h4>Total Order Items : <%= data_list.length; %></h4>
-                        <h4>Transportation Fee : <%= data_list.length * driverFee; %></h4>
+                        <h4><%= i18n.__("Total Order Items") %> : <%= data_list.length; %></h4>
+                        <h4><%= i18n.__("Transportation Fee") %> : <%= data_list.length * driverFee; %></h4>
                     </div>
                 </div>
             </div>

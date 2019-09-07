@@ -28,7 +28,7 @@ var formatTime = function (ts) {
                 </div>
                 <div class="col-sm-8 col-9 text-right m-b-20">
                     <a href="/admin/callcenter/add" class="btn btn btn-primary btn-rounded float-right">
-                        <i class="fa fa-plus"></i> Add CallCenter
+                        <i class="fa fa-plus"></i> <%= i18n.__("Add Call Center") %>
                     </a>
                 </div>
             </div>
@@ -38,16 +38,16 @@ var formatTime = function (ts) {
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                             <tr>
-                                <th>Name(EN/AR)</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>BirthDay</th>
-                                <th>Company</th>
-                                <th>Country</th>
-                                <th>City</th>
-                                <th>Status</th>
-                                <th>CreatedAt</th>
-                                <th class="text-right">Action</th>
+                                <th><%= i18n.__("Name(EN/AR)") %></th>
+                                <th><%= i18n.__("Email") %></th>
+                                <th><%= i18n.__("Phone") %></th>
+                                <th><%= i18n.__("BirthDay") %></th>
+                                <th><%= i18n.__("Company") %></th>
+                                <th><%= i18n.__("Country") %></th>
+                                <th><%= i18n.__("City") %></th>
+                                <th><%= i18n.__("Status") %></th>
+                                <th><%= i18n.__("CreatedAt") %></th>
+                                <th class="text-right"><%= i18n.__("Action") %></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -71,14 +71,18 @@ var formatTime = function (ts) {
                                         <div class="dropdown dropdown-action">
                                             <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="/users/profile?m=edit&id=<%= users[i]._id %>"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                <a class="dropdown-item" href="/users/profile?m=edit&id=<%= users[i]._id %>">
+                                                    <i class="fa fa-pencil m-r-5"></i> <%= i18n.__("Edit") %></a>
+                                                <a class="dropdown-item"
+                                                   href="/users/reset-password?id=<%= users[i]._id %>"><i
+                                                            class="fa fa-refresh m-r-5"></i> <%= i18n.__("Change Password") %></a>
                                                 <a class="dropdown-item ws-delete-link"
                                                    href="#"
                                                    data-msg="CallCenter"
                                                    data-url="/users/delete/<%= users[i]._id %>"
                                                    data-toggle="modal"
                                                    data-target="#delete_box">
-                                                    <i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                                    <i class="fa fa-trash-o m-r-5"></i> <%= i18n.__("Delete") %></a>
                                             </div>
                                         </div>
                                     </td>

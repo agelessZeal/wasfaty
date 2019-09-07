@@ -1,12 +1,11 @@
-
 <div id="delete_box" class="modal fade delete-modal" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center">
                 <img src="/assets/img/sent.png" alt="" width="50" height="46">
-                <h3>Are you sure want to delete this Call Center?</h3>
-                <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-                    <a href="#" class="btn btn-danger">Delete</a>
+                <h3><%= i18n.__("Are you sure want to delete this Call Center?") %></h3>
+                <div class="m-t-20"><a href="#" class="btn btn-white" data-dismiss="modal"><%= i18n.__("Close") %></a>
+                    <a href="#" class="btn btn-danger"><%= i18n.__("Delete") %></a>
                 </div>
             </div>
         </div>
@@ -45,7 +44,7 @@
 <script>
     var siteDomain = '<%= siteDomain %>';
     var wsPort = '<%= wsPort %>';
-    var userRole = '<%= (session && session.user && session.user.role)?session.user.role:'' %>';
+    var userRole = '<%= (session && session.user && session.user.role) ? session.user.role : '' %>';
 </script>
 
 <script src="/assets/js/notification_ws.js"></script>
@@ -53,6 +52,55 @@
 
 
 <script>
+
+    // Datatable
+    if($('.datatable').length > 0) {
+        $('.datatable').DataTable({
+            "language": {
+            	"url": "/<%= getLocale() %>.json"
+            },
+            // "bFilter": false, //hide search box
+            "aaSorting": [], // Disable Initial Sorting
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, '<%= i18n.__("All") %>']], //Page Length Menu
+            dom: 'lBfrtip', // https://datatables.net/reference/option/dom
+            buttons: [ // https://datatables.net/reference/option/buttons.buttons.text
+                // 'copy', 'csv', 'excel', 'pdf', 'print'
+                { extend: 'excel', text: '<%= i18n.__("Export To Excel") %>' }
+            ]
+        });
+    }
+
+    if ($('.my-datatable').length > 0) {
+        var table = $('.my-datatable').DataTable({
+            // "bFilter": false, //hide search box
+            "language": {
+                "url": "/<%= getLocale() %>.json"
+            },
+            "aaSorting": [], // Disable Initial Sorting
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, '<%= i18n.__("All") %>']], //Page Length Menu
+        });
+    }
+
+    var itemTable ;
+
+    if ($('.my-datatable-item').length > 0) {
+        itemTable = $('.my-datatable-item').DataTable({
+            // "bFilter": false, //hide search box
+            "language": {
+                "url": "/<%= getLocale() %>.json"
+            },
+            "aaSorting": [], // Disable Initial Sorting
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "<%= i18n.__("All") %>"]], //Page Length Menu
+        });
+    }
+
+
+
+    $('.ws-delete-link').click(function () {
+        $('#delete_box h3').text('<%= i18n.__("Are you sure want to delete this ") %> ' + $(this).data('msg') + '?');
+        $('#delete_box a.btn-danger').attr('href', $(this).data('url'));
+    });
+
     var formatTime = function (ts) {
         var offset = new Date().getTimezoneOffset();
         var date = new Date(ts);
@@ -73,4 +121,40 @@
         }
         return year + "-" + month + "-" + day;
     }
+
+    function isEmail(email) {
+        let emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+        return emailRegex.test(email);
+    }
+
+    function isPhoneNumber(phoneStr) {
+        var RE = /^[\d\.\-]+$/;
+        if (!RE.test(phoneStr)) {
+            console.log("You have entered an invalid phone number");
+            return false;
+        }
+        return true;
+    }
+
+    //https://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-dollars-currency-string-in-javascript
+    function formatMoney(n, c, d, t) {
+        var c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+            j = (j = i.length) > 3 ? j % 3 : 0;
+
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    }
+
+    var globalMsg = {
+        'Select': "<%= i18n.__('Select') %>",
+        'Please specify item record!': '<%= i18n.__('Please specify item record!') %>',
+        'Are you sure to create this order?': "<%= i18n.__('Are you sure to create this order?') %>",
+        'Added in favorite list successfully!': '<%= i18n.__('Added in favorite list successfully!') %>',
+        'Invalid Item!' : "<%= i18n.__('Invalid Item!') %>",
+        'Please login!': '<%= i18n.__('Please login!') %>',
+    };
+
 </script>

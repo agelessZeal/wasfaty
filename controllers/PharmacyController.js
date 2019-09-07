@@ -88,6 +88,39 @@ module.exports = BaseController.extend({
         let clientGraphData = await this.clientGraphData(clients);
         let commGraphData = await this.commissionGraphData(req.session.user.email);
 
+        /////////////////////////////////////////////////
+        // Search filters
+        let toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59,0,0);
+            dtQuery['$lte'] = toDate;
+        }
+
+        let orders, orderStatusObjList = {};
+        let myOrderIds = [];
+        let orderStatusList = await OrderStatusModel.find({phId: req.session.user._id}).sort({updatedAt:-1});
+
+        console.log('----------------Pharmacy showMyOrders-------------------------------------');
+        //console.log(orderStatusList);
+        orderStatusList.forEach(function(item) {
+            if (myOrderIds.indexOf(item.orderId)<0) {
+                myOrderIds.push(item.orderId);
+            }
+        });
+
+        orders = await OrderModel.find({orderId: {$in: myOrderIds}, status:{$ne:'Closed'}, createdAt: dtQuery});
+        orderStatusList.forEach(function(item) {
+            let orderid = item.orderId.toString();
+            if (!orderStatusObjList.hasOwnProperty(orderid)) {
+                orderStatusObjList[orderid] =  item;
+            }
+        });
+
+        console.log('Show orders.............', orderStatusList.length);
+        /////////////////////////////////////////////////
+        let marketIndicator = await this.getPerformance(req.session.user.email);
 
         v.render({
             title: 'Dashboard',
@@ -97,9 +130,12 @@ module.exports = BaseController.extend({
             todayOrders: todayOrders,
             clientCount: clients.length,
             commGraphData: commGraphData,
-            clientGraphData: clientGraphData
+            clientGraphData: clientGraphData,
+            data_list: orders,
+            marketIndicator: marketIndicator
         });
     },
+
     commissionGraphData: async function (pharmacyEmail) {
 
         let dt = new Date();
@@ -122,6 +158,7 @@ module.exports = BaseController.extend({
 
         return graphData;
     },
+
     clientGraphData: async function (clients) {
         let graphData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; //Total 12 Month
         let i;
@@ -132,6 +169,177 @@ module.exports = BaseController.extend({
         }
         return graphData;
     },
+
+    showDoctorReports: async function (req, res) {
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/pharmacy/doctor/reports';
+            return res.redirect('/auth/login');
+        }
+
+        if (req.session.user.role != "Pharmacy") {
+            return res.redirect('/*');
+        }
+
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59, 0, 0);
+            dtQuery['$lte'] = toDate;
+        }
+
+
+        let items = await ItemModel.find();
+        let itemObj = {};
+        for (let i = 0; i < items.length; i++) {
+            itemObj[items[i].itemId] = items[i];
+        }
+
+        let searchQuery = {};
+        searchQuery.email = req.session.user.email;
+        searchQuery.orderDate = dtQuery;
+
+        let orderItemHist = await OrderItemHistModel.find(searchQuery).sort({orderDate: -1});
+
+        // get pharmacy Order Id List
+        let pharmacyOrderIdList = [];
+        pharmacyOrderIdList = orderItemHist.map((oih) => oih.orderId);
+        pharmacyOrderIdList = pharmacyOrderIdList.filter(this.onlyUnique);
+
+        // userEmailList : doctor email......
+        let doctorEmailList = [], i;
+        for (i = 0; i<orderItemHist.length; i++) {
+            let orderInfo = await OrderModel.findOne({orderId: orderItemHist[i].orderId});
+            if (orderInfo) {
+                doctorEmailList.push(orderInfo.doctorEmail);
+            }
+        }
+
+        doctorEmailList = doctorEmailList.filter(this.onlyUnique);
+        let doctorOrderHist = await OrderItemHistModel.find({email: {$in: doctorEmailList}, orderId: {$in: pharmacyOrderIdList}}).sort({createdAt: -1});
+
+        let v = new View(res, 'backend/pharmacy/doctor-reports');
+        v.render({
+            title: 'Doctor Order Reports',
+            session: req.session,
+            data_list: doctorOrderHist,
+            itemObj: itemObj,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate,
+            userEmail: req.query.e,
+            doctorEmailList: doctorEmailList
+        });
+    },
+
+    // This function is used for the doctor commission data
+    showCommissionStat: async function (req, res) {
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/pharmacy/doctor/commission-stat';
+            return res.redirect('/auth/login');
+        }
+
+        if (req.session.user.role != "Pharmacy") {
+            return res.redirect('/*');
+        }
+
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59, 0, 0);
+            dtQuery['$lte'] = toDate;
+        }
+
+
+        let items = await ItemModel.find();
+        let itemObj = {};
+        for (let i = 0; i < items.length; i++) {
+            itemObj[items[i].itemId] = items[i];
+        }
+
+        let searchQuery = {};
+
+        if (typeof req.query.e == 'undefined') {
+            req.query.e = 'All';
+        }
+
+        searchQuery.email = req.session.user.email;
+        searchQuery.orderDate = dtQuery;
+
+        let orderItemHist = await OrderItemHistModel.find(searchQuery).sort({orderDate: -1});
+
+        // get pharmacy Order Id List
+        let pharmacyOrderIdList = [];
+        pharmacyOrderIdList = orderItemHist.map((oih) => oih.orderId);
+        pharmacyOrderIdList = pharmacyOrderIdList.filter(this.onlyUnique);
+
+        // userEmailList : doctor email......
+        let doctorEmailList = [], i;
+        for (i = 0; i<orderItemHist.length; i++) {
+            let orderInfo = await OrderModel.findOne({orderId: orderItemHist[i].orderId});
+            if (orderInfo) {
+                doctorEmailList.push(orderInfo.doctorEmail);
+            }
+        }
+
+        doctorEmailList = doctorEmailList.filter(this.onlyUnique);
+
+        let userCommRecs = [];
+        for (let userIdx = 0; userIdx < doctorEmailList.length; userIdx++) {
+
+            let userType = '', userInfo;
+            userInfo = await UserModel.findOne({email: doctorEmailList[userIdx]});
+            if (userInfo != null) {
+                userType = userInfo.role;
+            }
+
+            if (userInfo) {
+                let userOrderItemRecords = await OrderItemHistModel.find({email: userInfo.email , orderId: {$in: pharmacyOrderIdList}});
+                let totalOrderAmount = 0;
+                let userCommAmount = 0;
+                let orderIdList = [];
+                for (i = 0; i < userOrderItemRecords.length; i++) {
+                    if (orderIdList.indexOf(userOrderItemRecords[i].orderId) < 0) {
+                        orderIdList.push(userOrderItemRecords[i].orderId);
+                    }
+                    totalOrderAmount += userOrderItemRecords[i].totalAmount; // total order Amount
+                    userCommAmount += userOrderItemRecords[i].commAmount;
+                }
+                userCommRecs.push({
+                    email: doctorEmailList[userIdx],
+                    userType: 'Doctor',
+                    orderCount: orderIdList.length,
+                    totalOrderAmount: totalOrderAmount,
+                    userCommAmount: userCommAmount
+                })
+            }
+        }
+
+        let v = new View(res, 'backend/pharmacy/commission-stat');
+        v.render({
+            title: 'Commission statistics',
+            session: req.session,
+            data_list: userCommRecs,
+            itemObj: itemObj,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate,
+            userEmail: req.query.e,
+            doctorEmailList: doctorEmailList
+        });
+    },
+
     list: async function (req, res) {
         let v, users;
         if (!this.isLogin(req)) {
@@ -199,28 +407,6 @@ module.exports = BaseController.extend({
         });
 
         console.log('Show orders.............', orderStatusList.length);
-
-        for (let i = 0; i<orders.length; i ++) {
-            let orderinfo = orders[i];
-            if (orderStatusObjList.hasOwnProperty(orderinfo.orderId)) {
-                let orderstinfo = orderStatusObjList[orderinfo.orderId];
-                let orderst = orderstinfo.orderType;
-                if ( orderst != 'Rejected') {
-                    if (orderst == 'PhAccepted' || orderst == 'DriverAccepted') {
-                        orderinfo.status = "Under process";
-                    } else if (orderst == 'PhClosed' || orderst == 'DriverClosed') {
-                        orderinfo.status = "Closed";
-                    } else {
-                        //
-                    }
-                } else {
-                    orderinfo.orderType =  'Rejected';
-                }
-            } else {
-                orderinfo.orderType =  'Pending';
-            }
-        }
-
         v = new View(res, 'backend/pharmacy/my-orders');
         v.render({
             title: 'Orders',
@@ -230,6 +416,7 @@ module.exports = BaseController.extend({
             toDate: req.query.toDate
         });
     },
+
     showMyOrderReports: async function(req, res) {
         if (!this.isLogin(req)) {
             req.session.redirectTo = '/pharmacy/reports';
@@ -265,7 +452,7 @@ module.exports = BaseController.extend({
 
         let v = new View(res, 'backend/pharmacy/my-reports');
         v.render({
-            title: 'Order Reports',
+            title: 'My Reports',
             session: req.session,
             data_list: orderItemHist,
             itemObj: itemObj,
@@ -273,6 +460,7 @@ module.exports = BaseController.extend({
             toDate: req.query.toDate
         });
     },
+
     viewOrderDetail: async function(req, res) {
         let v, orderInfo, orderId, orderStInfo, orderPhInfo;
         orderId = req.params.orderId;
@@ -344,5 +532,33 @@ module.exports = BaseController.extend({
         ret.data = 'success';
         ret.status = "success";
         return res.json(ret);
+    },
+    getPerformance: async function(userEmail) {
+        let commHistData = await OrderItemHistModel.find();
+        let totalAmount = 0;
+        let myOrderAmount = 0;
+        for (let i = 0; i<commHistData.length; i++) {
+            totalAmount += Number(commHistData[i].totalAmount);
+            if (commHistData[i].email == userEmail) {
+                myOrderAmount += Number(commHistData[i].totalAmount);
+            }
+        }
+
+        console.log(totalAmount, myOrderAmount, '===============Pharmacy Order Data=====================');
+
+        if (commHistData.length == 0) {
+            return 1.00;
+        } else {
+            if (totalAmount > 0) {
+                let performanceStar = (5 * myOrderAmount / totalAmount + 1);
+                if (performanceStar > 5) {
+                    return 5.00;
+                } else {
+                    return Number(performanceStar).toFixed(2);
+                }
+            } else {
+                return 1.00;
+            }
+        }
     }
 });

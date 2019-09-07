@@ -65,6 +65,7 @@ module.exports = BaseController.extend({
         for (i = 0; i < monthClosedOrders.length; i++) {
             monthCommissions += Number(monthClosedOrders[i].commAmount);
         }
+        monthCommissions = Number(monthCommissions.toFixed(2));
 
         // Doctor Clients
         let clients = await UserModel.find({role:'Client', isDoneProfile: true});
@@ -80,7 +81,7 @@ module.exports = BaseController.extend({
         let clientGraphData = await this.clientGraphData(rectClientInfos);
         let commGraphData = await this.commissionGraphData(req.session.user.email);
 
-
+        let marketIndicator = await this.getPerformance(req.session.user.email);
 
         let v;
         v = new View(res, 'backend/doctor/dashboard');
@@ -93,12 +94,13 @@ module.exports = BaseController.extend({
             clientCount: retClients,
             commGraphData: commGraphData,
             clientGraphData: clientGraphData,
+            marketIndicator: marketIndicator
         });
     },
     commissionGraphData: async function (doctorEmail) {
 
         let dt = new Date();
-        dt.setMonth(0)
+        dt.setMonth(0);
         dt.setDate(0);
         dt.setUTCHours(0,0,0,0);
 
@@ -132,7 +134,7 @@ module.exports = BaseController.extend({
             req.session.redirectTo = '/admin/doctor';
             return res.redirect('/auth/login');
         }
-        if(req.session.user.role != 'Admin') {
+        if(req.session.user.role != 'Admin' && req.session.user.role != 'CallCenter') {
             return res.redirect('/*');
         }
         users = await UserModel.aggregate([
@@ -248,5 +250,33 @@ module.exports = BaseController.extend({
             fromDate: req.query.fromDate,
             toDate: req.query.toDate
         });
+    },
+    getPerformance: async function(userEmail) {
+        let commHistData = await OrderItemHistModel.find();
+        let totalAmount = 0;
+        let myOrderAmount = 0;
+        for (let i = 0; i<commHistData.length; i++) {
+            totalAmount += Number(commHistData[i].totalAmount);
+            if (commHistData[i].email == userEmail) {
+                myOrderAmount += Number(commHistData[i].totalAmount);
+            }
+        }
+
+        console.log(totalAmount, myOrderAmount, '===============Doctor Order Data=====================');
+
+        if (commHistData.length == 0) {
+             return 1.00;
+        } else {
+            if (totalAmount > 0) {
+                let performanceStar = (5 * myOrderAmount / totalAmount + 1);
+                if (performanceStar > 5) {
+                    return 5.00;
+                } else {
+                    return Number(performanceStar).toFixed(2);
+                }
+            } else {
+                return 1.00;
+            }
+        }
     }
 });

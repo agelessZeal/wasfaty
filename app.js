@@ -58,6 +58,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'locales')));
 app.use(cookieParser());
 app.use(session({
     secret: "OzhclfxGp956SMjtq",

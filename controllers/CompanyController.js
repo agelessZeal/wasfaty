@@ -1,4 +1,4 @@
-let _, async, mongoose, BaseController;
+ let _, async, mongoose, BaseController;
 let config, axios, request, fs, ejs, crypto,
     nodemailer, transporter, View, ItemModel;
 let UserModel, countryList, OrderModel, OrderItemHistModel;
@@ -43,7 +43,7 @@ module.exports = BaseController.extend({
         if (!req.session.user.isDoneProfile) {
             return res.redirect('/invite/profile/info');
         }
-        let totalItemCnt = await ItemModel.countDocuments();
+        let totalItemCnt = await ItemModel.countDocuments({cpyNameId: req.session.user._id.toString()});
         let totalAmount = 0;
         let totalQty = 0;
         let i, j = 0;
@@ -51,10 +51,12 @@ module.exports = BaseController.extend({
         for (i = 0; i < closedOrders.length; i++) {
             for (j = 0; j < closedOrders[i].items.length; j++) {
                 let item = closedOrders[i].items[j];
-                let itemDetails = await ItemModel.findOne({itemId: item.code});
-                if (itemDetails && itemDetails.cpyNameId == req.session.user._id) {
-                    totalAmount += Number(item.amount);
-                    totalQty += Number(item.qty);
+                if (item.status == 'Delivered') {
+                    let itemDetails = await ItemModel.findOne({itemId: item.code});
+                    if (itemDetails && itemDetails.cpyNameId == req.session.user._id) {
+                        totalAmount += Number(item.amount);
+                        totalQty += Number(item.qty);
+                    }
                 }
             }
         }
@@ -140,7 +142,9 @@ module.exports = BaseController.extend({
             req.session.redirectTo = '/admin/company';
             return res.redirect('/auth/login');
         }
-        if (req.session.user.role != 'Admin' && req.session.user.role != 'Pharmacy') {
+        if (req.session.user.role != 'Admin' &&
+            req.session.user.role != 'Pharmacy' &&
+            req.session.user.role != "CallCenter") {
             return res.redirect('/*');
         }
         users = await UserModel.find({role: 'Company'});

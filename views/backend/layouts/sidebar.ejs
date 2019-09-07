@@ -9,14 +9,14 @@
                             <li class="submenu">
                                 <a href="#">
                                     <i class="<%= menuList[i].icon %>"></i>
-                                    <span><%= menuList[i].name %></span> <span class="menu-arrow"></span>
+                                    <span><%= i18n.__(menuList[i].name) %></span> <span class="menu-arrow"></span>
                                 </a>
                                 <ul style="display: none;">
                                     <% for(var j = 0; j<menuList[i].children.length; j++) {  %>
                                         <li>
                                             <a href="<%= menuList[i].children[j].url %>"
                                                class="<%= (title == menuList[i].children[j].title)?'active':'' %>">
-                                                <%= menuList[i].children[j].name %>
+                                                <%= i18n.__(menuList[i].children[j].name) %>
                                             </a>
                                         </li>
                                     <% } %>
@@ -26,7 +26,7 @@
                             <li class="<%= (menuList[i].title == title)?'active':'' %>">
                                 <a href="<%= menuList[i].url %>">
                                     <i class="<%= menuList[i].icon %>"></i>
-                                    <span><%= menuList[i].name %></span>
+                                    <span><%= i18n.__(menuList[i].name) %></span>
                                 </a>
                             </li>
                         <% } %>
@@ -34,39 +34,39 @@
                 <% } %>
                 <li class="<%= (title == 'Announcements')?'active':'' %>">
                     <a href="/announcement" >
-                        <i class="fa fa-envelope-open-o"></i> <span> Announcement</span>
+                        <i class="fa fa-envelope-open-o"></i> <span><%= i18n.__("Announcement") %></span>
                     </a>
                 </li>
                 <% if(session.user.role == 'Admin' || session.user.role == 'CallCenter') {  %>
                     <li class="<%= (title == 'Message')?'active':'' %>">
-                        <a href="/message"><i class="fa fa-envelope"></i> <span> Messages</span></a>
+                        <a href="/message"><i class="fa fa-envelope"></i> <span><%= i18n.__("Messages") %></span></a>
                     </li>
                 <% } else  {  %>
                     <li class="<%= (title == 'Contact Us')?'active':'' %>">
-                        <a href="/message/contact-us"><i class="fa fa-envelope"></i> <span> Contact Us</span></a>
+                        <a href="/message/contact-us"><i class="fa fa-envelope"></i> <span><%= i18n.__("Contact Us") %></span></a>
                     </li>
                 <% } %>
                 <li class="submenu">
-                    <a href="#"><i class="fa fa-cog"></i> <span> My Account</span> <span class="menu-arrow"></span></a>
+                    <a href="#"><i class="fa fa-cog"></i> <span><%= i18n.__("My Account") %></span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <% if(session.user.isDoneProfile) { %>
-                            <li><a class="<%= (title == 'View User Profile')?'active':'' %>" href="/users/profile?m=view">My Profile</a></li>
-                            <li><a  class="<%= (title == 'Edit User Profile')?'active':'' %>" href="/users/profile?m=edit">Edit Profile</a></li>
+                            <li><a class="<%= (title == 'View User Profile')?'active':'' %>" href="/users/profile?m=view"><%= i18n.__("My Profile") %></a></li>
+                            <li><a  class="<%= (title == 'Edit User Profile')?'active':'' %>" href="/users/profile?m=edit"><%= i18n.__("Edit Profile") %></a></li>
                         <% } %>
-                        <li><a  class="<%= (title == 'Change Password')?'active':'' %>" href="/users/change-password">Change Password</a></li>
+                        <li><a  class="<%= (title == 'Change Password')?'active':'' %>" href="/users/change-password"><%= i18n.__("Change Password") %></a></li>
                     </ul>
                 </li>
                 <% if(session.user.role == 'Admin') {  %>
                 <li class="submenu">
-                    <a href="#"><i class="fa fa-cogs"></i> <span> Settings</span> <span class="menu-arrow"></span></a>
+                    <a href="#"><i class="fa fa-cogs"></i> <span><%= i18n.__("Settings") %></span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <li><a class="<%= (title == 'Settings')?'active':'' %>" href="/admin/setting/commissions">Commissions</a></li>
-                        <li><a  class="<%= (title == 'Driver fees')?'active':'' %>" href="/admin/setting/driver-fee">Driver Fees</a></li>
-                        <li><a  class="<%= (title == 'Loyalty Point')?'active':'' %>" href="/admin/setting/loyalty-point">Loyalty Point</a></li>
+                        <li><a class="<%= (title == 'Settings')?'active':'' %>" href="/admin/setting/commissions"><%= i18n.__("Commissions") %></a></li>
+                        <li><a  class="<%= (title == 'Driver fees')?'active':'' %>" href="/admin/setting/driver-fee"><%= i18n.__("Driver Fees") %></a></li>
+                        <li><a  class="<%= (title == 'Loyalty Point')?'active':'' %>" href="/admin/setting/loyalty-point"><%= i18n.__("Loyalty Point") %></a></li>
                     </ul>
                 </li>
                 <% } %>
-                <li><a href="/auth/logout"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>
+                <li><a href="/auth/logout"><i class="fa fa-power-off"></i> <span><%= i18n.__("Logout") %></span></a></li>
             </ul>
         </div>
     </div>

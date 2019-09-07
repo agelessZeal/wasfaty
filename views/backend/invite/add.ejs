@@ -11,7 +11,7 @@
         <div class="content">
             <div class="row">
                 <div class="col-lg-8">
-                    <h4 class="page-title">Add <%= user_type %></h4>
+                    <h4 class="page-title"><%= i18n.__("Add " + user_type) %></h4>
                 </div>
             </div>
             <div class="row">
@@ -21,19 +21,16 @@
                             <% if(session.user.role == 'Admin') { %>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label>Email <span class="text-danger">*</span></label>
+                                        <label><%= i18n.__("Email") %> <span class="text-danger">*</span></label>
                                         <input class="form-control" type="email" name="email" required>
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label>User Types <span class="text-danger">*</span></label>
+                                        <label><%= i18n.__("User Types") %> <span class="text-danger">*</span></label>
                                         <select class="form-control" name="role" required>
                                             <% for(var j = 0; j<user_levels.length; j++) {%>
-                                                <option value="<%= user_levels[j] %>"
-                                                        <%= (user_levels[j] == user_type)?'selected':'' %>>
-                                                    <%= user_levels[j] %>
-                                                </option>
+                                                <option value="<%= user_levels[j] %>" <%= (user_levels[j] == user_type)?'selected':'' %>><%= i18n.__(user_levels[j]) %></option>
                                             <% }%>
                                         </select>
                                     </div>
@@ -41,7 +38,7 @@
                             <% } else { %>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label>Email <span class="text-danger">*</span></label>
+                                        <label><%= i18n.__("Email") %> <span class="text-danger">*</span></label>
                                         <input class="form-control" type="email" name="email" required>
                                         <input class="form-control" type="hidden" name="role" value="<%= user_type %>">
                                     </div>
@@ -51,15 +48,15 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Password</label>
+                                            <label><%= i18n.__("Password") %></label>
                                             <input class="form-control" type="text" name="password" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group random-password-group">
-                                            <label>Random Password</label>
+                                            <label><%= i18n.__("Random Password") %></label>
                                             <button class="btn btn-primary" type="button" onclick="genRandomPassword()">
-                                                Generate
+                                                <%= i18n.__("Generate") %>
                                             </button>
                                         </div>
                                     </div>
@@ -67,7 +64,7 @@
                             </div>
                         </div>
                         <div class="m-t-20 text-center">
-                            <button class="btn btn-primary submit-btn">Invite</button>
+                            <button class="btn btn-primary submit-btn"><%= i18n.__("Invite") %></button>
                         </div>
                     </form>
                 </div>

@@ -15,7 +15,7 @@ var suffix = (lang == 'ar')?'Ar':'En';
         <div class="content">
             <div class="row">
                 <div class="col-lg-12">
-                    <h4 class="page-title">View Order</h4>
+                    <h4 class="page-title"><%= i18n.__("View Order") %></h4>
                 </div>
             </div>
             <div class="row">
@@ -26,28 +26,28 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>OrderNo</label>
+                                            <label><%= i18n.__("OrderNo") %></label>
                                             <input class="form-control" type="text" name="orderId"
                                                    value="<%= orderInfo.orderId %>" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Email</label>
+                                            <label><%= i18n.__("Email") %></label>
                                             <input class="form-control ws-order-ctl" value="<%= orderInfo.clientEmail %>"
                                                    type="text" name="clientEmail" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Mobile</label>
+                                            <label><%= i18n.__("Mobile") %></label>
                                             <input class="form-control ws-order-ctl" value="<%= orderInfo.clientPhone %>"
                                                    type="text" name="clientPhone" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Name</label>
+                                            <label><%= i18n.__("Name") %></label>
                                             <input class="form-control ws-order-ctl" disabled value="<%= orderInfo.clientName %>"
                                                    type="text" name="clientName">
                                         </div>
@@ -56,37 +56,37 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Type</label>
+                                            <label><%= i18n.__("Insurance Type") %></label>
                                             <select class="form-control floating ws-order-ctl" disabled >
                                                 <% for(i = 0 ; i<ins_types.length; i++) { %>
-                                                    <option value="<%= ins_types[i].name %>" <%= (orderInfo.insuranceType == ins_types[i].name)?'selected':'' %>><%= ins_types[i].name %></option>
+                                                    <option value="<%= ins_types[i].name %>" <%= (orderInfo.insuranceType == ins_types[i].name)?'selected':'' %>><%= i18n.__(ins_types[i].name) %></option>
                                                 <% } %>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Grade</label>
+                                            <label><%= i18n.__("Insurance Grade") %></label>
                                             <select class="form-control floating ws-order-ctl" disabled>
                                                 <% for(i = 0 ; i<ins_grades.length; i++) { %>
-                                                    <option value="<%= ins_grades[i].name %>" <%= (orderInfo.insuranceGrade == ins_grades[i].name)?'selected':'' %>><%= ins_grades[i].name %></option>
+                                                    <option value="<%= ins_grades[i].name %>" <%= (orderInfo.insuranceGrade == ins_grades[i].name)?'selected':'' %>><%= i18n.__(ins_grades[i].name) %></option>
                                                 <% } %>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Company</label>
+                                            <label><%= i18n.__("Insurance Company") %></label>
                                             <select class="form-control floating ws-order-ctl"  disabled>
                                                 <% for(i = 0 ; i<ins_companies.length; i++) { %>
-                                                    <option value="<%= ins_companies[i].name %>" <%= (orderInfo.insuranceCompany == ins_companies[i].name)?'selected':'' %>><%= ins_companies[i].name %></option>
+                                                    <option value="<%= ins_companies[i].name %>" <%= (orderInfo.insuranceCompany == ins_companies[i].name)?'selected':'' %>><%= i18n.__(ins_companies[i].name) %></option>
                                                 <% } %>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Remark</label>
+                                            <label><%= i18n.__("Remark") %></label>
                                             <input class="form-control" disabled type="text" value="<%= orderInfo.remark %>" name="remark">
                                         </div>
                                     </div>
@@ -99,13 +99,13 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                             <table class="table table-bordered" id="order-item-list">
                                                 <thead>
                                                 <tr>
-                                                    <th>Item Code</th>
-                                                    <th>Item Description</th>
-                                                    <th>Item Dosage</th>
-                                                    <th>QTY</th>
-                                                    <th>Amount</th>
-                                                    <th>Total</th>
-                                                    <th>Status</th>
+                                                    <th><%= i18n.__("Item Code") %></th>
+                                                    <th><%= i18n.__("Item Description") %></th>
+                                                    <th><%= i18n.__("Item Dosage") %></th>
+                                                    <th><%= i18n.__("Qty") %></th>
+                                                    <th><%= i18n.__("Amount") %></th>
+                                                    <th><%= i18n.__("Total") %></th>
+                                                    <th><%= i18n.__("Status") %></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="order-items-body">
@@ -125,7 +125,7 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                         </div>
                                         <div class="col-12 text-right">
                                             <div class="form-group">
-                                                <h4>Total: $<span id="total-item-price"><%= orderInfo.totalPrice %></span></h4>
+                                                <h4><%= i18n.__("Total") %>: <span id="total-item-price"><%= orderInfo.totalPrice %></span></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -136,7 +136,7 @@ var suffix = (lang == 'ar')?'Ar':'En';
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label>Select Pharmacy</label>
+                                <label><%= i18n.__("Select Pharmacy") %></label>
                                 <select class="form-control" id="pharmacyList">
 
                                 </select>
@@ -147,7 +147,7 @@ var suffix = (lang == 'ar')?'Ar':'En';
                                 <label class="ws-btn-label">&nbsp;</label>
                                 <button type="button"
                                         class="btn btn-primary"
-                                        onclick="onPickupPharmacy('<%= orderInfo.orderId %>')">Pickup</button>
+                                        onclick="onPickupPharmacy('<%= orderInfo.orderId %>')"><label><%= i18n.__("Pickup") %></label></button>
                             </div>
                         </div>
                         <div class="col-12">

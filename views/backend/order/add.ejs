@@ -15,7 +15,7 @@
         <div class="content">
             <div class="row">
                 <div class="col-lg-12">
-                    <h4 class="page-title">Add Order</h4>
+                    <h4 class="page-title"><%= i18n.__("Add Order") %></h4>
                 </div>
             </div>
             <div class="row">
@@ -25,9 +25,9 @@
                             <div class="col-6">
                                 <div class="btn-group" id="check-existing-user">
                                     <button type="button" data-toggle="modal" data-target="#chooseClient"
-                                            class="btn btn-outline-primary" id="ws-existing-user" onclick="onChangeUserMode('existing')">Existing User</button>
+                                            class="btn btn-outline-primary" id="ws-existing-user" onclick="onChangeUserMode('existing')"><%= i18n.__("Existing User") %></button>
                                     <button type="button"
-                                            class="btn btn-outline-primary" id="ws-new-user" onclick="onChangeUserMode('new')">New User</button>
+                                            class="btn btn-outline-primary" id="ws-new-user" onclick="onChangeUserMode('new')"><%= i18n.__("New User") %></button>
                                 </div>
                             </div>
                         </div>
@@ -36,25 +36,25 @@
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>OrderNo</label>
+                                            <label><%= i18n.__("OrderNo") %></label>
                                             <input class="form-control" type="text" name="orderId" value="<%= orderId %>" required disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Email</label>
-                                            <input class="form-control ws-order-ctl" type="text" name="clientEmail" required>
+                                            <label><%= i18n.__("Email") %></label>
+                                            <input class="form-control ws-order-ctl" type="email" name="clientEmail" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Mobile</label>
+                                            <label><%= i18n.__("Mobile") %></label>
                                             <input class="form-control ws-order-ctl" type="text" name="clientPhone" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Name</label>
+                                            <label><%= i18n.__("Name") %></label>
                                             <input class="form-control ws-order-ctl" type="text" name="clientName">
                                         </div>
                                     </div>
@@ -62,7 +62,7 @@
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Type</label>
+                                            <label><%= i18n.__("Insurance Type") %></label>
                                             <select class="form-control floating ws-order-ctl" id="insuranceType" name="insuranceType">
                                                 <% for(i = 0 ; i<ins_types.length; i++) { %>
                                                     <option value="<%= ins_types[i].name %>"><%= ins_types[i].name %></option>
@@ -72,7 +72,7 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Grade</label>
+                                            <label><%= i18n.__("Insurance Grade") %></label>
                                             <select class="form-control floating ws-order-ctl" id="insuranceGrade" name="insuranceGrade">
                                                 <% for(i = 0 ; i<ins_grades.length; i++) { %>
                                                     <option value="<%= ins_grades[i].name %>"><%= ins_grades[i].name %></option>
@@ -82,7 +82,7 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Company</label>
+                                            <label><%= i18n.__("Insurance Company") %></label>
                                             <select class="form-control floating ws-order-ctl"  id="insuranceCompany" name="insuranceCompany">
                                                 <% for(i = 0 ; i<ins_companies.length; i++) { %>
                                                     <option value="<%= ins_companies[i].name %>"><%= ins_companies[i].name %></option>
@@ -92,7 +92,7 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Remark</label>
+                                            <label><%= i18n.__("Remark") %></label>
                                             <input class="form-control" type="text" name="remark">
                                         </div>
                                     </div>
@@ -102,8 +102,12 @@
                                 <div class="row">
                                     <div class="col-12 text-right">
                                         <div class="form-group">
+                                            <% if(session.user.role == 'Doctor') {  %>
+                                                <button class="btn btn-secondary" type="button" onclick="showFavoriteItemModal()"
+                                                        id="order-item-add-btn"><%= i18n.__("Favorite Items") %></button>
+                                            <% } %>
                                             <button class="btn btn-primary" type="button" onclick="showAddOrderModal()"
-                                                    id="order-item-add-btn">+ Add Item</button>
+                                                    id="order-item-add-btn"><%= i18n.__("+ Add Item") %></button>
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -111,44 +115,30 @@
                                             <table class="table table-bordered" id="order-item-list">
                                                 <thead>
                                                 <tr>
-                                                    <th style="width: 82px">Picture</th>
-                                                    <th>Item Code</th>
-                                                    <th>Item Description</th>
-                                                    <th>Item Dosage</th>
-                                                    <th>QTY</th>
-                                                    <th>Amount</th>
-                                                    <th>Total</th>
-                                                    <th>Status</th>
-                                                    <th>Action</th>
+                                                    <th style="width: 82px"><%= i18n.__("Picture") %></th>
+                                                    <th><%= i18n.__("Item Code") %></th>
+                                                    <th><%= i18n.__("Item Description") %></th>
+                                                    <th><%= i18n.__("Item Dosage") %></th>
+                                                    <th><%= i18n.__("Qty") %></th>
+                                                    <th><%= i18n.__("Amount") %></th>
+                                                    <th><%= i18n.__("Total") %></th>
+                                                    <th><%= i18n.__("Status") %></th>
+                                                    <th><%= i18n.__("Action") %></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="order-items-body">
-<!--                                                    <tr>-->
-<!--                                                        <td>Item Code</td>-->
-<!--                                                        <td>Item Description</td>-->
-<!--                                                        <td>Item Dosage</td>-->
-<!--                                                        <td>QTY</td>-->
-<!--                                                        <td>Amount</td>-->
-<!--                                                        <td>Total</td>-->
-<!--                                                        <td>Status</td>-->
-<!--                                                        <td>-->
-<!--                                                            <button class="btn btn-danger" type="button">-->
-<!--                                                                <i class="fa fa-close"></i>-->
-<!--                                                            </button>-->
-<!--                                                        </td>-->
-<!--                                                    </tr>-->
                                                 </tbody>
                                             </table>
                                         </div>
                                         <div class="col-12 text-right">
                                             <div class="form-group">
-                                                <h4>Total: $<span id="total-item-price">0.00</span></h4>
+                                                <h4><%= i18n.__("Total") %>: <span id="total-item-price">0.00</span></h4>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary submit-btn" id="order-save-btn" >Save</button>
+                                <div class="form-group text-right">
+                                    <button type="button" class="btn btn-primary submit-btn" id="order-save-btn" ><%= i18n.__("Save") %></button>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +150,7 @@
 </div>
 
 <!-- The Modal -->
-<div class="modal fade" id="addItemModal">
+<div class="modal fade" id="addItemModal" data-type="add">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <!-- Modal Header -->
@@ -173,17 +163,21 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>Dosage</label>
-                            <select class="form-control chosen" id="add-item-dosage">
-                                <% for(i=0; i<dosages.length; i++) {%>
-                                    <option value="<%= dosages[i]['name_' + lang] %>"><%= dosages[i]['name_' + lang] %></option>
-                                <% } %>
-                            </select>
+                            <label><%= i18n.__("Dosage") %></label>
+                            <% if(dosages.length>0) {  %>
+                                <select class="form-control chosen" id="add-item-dosage">
+                                    <% for(i=0; i<dosages.length; i++) {%>
+                                        <option value="<%= dosages[i]['name_' + lang] %>"><%= dosages[i]['name_' + lang] %></option>
+                                    <% } %>
+                                </select>
+                            <% } else { %>
+                                <input type="text" class="form-control" id="add-item-dosage">
+                            <% } %>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>QTY</label>
+                            <label><%= i18n.__("Qty") %></label>
                             <input type="number" min="1" class="form-control" id="add-item-qty" value="1">
                         </div>
                     </div>
@@ -191,18 +185,18 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="filter-options-outer">
-                            <h3><i class="fa fa-align-left"></i>&nbsp;Filter Options</h3>
+                            <h3><i class="fa fa-align-left"></i>&nbsp;<%= i18n.__("Filter Options") %>&nbsp;</h3>
                             <div class="op-btns">
-                                <button class="btn btn-outline-primary" onclick="resetFilters()">Reset</button>
-                                <button class="btn btn-primary" onclick="searchProduct(1)">Search</button>
+                                <button class="btn btn-outline-primary" onclick="resetFilters()"><%= i18n.__("Reset") %></button>
+                                <button class="btn btn-primary" onclick="searchProduct(1)"><%= i18n.__("Search") %></button>
                             </div>
-                            <input class="form-control" placeholder="Barcode" id="itemBarcode" type="text">
-                            <input class="form-control" placeholder="Keyword" id="itemName" type="text">
+                            <input class="form-control" placeholder="<%= i18n.__("Barcode") %>" id="itemBarcode" type="text">
+                            <input class="form-control" placeholder="<%= i18n.__("Keyword") %>" id="itemName" type="text">
                             <div class="accordion" id="accordionExample">
                                 <div class="card">
                                     <button type="button" class="btn btn-link filter-group-btn" data-toggle="collapse"
                                             data-target="#collapseOne">
-                                        Main Classification <i class="fa fa-plus"></i>
+                                        <%= i18n.__("Main Classification") %> <i class="fa fa-plus"></i>
                                     </button>
                                     <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
                                          data-parent="#accordionExample">
@@ -219,7 +213,7 @@
                                 <div class="card">
                                     <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
                                             data-target="#collapseTwo">
-                                        Sub Classification <i class="fa fa-plus"></i>
+                                        <%= i18n.__("Sub Classification") %> <i class="fa fa-plus"></i>
                                     </button>
                                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
                                         <div class="card-body"  id="subClassification">
@@ -235,7 +229,7 @@
                                 <div class="card">
                                     <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
                                             data-target="#collapseThree">
-                                        Brand Name <i class="fa fa-plus"></i>
+                                        <%= i18n.__("Brand Name") %> <i class="fa fa-plus"></i>
                                     </button>
                                     <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
                                         <div class="card-body" id="brand">
@@ -251,7 +245,7 @@
                                 <div class="card">
                                     <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
                                             data-target="#headingFour">
-                                        Company Name <i class="fa fa-plus"></i>
+                                        <%= i18n.__("Company Name") %> <i class="fa fa-plus"></i>
                                     </button>
                                     <div id="headingFour" class="collapse" aria-labelledby="headingFour">
                                         <div class="card-body" id="company">
@@ -267,7 +261,7 @@
                                 <div class="card">
                                     <button type="button" class="btn btn-link collapsed filter-group-btn" data-toggle="collapse"
                                             data-target="#headingFive">
-                                        Price <i class="fa fa-plus"></i>
+                                        <%= i18n.__("Price") %> <i class="fa fa-plus"></i>
                                     </button>
                                     <div id="headingFive" class="collapse" aria-labelledby="headingFive">
                                         <div class="card-body">
@@ -291,7 +285,7 @@
                                 <img src="/assets/img/ajax-loader.gif">
                             </div>
                             <div id="search-items-body">
-                                <div class="no-items-box">No available Items</div>
+                                <div class="no-items-box"><%= i18n.__("No available Items") %></div>
                             </div>
                         </div>
                         <div class="row">
@@ -315,9 +309,10 @@
                 </div>
             </div>
             <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="onAddItem(this)">Add</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <div class="modal-footer" style="display: block">
+                <button type="button" class="btn btn-secondary float-left" id="addFavItemBtn" onclick="onAddFavItem(this)"><%= i18n.__("Add to favorite") %></button>
+                <button type="button" class="btn btn-danger float-right" data-dismiss="modal"><%= i18n.__("Close") %></button>
+                <button type="button" class="btn btn-primary float-right" onclick="onAddItem(this)"><%= i18n.__("Add") %></button>
             </div>
         </div>
     </div>
@@ -329,7 +324,7 @@
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Please choose one client!</h4>
+                <h4 class="modal-title"><%= i18n.__("Please choose one client!") %></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <!-- Modal body -->
@@ -338,9 +333,9 @@
                     <table class="table table-border table-striped custom-table my-datatable mb-0">
                         <thead>
                         <tr>
-                            <th>Email</th>
-                            <th>Name</th>
-                            <th>Mobile</th>
+                            <th><%= i18n.__("Email") %></th>
+                            <th><%= i18n.__("Name") %></th>
+                            <th><%= i18n.__("Mobile") %></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -363,8 +358,8 @@
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="onSelectClient(this)">Done</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="onSelectClient(this)"><%= i18n.__("Done") %></button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><%= i18n.__("Close") %></button>
             </div>
         </div>
     </div>
@@ -380,19 +375,21 @@
 <script>
 
     var lang = '<%= getLocale(); %>';
-    function showAddOrderModal() {
-        $('#addItemModal').modal({backdrop:'static', keyboard: false});
-    }
-    //https://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-dollars-currency-string-in-javascript
-    function formatMoney(n, c, d, t) {
-        var c = isNaN(c = Math.abs(c)) ? 2 : c,
-            d = d == undefined ? "." : d,
-            t = t == undefined ? "," : t,
-            s = n < 0 ? "-" : "",
-            i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
-            j = (j = i.length) > 3 ? j % 3 : 0;
 
-        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    function showFavoriteItemModal() {
+        $('#addItemModal').modal({backdrop:'static', keyboard: false});
+        $('#addItemModal .modal-title').text('<%= i18n.__('Favorite Item List') %>');
+        $('#addItemModal').attr('data-type', 'fav');
+        $('#addFavItemBtn').hide();
+        searchProduct(1); // Initial Loading
+    }
+
+    function showAddOrderModal() {
+        $('#addItemModal .modal-title').text('<%= i18n.__('Item List') %>');
+        $('#addItemModal').modal({backdrop:'static', keyboard: false});
+        $('#addItemModal').attr('data-type', 'add');
+        $('#addFavItemBtn').show();
+        searchProduct(1); // Initial Loading
     }
 
     $(document).ready(function () {
@@ -410,8 +407,14 @@
     });
 
     function searchProduct(page) {
-        var mainIds = [], subIds = [], brandIds = [], companyIds = [];
-        var fromPrice = 0, toPrice = Infinity, keyword = "", barcode = "";
+        var mainIds = [],
+            subIds = [],
+            brandIds = [],
+            companyIds = [];
+        var fromPrice = 0,
+            toPrice = Infinity,
+            keyword = "",
+            barcode = "";
 
         $('#mainClassification input[type="checkbox"]').each(function () {
             if ($(this).is(':checked')) {
@@ -442,9 +445,13 @@
         barcode = $('#itemBarcode').val();
         keyword = $('#itemName').val();
 
+        var listType = $('#addItemModal').attr('data-type');
+
         page = 1;
 
-        $.ajax('/product/search/product', {
+        var apiURL = (listType == 'add') ? '/product/search/product':  '/product/search/fav-product';
+
+        $.ajax(apiURL, {
             type:'post',
             data:{
                 page: page,
@@ -500,7 +507,7 @@
                                             data-name=${itemInfo['name_' + lang]}
                                             data-description=${itemInfo['description_' + lang]}
                                             data-price=${itemInfo.price}
-                                            onclick="addToCart(this)">Add to cart</button>
+                                            onclick="addToCart(this)">${globalMsg['Select']}</button>
                                     </div>
                                 </div>
                             </div>`;
@@ -508,7 +515,7 @@
         if (itemHTML != "") {
             $('#search-items-body').html(`<div class="row">${itemHTML}</div>`);
         } else {
-            $('#search-items-body').html(`<div class="no-items-box">No available Items</div>`);
+            $('#search-items-body').html(`<div class="no-items-box"><%= i18n.__("No available Items") %></div>`);
         }
 
     }
@@ -562,9 +569,38 @@
         $('.add-cart-btn').removeClass('active');
         $(self).addClass('active');
     }
+</script>
 
-    searchProduct(1); // Initial Loading
+<script>
+
+    var clientEmails = [];
+    var clientPhones = [];
+
+    function getClientPhoneAndEmails() {
+        var trTags = $('#chooseClient table tbody tr');
+        trTags.each(function () {
+            clientEmails.push($(this).data('email'));
+            clientPhones.push($(this).data('phone'));
+        })
+    }
+
+    $('input[name="clientEmail"]').bind('input paste' ,function(){
+        var userEmail =  $(this).val();
+        if (clientEmails.indexOf(userEmail)> -1) {
+            alert("User email exist already!, please select the user by searching in 'Existing User' to avoid user duplication.");
+        }
+    });
+
+    $('input[name="clientPhone"]').bind('input paste' ,function(){
+        var userPhone =  $(this).val();
+        if (clientEmails.indexOf(userPhone)> -1) {
+            alert("User phone exist already!, please select the user by searching in 'Existing User' to avoid user duplication.");
+        }
+    });
+
+    getClientPhoneAndEmails();
 
 </script>
+
 </body>
 </html>

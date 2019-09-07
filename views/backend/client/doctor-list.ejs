@@ -24,7 +24,7 @@ var formatTime = function (ts) {
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">Doctor List</h4>
+                    <h4 class="page-title"><%= i18n.__("Doctor List") %></h4>
                 </div>
             </div>
             <div class="row">
@@ -33,16 +33,16 @@ var formatTime = function (ts) {
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                             <tr>
-                                <th>Name(EN/AR)</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Specialist</th>
-                                <th>Company</th>
-                                <th>Country</th>
-                                <th>City</th>
-                                <th>Status</th>
-                                <th>CreatedAt</th>
-                                <th class="text-right">Action</th>
+                                <th><%= i18n.__("Name(EN/AR)") %></th>
+                                <th><%= i18n.__("Email") %></th>
+                                <th><%= i18n.__("Phone") %></th>
+                                <th><%= i18n.__("Specialist") %></th>
+                                <th><%= i18n.__("Company") %></th>
+                                <th><%= i18n.__("Country") %></th>
+                                <th><%= i18n.__("City") %></th>
+                                <th><%= i18n.__("Status") %></th>
+                                <th><%= i18n.__("CreatedAt") %></th>
+                                <th class="text-right"><%= i18n.__("Action") %></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -63,7 +63,7 @@ var formatTime = function (ts) {
                                     </td>
                                     <td><%= formatTime(users[i].createdAt) %></td>
                                     <td>
-                                        <a class="btn btn-outline-primary" href="/users/profile?id=<%= users[i]._id %>">View</a>
+                                        <a class="btn btn-outline-primary" href="/users/profile?id=<%= users[i]._id %>"><%= i18n.__("View") %></a>
                                     </td>
                                 </tr>
                             <% } %>

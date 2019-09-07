@@ -15,12 +15,12 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
             <div class="row">
                 <div class="col-lg-12">
                     <h4 class="page-title">
-                        Order Details
-                        &nbsp;<i class="fa fa-print"
+                        <%= i18n.__("Order Details") %>
+                        &nbsp;<i class="fa fa-print float-right"
                                  id="printOrderDetails"
                                  onclick="onPrintOrderDetails()"
                                  data-toggle="tooltip"
-                                 title="Print Order Details"></i>
+                                 title="<%= i18n.__("Print Order Details") %>"></i>
                     </h4>
                 </div>
             </div>
@@ -32,14 +32,14 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>OrderNo</label>
+                                            <label><%= i18n.__("OrderNo") %></label>
                                             <input class="form-control" type="text" name="orderId"
                                                    value="<%= orderInfo.orderId %>" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Email</label>
+                                            <label><%= i18n.__("Email") %></label>
                                             <input class="form-control ws-order-ctl"
                                                    value="<%= orderInfo.clientEmail %>"
                                                    type="text" name="clientEmail" disabled>
@@ -47,7 +47,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Mobile</label>
+                                            <label><%= i18n.__("Mobile") %></label>
                                             <input class="form-control ws-order-ctl"
                                                    value="<%= orderInfo.clientPhone %>"
                                                    type="text" name="clientPhone" disabled>
@@ -55,7 +55,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Name</label>
+                                            <label><%= i18n.__("Name") %></label>
                                             <input class="form-control ws-order-ctl" disabled
                                                    value="<%= orderInfo.clientName %>"
                                                    type="text" name="clientName">
@@ -65,7 +65,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Type</label>
+                                            <label><%= i18n.__("Insurance Type") %></label>
                                             <select class="form-control floating ws-order-ctl" disabled id="curInsType">
                                                 <% for(i = 0 ; i < ins_types.length; i++) { %>
                                                     <option value="<%= ins_types[i].name %>"
@@ -78,7 +78,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Grade</label>
+                                            <label><%= i18n.__("Insurance Grade") %></label>
                                             <select class="form-control floating ws-order-ctl" disabled id="curInsGrade">
                                                 <% for(i = 0 ; i < ins_grades.length; i++) { %>
                                                     <option value="<%= ins_grades[i].name %>" <%= (orderInfo.insuranceGrade == ins_grades[i].name) ? 'selected' : '' %>><%= ins_grades[i].name %></option>
@@ -88,7 +88,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Insurance Company</label>
+                                            <label><%= i18n.__("Insurance Company") %></label>
                                             <select class="form-control floating ws-order-ctl" disabled id="curInsCompany">
                                                 <% for(i = 0 ; i < ins_companies.length; i++) { %>
                                                     <option value="<%= ins_companies[i].name %>"
@@ -101,7 +101,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Remark</label>
+                                            <label><%= i18n.__("Remark") %></label>
                                             <input class="form-control" disabled type="text"
                                                    value="<%= orderInfo.remark %>" name="remark">
                                         </div>
@@ -115,14 +115,14 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                             <table class="table table-bordered" id="order-item-list">
                                                 <thead>
                                                 <tr>
-                                                    <th style="width: 82px">Picture</th>
-                                                    <th>Item Code</th>
-                                                    <th>Item Description</th>
-                                                    <th>Item Dosage</th>
-                                                    <th>QTY</th>
-                                                    <th>Amount</th>
-                                                    <th>Total</th>
-                                                    <th>Status</th>
+                                                    <th style="width: 82px"><%= i18n.__("Picture") %></th>
+                                                    <th><%= i18n.__("Item Code") %></th>
+                                                    <th><%= i18n.__("Item Description") %></th>
+                                                    <th><%= i18n.__("Item Dosage") %></th>
+                                                    <th><%= i18n.__("Qty") %></th>
+                                                    <th><%= i18n.__("Amount") %></th>
+                                                    <th><%= i18n.__("Total") %></th>
+                                                    <th><%= i18n.__("Status") %></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="order-items-body">
@@ -145,10 +145,10 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                                                         id="<%= `${orderInfo.orderId}-${i}-${orderInfo.items[i].code}` %>">
                                                                     <option value="Delivered"
                                                                             <%= (orderInfo.items[i].status == 'Delivered')?'selected':'' %>>
-                                                                        Delivered</option>
+                                                                        <%= i18n.__("Delivered") %></option>
                                                                     <option value="Not Delivered"
                                                                             <%= (orderInfo.items[i].status == 'Not Delivered')?'selected':'' %>>
-                                                                        Not Delivered
+                                                                        <%= i18n.__("Not Delivered") %>
                                                                     </option>
                                                                 </select>
                                                             <% } %>
@@ -161,7 +161,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                         </div>
                                         <div class="col-12 text-right">
                                             <div class="form-group">
-                                                <h4>Total: $<span
+                                                <h4><%= i18n.__("Total") %>: <span
                                                             id="total-item-price"><%= orderInfo.totalPrice %></span>
                                                 </h4>
                                             </div>
@@ -170,7 +170,7 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <p class="order-status-wrap">Order Status: <span
+                                        <p class="order-status-wrap"><%= i18n.__("Order Status") %>: <span
                                                     class="pending"><%= orderInfo.status %></span></p>
                                     </div>
                                 </div>
@@ -182,26 +182,25 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
                                         <div class="col-lg-6">
                                             <% if (orderStInfo.orderType == 'PhPicked') { %>
                                                 <a href="##" class="btn btn-primary"
-                                                   onclick="onPhAcceptOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">Accept</a>
+                                                   onclick="onPhAcceptOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')"><%= i18n.__("Accept") %></a>
                                                 <a class="btn btn-warning"
-                                                   onclick="onPhRejectOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">Reject</a>
+                                                   onclick="onPhRejectOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')"><%= i18n.__("Reject") %></a>
                                             <% } else if (orderStInfo.orderType == 'PhAccepted') { %>
                                                 <a href="##" class="btn btn-success"
                                                    onclick="onPhCloseOrder('<%= orderInfo.orderId %>', '<%= orderStInfo._id %>')">
-                                                    Close Order
+                                                    <%= i18n.__("Close Order") %>
                                                 </a>
                                             <% } else if (orderStInfo.orderType == 'Rejected') { %>
                                                 <p class="rejected-order">
-                                                    Rejected Order
-                                                    by
+                                                    <%= i18n.__("Rejected Order by") %>
                                                     <a href="<%= `/users/profile?m=view&id=${orderStInfo.phId}` %>"
                                                        target="_blank">
                                                         <%= (orderPhInfo['name' + suffix]) ? orderPhInfo['name' + suffix] : orderPhInfo.email %>
-                                                        ( Pharmacy)
+                                                        ( <%= i18n.__("Pharmacy") %> )
                                                     </a>
                                                 </p>
                                                 <div class="rejected-reason-wrapper">
-                                                    <h5>Rejected Reason</h5>
+                                                    <h5><%= i18n.__("Rejected Reason") %></h5>
                                                     <div>
                                                         <%- orderStInfo.description %>
                                                     </div>
@@ -277,6 +276,20 @@ var suffix = (lang == 'ar') ? 'Ar' : 'En';
     }
 
     function onPhCloseOrder(orderId, orderStId) {
+
+        // checking Deliveried
+        var selTags = $('.order-item-st');
+        var delveriedCount = 0;
+        selTags.each(function () {
+            if ($(this).val() == 'Delivered') {
+                delveriedCount ++;
+            }
+        })
+        if (delveriedCount == 0) {
+            alert ("Please update order item status!");
+            return;
+        }
+
         swal({
             title: "Are you sure to close this order?",
             icon: "success",

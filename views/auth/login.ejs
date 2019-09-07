@@ -25,22 +25,22 @@
                                 </div>
                             <% } %>
                             <div class="form-group text-left">
-                                <label for="email">Email</label>
+                                <label for="email"><%= i18n.__("Email") %></label>
                                 <input class="form-control" name="email" type="email" required id="email">
                             </div>
                             <div class="form-group text-left">
-                                <label for="password">Password</label>
+                                <label for="password"><%= i18n.__("Password") %></label>
                                 <input type="password" name="password" id="password" class="form-control" required>
                             </div>
                             <div class="login-register-btns">
-                                <button class="btn login-btn">Login</button>
+                                <button class="btn login-btn"><%= i18n.__("Login") %></button>
                                 <a class="btn register-btn" href="/auth/register">
                                     <div>
-                                        Create Account
+                                        <%= i18n.__("Create Account") %>
                                     </div>
                                 </a>
                             </div>
-                            <p>Forgot password? <a href="/auth/forgot-password">click here</a></p>
+                            <p><%= i18n.__("Forgot password?") %> <a href="/auth/forgot-password"><%= i18n.__("click here") %></a></p>
                         </div>
                     </div>
 

@@ -137,7 +137,7 @@ module.exports = BaseController.extend({
         }
         let id = req.params.id;
         await MasterItem.deleteOne({mtId: id});
-        return res.redirect('/master-item/update/' + mtType);
+        return res.redirect('/master-item/' + mtType);
     },
 
 });

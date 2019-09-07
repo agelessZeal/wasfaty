@@ -27,19 +27,19 @@ var isAdmin = session.user.role == 'Admin';
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">Message Details</h4>
+                    <h4 class="page-title"><%= i18n.__("Message Details") %></h4>
                 </div>
                 <% if(error && error.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-danger" role="alert">
-                            <strong>Error!</strong> <%= error %>
+                            <strong><%= i18n.__("Error!") %></strong> <%= i18n.__(error) %>
                         </div>
                     </div>
                 <% } %>
                 <% if(success && success.length > 0) { %>
                     <div class="col-sm-12">
                         <div class="alert alert-success" role="alert">
-                            <strong>Success!</strong> <%= success %>
+                            <strong><%= i18n.__("Success!") %></strong> <%= i18n.__(success) %>
                         </div>
                     </div>
                 <% } %>
@@ -50,19 +50,19 @@ var isAdmin = session.user.role == 'Admin';
                         <input type="hidden" name="userEmail" value="<%= session.user.email %>">
                         <input type="hidden" name="userType" value="<%= session.user.role %>">
                         <div class="form-group">
-                            <label>Title</label>
+                            <label><%= i18n.__("Title") %></label>
                             <input class="form-control" maxlength="50"
                                    value="<%= (pg_type)?'':msgInfo.title %>"
                                    required name="title" <%= (isAdmin)?'disabled':'' %>>
                         </div>
                         <div class="form-group">
-                            <label>Description</label>
+                            <label><%= i18n.__("Description") %></label>
                             <textarea class="form-control" name="description"
                                       rows="10" required <%= (isAdmin)?'disabled':'' %>><%= (pg_type)?'':msgInfo.description %></textarea>
                         </div>
                         <% if (!isAdmin) {  %>
                             <div class="form-group">
-                                <button class="btn btn-primary">Submit</button>
+                                <button class="btn btn-primary"><%= i18n.__("Submit") %></button>
                             </div>
                         <% } %>
                     </form>

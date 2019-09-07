@@ -34,7 +34,7 @@ var formatTime = function (ts) {
         <div class="block-header">
             <div class="row">
                 <div class="col-lg-7 col-md-6 col-sm-12">
-                    <h2>Users</h2>
+                    <h2><%= i18n.__("Users") %></h2>
                     <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
                 </div>
                 <div class="col-lg-5 col-md-6 col-sm-12">
@@ -51,18 +51,17 @@ var formatTime = function (ts) {
                                 <table class="table table-bordered table-striped table-hover dataTable js-exportable ck_table-components">
                                     <thead>
                                     <tr>
-                                        <th>Pic</th>
-                                        <th>Username</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Office</th>
-                                        <th>Country</th>
-                                        <th>Address</th>
-                                        <th>CreatedAt</th>
+                                        <th><%= i18n.__("Picture") %></th>
+                                        <th><%= i18n.__("Username") %></th>
+                                        <th><%= i18n.__("Email") %></th>
+                                        <th><%= i18n.__("Phone") %></th>
+                                        <th><%= i18n.__("Office") %></th>
+                                        <th><%= i18n.__("Country") %></th>
+                                        <th><%= i18n.__("Address") %></th>
+                                        <th><%= i18n.__("CreatedAt") %></th>
                                         <% if(session.user.role == 'admin') {  %>
-                                            <th>Status</th>
-                                            <th>Subscription</th>
-                                            <th>Action</th>
+                                            <th><%= i18n.__("Status") %></th>
+                                            <th><%= i18n.__("Action") %></th>
                                         <% } %>
                                     </tr>
                                     </thead>
@@ -86,10 +85,9 @@ var formatTime = function (ts) {
                                                         <span class="badge badge-warning"><%= users[i].status %></span>
                                                     <% } %>
                                                 </td>
-                                                <td><%= users[i].payType %></td>
                                                 <td>
-                                                    <button type="button" onclick="onEditUser('<%= users[i]._id %>')" class="btn btn-primary">Edit</button>
-                                                    <button type="button" onclick="onDeleteUser('<%= users[i]._id %>')" class="btn btn-danger">Delete</button>
+                                                    <button type="button" onclick="onEditUser('<%= users[i]._id %>')" class="btn btn-primary"><%= i18n.__("Edit") %></button>
+                                                    <button type="button" style="display: none" onclick="onDeleteUser('<%= users[i]._id %>')" class="btn btn-danger"><%= i18n.__("Delete") %></button>
                                                 </td>
                                             <% } %>
                                         </tr>

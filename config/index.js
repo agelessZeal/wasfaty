@@ -19,6 +19,8 @@ let config = {
         domain: "127.0.0.1",
     },
 
+    contactEmail: '',
+
     node_mail: {
         mail_account: "", //Gmail
         password: ""

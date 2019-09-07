@@ -58,7 +58,7 @@ var myPoints = 0;
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">Loyalty Points</h4>
+                    <h4 class="page-title"><%= i18n.__("Loyalty Points") %></h4>
                 </div>
             </div>
             <!-----------Search Filter------------->
@@ -67,7 +67,7 @@ var myPoints = 0;
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label>From Date</label>
+                                <label><%= i18n.__("From Date") %></label>
                                 <div class="cal-icon">
                                     <input type="text" name="fromDate" value="<%= (fromDate)? formatTimeWithOffset(fromDate):'' %>" class="form-control datetimepicker">
                                 </div>
@@ -75,7 +75,7 @@ var myPoints = 0;
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label>To Date</label>
+                                <label><%= i18n.__("To Date") %></label>
                                 <div class="cal-icon">
                                     <input type="text" name="toDate" value="<%= (toDate)? formatTimeWithOffset(toDate):'' %>" class="form-control datetimepicker">
                                 </div>
@@ -83,12 +83,12 @@ var myPoints = 0;
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
-                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()">Search</button>
+                                <button class="btn btn-primary ws-label-btn" onclick="onSearchReport()"><%= i18n.__("Search") %></button>
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
-                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()">Reset</button>
+                                <button class="btn btn-secondary ws-label-btn" onclick="onResetReportFilter()"><%= i18n.__("Reset") %></button>
                             </div>
                         </div>
                     </div>
@@ -102,14 +102,14 @@ var myPoints = 0;
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                             <tr>
-                                <th>Doctor</th>
-                                <th>Remark</th>
-                                <th>Mobile</th>
-                                <th>Order Type</th>
-                                <th>Loyalty Points</th>
-                                <th>CreatedAt</th>
-                                <th>ClosedAt</th>
-                                <th class="text-right">Action</th>
+                                <th><%= i18n.__("Doctor") %></th>
+                                <th><%= i18n.__("Remark") %></th>
+                                <th><%= i18n.__("Mobile") %></th>
+                                <th><%= i18n.__("OrderType") %></th>
+                                <th><%= i18n.__("Loyalty Points") %></th>
+                                <th><%= i18n.__("CreatedAt") %></th>
+                                <th><%= i18n.__("ClosedAt") %></th>
+                                <th class="text-right"><%= i18n.__("Action") %></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -123,7 +123,7 @@ var myPoints = 0;
                                     <td><%= data_list[i].clientPhone %></td>
                                     <td>
                                         <% if(data_list[i].orderType == 'Rejected') { %>
-                                            <span class="custom-badge status-red">Rejected</span>
+                                            <span class="custom-badge status-red"><%= i18n.__("Rejected") %></span>
                                         <% } else  { %>
                                             <span class="custom-badge status-green"><%= data_list[i].orderType %></span>
                                         <% } %>
@@ -133,7 +133,7 @@ var myPoints = 0;
                                     <td><%= (data_list[i].closedAt) ? formatTime(data_list[i].closedAt) : '' %></td>
                                     <td class="text-right">
                                         <a class="btn btn-success" href="/orders/view/<%= data_list[i].orderId %>">
-                                            <i class="fa fa-eye m-r-5"></i> View Order
+                                            <i class="fa fa-eye m-r-5"></i> <%= i18n.__("View") %>
                                         </a>
                                     </td>
                                 </tr>
@@ -145,7 +145,7 @@ var myPoints = 0;
             </div>
             <div class="col-12 text-left" style="margin-top: 20px">
                 <div class="form-group">
-                    <h4>Total Orders : <%= data_list.length; %></h4>
+                    <h4><%= i18n.__("Total Orders") %> : <%= data_list.length; %></h4>
                     <h4>My total points : <%= formatMoney(myPoints, 2); %></h4>
                 </div>
             </div>

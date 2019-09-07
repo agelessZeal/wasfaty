@@ -50,6 +50,38 @@ transporter = nodemailer.createTransport({
 
 module.exports = BaseController.extend({
     name: 'CountryController',
+    adminClosedOrders: async function(req, res) {
+        let v, orders;
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/admin/closed-orders';
+            return res.redirect('/auth/login');
+        }
+
+        // Search filters
+        let fromDate, toDate;
+        let dtQuery = {$gte: "2010-01-01"};
+        if (req.query.fromDate) {
+            fromDate = new Date(req.query.fromDate);
+            dtQuery = {$gte: fromDate};
+        }
+
+        if (req.query.toDate) {
+            toDate = new Date(req.query.toDate);
+            toDate.setUTCHours(23, 59, 0, 0);
+            dtQuery['$lte'] = toDate;
+        }
+
+        orders = await OrderModel.find({status: "Closed", createdAt: dtQuery}).sort({createdAt: -1});
+
+        v = new View(res, 'backend/order/closed-list');
+        v.render({
+            title: 'Closed Orders',
+            session: req.session,
+            data_list: orders,
+            fromDate: req.query.fromDate,
+            toDate: req.query.toDate
+        });
+    },
     showOrders: async function (req, res) {
         let v, orders;
         if (!this.isLogin(req)) {
@@ -72,7 +104,7 @@ module.exports = BaseController.extend({
         }
 
         if (req.session.user.role == 'Admin') {
-            orders = await OrderModel.find({status: {$ne: 'Closed'}, createdAt: dtQuery}).sort({createdAt: -1});
+            orders = await OrderModel.find({$or: [{status: {$in: ['Closed', 'Cancelled']}}, {orderType: 'Rejected'}], createdAt: dtQuery}).sort({createdAt: -1});
         } else {
             orders = await OrderModel.find({
                 doctorEmail: req.session.user.email,
@@ -150,7 +182,9 @@ module.exports = BaseController.extend({
             let userType = 'Wasfaty', userInfo;
             if (userEmailList[userIdx] != 'Wasfaty') {
                 userInfo = await UserModel.findOne({email: userEmailList[userIdx]});
-                userType = userInfo.role;
+                if (userInfo != null) {
+                    userType = userInfo.role;
+                }
             }
 
             if ((userType == 'Wasfaty') || userInfo) {
@@ -260,6 +294,19 @@ module.exports = BaseController.extend({
             userEmail: req.query.e
         });
     },
+
+    deleteOrder: async function(req, res) {
+        let orderId = req.params.orderId;
+        if (!this.isLogin(req)) {
+            return res.redirect("/auth/login");
+        }
+        await OrderModel.deleteOne({orderId: orderId});
+        await OrderStatusModel.deleteMany({orderId: orderId});
+        await OrderItemHistModel.deleteOne({orderId: orderId});
+        // req.flash("success", "Order removed successfully!");
+        return res.redirect("/orders");
+    },
+
     showAddOrder: async function (req, res) {
         let v, clients, orderId;
         let mainCs = await MasterItemModel.find({mtType: 'main-classification'}),
@@ -303,6 +350,159 @@ module.exports = BaseController.extend({
             companies: companies,
             items: items,
         });
+    },
+    showEditOrder: async function(req, res) {
+        let v, clients, orderId;
+        let mainCs = await MasterItemModel.find({mtType: 'main-classification'}),
+            subCs = await MasterItemModel.find({mtType: 'sub-classification'}),
+            brands = await MasterItemModel.find({mtType: 'brand'}),
+            companies = await MasterItemModel.find({mtType: 'company-name'});
+
+        orderId = req.params.orderId;
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/orders/edit/'  + orderId;
+            return res.redirect('/auth/login');
+        }
+        if (req.session.user.role != 'Admin') {
+            return res.redirect('/*');
+        }
+
+        let orderInfo = await OrderModel.findOne({orderId: orderId});
+        if (!orderInfo) {
+            return res.redirect("/*");
+        }
+
+        clients = await UserModel.find({status: 'Enabled', role: 'Client'});
+
+        let ins_companies = await InsCompanyModel.find().sort({name: 1});
+        let ins_grades = await InsGradeModel.find().sort({name: 1});
+        let ins_types = await InsTypeModel.find().sort({name: 1});
+
+        let dosages = await MasterItemModel.find({mtType: 'dosage'});
+        let items = await ItemModel.find();
+
+        let itemObj  = {};
+        for (let i = 0; i<items.length; i++) {
+            itemObj[items[i].itemId] = items[i];
+        }
+
+        v = new View(res, 'backend/order/edit');
+        v.render({
+            title: 'Orders',
+            session: req.session,
+            clients: clients,
+            orderId: orderId,
+            ins_companies: ins_companies,
+            ins_grades: ins_grades,
+            ins_types: ins_types,
+            dosages: dosages,
+            mainCs: mainCs,
+            subCs: subCs,
+            brands: brands,
+            companies: companies,
+            items: items,
+            orderInfo: orderInfo,
+            itemObj: itemObj
+        });
+    },
+    showClosedEditOrder: async function (req, res) {
+        let v, clients, orderId;
+        let mainCs = await MasterItemModel.find({mtType: 'main-classification'}),
+            subCs = await MasterItemModel.find({mtType: 'sub-classification'}),
+            brands = await MasterItemModel.find({mtType: 'brand'}),
+            companies = await MasterItemModel.find({mtType: 'company-name'});
+
+        orderId = req.params.orderId;
+        if (!this.isLogin(req)) {
+            req.session.redirectTo = '/orders/closed-edit/'  + orderId;
+            return res.redirect('/auth/login');
+        }
+        if (req.session.user.role != 'Admin') {
+            return res.redirect('/*');
+        }
+
+        let orderInfo = await OrderModel.findOne({orderId: orderId});
+        if (!orderInfo) {
+            return res.redirect("/*");
+        }
+
+        clients = await UserModel.find({status: 'Enabled', role: 'Client'});
+
+        let ins_companies = await InsCompanyModel.find().sort({name: 1});
+        let ins_grades = await InsGradeModel.find().sort({name: 1});
+        let ins_types = await InsTypeModel.find().sort({name: 1});
+
+        let dosages = await MasterItemModel.find({mtType: 'dosage'});
+        let items = await ItemModel.find();
+
+        let itemObj  = {};
+        for (let i = 0; i<items.length; i++) {
+            itemObj[items[i].itemId] = items[i];
+        }
+
+        v = new View(res, 'backend/order/closed-edit');
+        v.render({
+            title: 'Closed Orders',
+            session: req.session,
+            clients: clients,
+            orderId: orderId,
+            ins_companies: ins_companies,
+            ins_grades: ins_grades,
+            ins_types: ins_types,
+            dosages: dosages,
+            mainCs: mainCs,
+            subCs: subCs,
+            brands: brands,
+            companies: companies,
+            items: items,
+            orderInfo: orderInfo,
+            itemObj: itemObj
+        });
+    },
+    updateClosedOrder: async function(req, res) {
+        let ret = {status: 'fail', data: ''}, self = this;
+        if (!this.isLogin(req)) {
+            ret.data = "Please login";
+            return res.json(ret);
+        }
+        if (req.session.user.role != 'Admin') {
+            ret.data = "Permission Denied";
+            return res.json(ret);
+        }
+
+        let orderId = req.body.orderId;
+        let itemSt = req.body.st;
+        let itemOrder = req.body.itemOrder;
+        let itemCode = req.body.itemCode;
+
+        console.log('----------------------------------------------');
+        console.log(req.body);
+        console.log('----------------------------------------------');
+
+        // 1. Update Order Record
+        let orderInfo = await OrderModel.findOne({orderId: orderId});
+        if (!orderInfo) {
+            ret.data = "Invalid Order Id";
+            return res.json(ret);
+        }
+
+        orderInfo.items[itemOrder].status = itemSt;
+        await OrderModel.updateOne({orderId: orderId}, {items: orderInfo.items});
+        // 2. Update OrderStatus table
+        // 3. Order History Commission table
+        // Remove all
+        await OrderItemHistModel.deleteMany({orderId: orderId});
+        // Re-Calculate OrderItemHist Data
+        // Get OrderItemState data from orderId
+        let orderSt = await OrderStatusModel.findOne({orderId: orderId, orderType : {$in : ['PhClosed', 'DriverClosed']}});
+        console.log('======');
+        console.log(orderSt);
+        console.log('======');
+        await this.calcCommission(orderInfo, orderSt);
+        if (!orderInfo) {
+            ret.status = "success";
+            return res.json(ret);
+        }
     },
     createOrder: async function (req, res) {
         let ret = {status: 'fail', data: ''}, self = this;
@@ -439,6 +639,179 @@ module.exports = BaseController.extend({
                     });
             }
         })
+    },
+    updateOrder: async function (req, res) {
+
+        let ret = {status: 'fail', data: ''}, self = this;
+        let orderId = req.params.orderId;
+
+        if (!this.isLogin(req)) {
+            ret.data = "Please login";
+            return res.json(ret);
+        }
+        if (req.session.user.role != 'Admin') {
+            ret.data = "Permission Denied";
+            return res.json(ret);
+        }
+        /////////////////////////////////
+        let orderInfo  = await OrderModel.findOne({orderId: orderId});
+        if (!orderInfo) {
+            ret.data = "Order not found!";
+            return res.json(ret);
+        }
+        //////////////////////////////////
+
+        let prevClientInfo = await UserModel.findOne({email: req.body.clientEmail});
+        let isExistingUser = prevClientInfo != null;
+
+        if (isExistingUser && prevClientInfo.role != 'Client') {
+            ret.data = "Client with different user level exist in website already!";
+            return res.json(ret);
+        }
+
+        await OrderModel.updateOne({orderId: orderId}, req.body);
+
+        // If current email is different with previous order client,
+        // system send invite link or order created message again.
+        // else send order updated email to the client
+
+        if (req.body.clientEmail != orderInfo.clientEmail) {
+            //Update client invite email list
+            let clientInfo = prevClientInfo;
+            console.log('++++++++++++++++++++++++', clientInfo);
+            if (isExistingUser ) {
+                if (clientInfo.inviterEmailList.length > 0) {
+                    if (clientInfo.inviterEmailList.indexOf(orderInfo.doctorEmail) < -1) {
+                        clientInfo.inviterEmailList.push(orderInfo.doctorEmail);
+                        console.log('Updating Client Invite email list');
+                        await clientInfo.save();
+                    }
+                } else {
+                    clientInfo.inviterEmailList = [orderInfo.doctorEmail];
+                    await clientInfo.save();
+                }
+
+            }
+            // Send Invitation Link or Order Creation Notification
+            if (isExistingUser) { // Send Order Notification
+                //Send Email Request
+                let orderURL = `${config.info.site_url}orders`;
+                ejs.renderFile("views/email/send-message.ejs",
+                    {
+                        site_url: config.info.site_url,
+                        order_url: orderURL,
+                        site_name: config.info.site_name,
+                        msg: 'You got new order',
+                    },
+                    function (err, data) {
+                        if (err) {
+                            console.log(err);
+                            console.log('error', 'Email Sending Failed');
+                        } else {
+                            let mailOptions = {
+                                from: config.node_mail.mail_account, // sender address
+                                to: req.body.clientEmail, // list of receivers
+                                subject: '[' + config.info.site_name + '] New Order', // Subject line
+                                text: `${config.info.site_name} ✔`, // plaintext body
+                                html: data // html body
+                            };
+                            // send mail with defined transport object
+                            transporter.sendMail(mailOptions, async function (error, info) {
+                                if (error) {
+                                    console.log(error);
+                                    req.flash('error', 'Email Sending Failed');
+                                } else {
+                                    console.log('Order Creation Notification Success! ========== Order Creation');
+                                }
+                            });
+                        }
+                    });
+            } else { // Send Invitation Link for the Login
+                //Send Email Request
+                let inviteToken = self.makeID('', 30);
+                let inviteURL = `${config.info.site_url}invite/accept?token=${inviteToken}`;
+                ejs.renderFile("views/email/invite.ejs",
+                    {
+                        site_url: config.info.site_url,
+                        invite_url: inviteURL,
+                        site_name: config.info.site_name,
+                        sender_email: orderInfo.doctorEmail,
+                        receiver_email: req.body.clientEmail,
+                        password: config.defaultPassword,
+                        sender_role: 'Doctor',
+                        receiver_role: 'Client'
+                    },
+                    function (err, data) {
+                        if (err) {
+                            console.log(err);
+                            console.log('error', 'Email Sending Failed');
+                        } else {
+                            let mailOptions = {
+                                from: config.node_mail.mail_account, // sender address
+                                to: req.body.clientEmail, // list of receivers
+                                subject: '[' + config.info.site_name + '] Invitation', // Subject line
+                                text: `${config.info.site_name} ✔`, // plaintext body
+                                html: data // html body
+                            };
+                            // send mail with defined transport object
+                            transporter.sendMail(mailOptions, async function (error, info) {
+                                if (error) {
+                                    console.log(error);
+                                    req.flash('error', 'Email Sending Failed');
+                                } else {
+                                    InviteModel.collection.insertOne({
+                                        senderEmail: orderInfo.doctorEmail,
+                                        senderRole: 'Doctor',
+                                        receiverEmail: req.body.clientEmail,
+                                        receiverRole: 'Client',
+                                        password: config.defaultPassword,
+                                        token: inviteToken,
+                                        status: 'Awaiting',
+                                        createdAt: new Date(),
+                                    });
+                                    console.log('Invitation Success! ========== Order Creation');
+                                }
+                            });
+                        }
+                    });
+            }
+        } else {
+            // Send Email Request
+            let orderURL = `${config.info.site_url}orders`;
+            ejs.renderFile("views/email/send-message.ejs",
+                {
+                    site_url: config.info.site_url,
+                    order_url: orderURL,
+                    site_name: config.info.site_name,
+                    msg: 'Updated order',
+                },
+                function (err, data) {
+                    if (err) {
+                        console.log(err);
+                        console.log('error', 'Email Sending Failed');
+                    } else {
+                        let mailOptions = {
+                            from: config.node_mail.mail_account, // sender address
+                            to: req.body.clientEmail, // list of receivers
+                            subject: '[' + config.info.site_name + '] Updated Order', // Subject line
+                            text: `${config.info.site_name} ✔`, // plaintext body
+                            html: data // html body
+                        };
+                        // send mail with defined transport object
+                        transporter.sendMail(mailOptions, async function (error, info) {
+                            if (error) {
+                                console.log(error);
+                                console.log('error', 'Email Sending Failed');
+                            } else {
+                                console.log('Order Updating Notification Success! ========== Order Creation');
+                            }
+                        });
+                    }
+                });
+        }
+        ret.status = 'success';
+        ret.data = "Order updated successfully!";
+        res.json(ret);
     },
     viewOrder: async function (req, res) {
         let v, orderInfo, orderId, orderStInfo, orderPhInfo;
@@ -1344,10 +1717,10 @@ module.exports = BaseController.extend({
             clientEmail = req.body.clientEmail,
             clientMobile = req.body.clientMobile,
             clientName = req.body.clientName,
-            insuranceType = req.body.clientName,
-            insuranceGrade = req.body.clientName,
-            insuranceCompany = req.body.clientName,
-            orderRemark = req.body.clientName,
+            insuranceType = req.body.insuranceType,
+            insuranceGrade = req.body.insuranceGrade,
+            insuranceCompany = req.body.insuranceCompany,
+            orderRemark = req.body.orderRemark,
             totalPrice = req.body.totalPrice,
             items = req.body.items;
 

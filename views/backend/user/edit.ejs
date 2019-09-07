@@ -21,19 +21,19 @@
         <div class="content">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4 class="page-title">Profile Details</h4>
+                    <h4 class="page-title"><%= i18n.__("Profile Details") %></h4>
                 </div>
                 <% if(error && error.length>0) {  %>
                     <div class="col-sm-12">
                         <div class="alert alert-danger" role="alert">
-                            <strong>Error!</strong> <%= error %>
+                            <strong><%= i18n.__("Error!") %></strong> <%= i18n.__(error) %>
                         </div>
                     </div>
                 <% } %>
                 <% if(success && success.length>0) {  %>
                     <div class="col-sm-12">
                         <div class="alert alert-success" role="alert">
-                            <strong>Success!</strong> <%= success %>
+                            <strong><%= i18n.__("Success!") %></strong> <%= i18n.__(success) %>
                         </div>
                     </div>
                 <% } %>
@@ -49,14 +49,14 @@
              %>
             <form action="<%= update_url %>" method="post">
                 <div class="card-box">
-                    <h3 class="card-title">Basic Information</h3>
+                    <h3 class="card-title"><%= i18n.__("Basic Information") %></h3>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="profile-img-wrap">
                                 <img class="inline-block" id="avatar-image"
                                      src="<%= (user_info.pic) ? user_info.pic : '/assets/img/user.jpg' %>" alt="user">
                                 <div class="fileupload btn <%= (pg_mode=='view')?'ws-hide':'';%>">
-                                    <span class="btn-text">edit</span>
+                                    <span class="btn-text"><%= i18n.__("edit") %></span>
                                     <input class="upload" type="file" id="avatar-input" accept="image/*">
                                 </div>
                                 <input type="hidden" value="<%= user_info.pic %>" name="pic">
@@ -65,7 +65,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="focus-label">Name (EN)</label>
+                                            <label class="focus-label"><%= i18n.__("Name (EN)") %></label>
                                             <input type="text" class="form-control floating"
                                                    name="nameEn" <%= (pg_mode=='view')?'disabled':'';%>
                                                    value="<%= user_info.nameEn %>" required>
@@ -73,7 +73,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="focus-label">Name (AR)</label>
+                                            <label class="focus-label"><%= i18n.__("Name (AR)") %></label>
                                             <input type="text" class="form-control floating"
                                                    name="nameAr" <%= (pg_mode=='view')?'disabled':'';%>
                                                    value="<%= user_info.nameAr %>" required>
@@ -81,7 +81,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="focus-label">Email</label>
+                                            <label class="focus-label"><%= i18n.__("Email") %></label>
                                             <input type="email" class="form-control floating"
                                                    name="email" <%= (user_info.role != 'Admin')?'disabled':'';%>
                                                    value="<%= user_info.email %>" required>
@@ -90,11 +90,9 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="focus-label">PhoneNumber</label>
-                                            <div class="cal-icon">
-                                                <input type="text" class="form-control floating"
-                                                       name="phone" <%= (pg_mode=='view')?'disabled':'';%>
-                                                       value="<%= user_info.phone %>" required>
-                                            </div>
+                                            <input type="text" class="form-control floating"
+                                                   name="phone" <%= (pg_mode=='view')?'disabled':'';%>
+                                                   value="<%= user_info.phone %>" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -113,7 +111,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="focus-label">Birth Date</label>
+                                            <label class="focus-label"><%= i18n.__("Birth Date") %></label>
                                             <div class="cal-icon">
                                                 <input class="form-control floating datetimepicker"
                                                        name="birthDay" <%= (pg_mode=='view')?'disabled':'';%>
@@ -123,7 +121,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group select-focus">
-                                            <label class="focus-label">Gender</label>
+                                            <label class="focus-label"><%= i18n.__("Gender") %></label>
                                             <select class="select form-control floating" name="gender" <%= (pg_mode=='view')?'disabled':'';%>>
                                                 <option value="Male" <%= (user_info.gender == 'Male')?'selected':'' %>>Male</option>
                                                 <option value="Female" <%= (user_info.gender == 'Female')?'selected':'' %>>Female</option>
@@ -132,7 +130,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group select-focus">
-                                            <label class="focus-label">Country</label>
+                                            <label class="focus-label"><%= i18n.__("Country") %></label>
                                             <% var selcountry = (user_info.country)? user_info.country:'Saudi Arabia'; %>
                                             <select class="select form-control floating"
                                                     name="country" <%= (pg_mode=='view')?'disabled':'';%>>
@@ -149,7 +147,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="focus-label">City</label>
+                                            <label class="focus-label"><%= i18n.__("City") %></label>
                                             <% var selcity = (user_info.city)? user_info.city:'Jeddah'; %>
                                             <input type="text" class="form-control floating"
                                                    name="city" <%= (pg_mode=='view')?'disabled':'';%>
@@ -167,7 +165,7 @@
                                     <% if(session.user.role == 'Admin' && session.user._id != user_info._id) {  %>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label class="display-block">Status</label>
+                                                <label class="display-block"><%= i18n.__("Status") %></label>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input"
                                                            type="radio"
@@ -176,7 +174,7 @@
                                                            id="account_active"
                                                            value="Enabled">
                                                     <label class="form-check-label" for="account_active">
-                                                        Active
+                                                        <%= i18n.__("Active") %>
                                                     </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
@@ -188,14 +186,14 @@
                                                             <%= (user_info.status == 'Disabled')?'checked':'' %>
                                                            value="Disabled">
                                                     <label class="form-check-label" for="account_inactive">
-                                                        Inactive
+                                                        <%= i18n.__("Inactive") %>
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label class="display-block">Email Status</label>
+                                                <label class="display-block"><%= i18n.__("Email Status") %></label>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input"
                                                            type="radio"
@@ -204,7 +202,7 @@
                                                             <%= (user_info.emailActive == 'Enabled')?'checked':'' %>
                                                            value="Enabled">
                                                     <label class="form-check-label" for="email_active">
-                                                        Active
+                                                        <%= i18n.__("Active") %>
                                                     </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
@@ -215,7 +213,7 @@
                                                             <%= (user_info.emailActive == 'Disabled')?'checked':'' %>
                                                            value="Disabled">
                                                     <label class="form-check-label" for="email_inactive">
-                                                        Inactive
+                                                        <%= i18n.__("Inactive") %>
                                                     </label>
                                                 </div>
                                             </div>
@@ -228,14 +226,14 @@
                 </div>
                 <% if(session.user.role == 'Admin' || session.user._id == user_info._id || pg_mode == 'view') {  %>
                     <div class="card-box <%= (user_info.role == 'Admin')?'ws-hide':'' %>">
-                        <h3 class="card-title">Other Information</h3>
+                        <h3 class="card-title"><%= i18n.__("Other Information") %></h3>
                         <div class="row">
                             <% if(user_info.role == 'Salesman' ||
                                     user_info.role == 'Pharmacy' ||
                                     user_info.role == 'Driver') {  %>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="focus-label">Company Name</label>
+                                        <label class="focus-label"><%= i18n.__("Company Name") %></label>
                                         <select class="select form-control floating"
                                                 name="companyName" <%= (pg_mode=='view')?'disabled':'';%>>
                                             <% for(i = 0 ; i<companies.length; i++) { %>
@@ -252,7 +250,7 @@
                                     user_info.role == 'Client') {  %>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="focus-label">Insurance Type</label>
+                                        <label class="focus-label"><%= i18n.__("Insurance Type") %></label>
                                         <select class="select form-control floating"
                                                 name="insuranceType" <%= (pg_mode=='view')?'disabled':'';%>>
                                             <% for(i = 0 ; i<ins_types.length; i++) { %>
@@ -280,7 +278,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="focus-label">Insurance Grade</label>
+                                        <label class="focus-label"><%= i18n.__("Insurance Grade") %></label>
                                         <select class="select form-control floating"
                                                 name="insuranceGrade" <%= (pg_mode=='view')?'disabled':'';%>>
                                             <% for(i = 0 ; i<ins_grades.length; i++) { %>
@@ -294,7 +292,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="focus-label">Address</label>
+                                        <label class="focus-label"><%= i18n.__("Address") %></label>
                                         <input type="text" class="form-control floating"
                                                name="address"
                                                 <%= (pg_mode=='view')?'disabled':'';%>
@@ -305,7 +303,7 @@
                             <% if( user_info.role == 'Doctor') { %>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="focus-label">Specialist</label>
+                                        <label class="focus-label"><%= i18n.__("Specialist") %></label>
                                         <select class="select form-control floating"
                                                 name="spec" <%= (pg_mode=='view')?'disabled':'';%>>
                                             <% for(i = 0 ; i<spec_list.length; i++) { %>
@@ -321,7 +319,7 @@
                             <%  if (user_info.role == 'Driver') {  %>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="focus-label">Licence No</label>
+                                        <label class="focus-label"><%= i18n.__("Licence No") %></label>
                                         <input type="text" class="form-control floating"
                                                name="licenceNo"
                                                 <%= (pg_mode=='view')?'disabled':'';%>
@@ -330,7 +328,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="focus-label">Licence Expiry Date</label>
+                                        <label class="focus-label"><%= i18n.__("Licence Expiry Date") %></label>
                                         <div class="cal-icon">
                                             <input class="form-control floating datetimepicker" type="text"
                                                    name="licenceExpDate"
@@ -346,7 +344,7 @@
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label class="focus-label">GPS Location (Latitude)</label>
+                                                    <label class="focus-label"><%= i18n.__("GPS Location (Latitude)") %></label>
                                                     <input type="number" class="form-control"  step="any"
                                                            name="gpsLat" placeholder="Latitude"
                                                            value="<%= user_info.gpsLat %>" required>
@@ -354,7 +352,7 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label class="focus-label">GPS Location (Longitude)</label>
+                                                    <label class="focus-label"><%= i18n.__("GPS Location (Longitude)") %></label>
                                                     <input type="number" class="form-control"
                                                            name="gpsLong" placeholder="Longitude"  step="any"
                                                            value="<%= user_info.gpsLong %>" required>
@@ -363,7 +361,7 @@
                                             <div class="col-sm-2">
                                                 <div class="form-group">
                                                     <label class="focus-label">&nbsp;</label>
-                                                    <button type="button" class="btn btn-primary" id="getMyLocation">Get Location</button>
+                                                    <button type="button" class="btn btn-primary" id="getMyLocation"><%= i18n.__("Get Location") %></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -377,7 +375,7 @@
                 <% } %>
                 <% if(pg_mode == 'edit') {  %>
                     <div class="text-center m-t-20">
-                        <button class="btn btn-primary submit-btn">Save</button>
+                        <button class="btn btn-primary submit-btn"><%= i18n.__("Save") %></button>
                     </div>
                 <% } %>
             </form>

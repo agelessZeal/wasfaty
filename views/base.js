@@ -26,6 +26,7 @@ module.exports.prototype = {
             data.wsPort = config.ws_port;
             data.menu = menuConfig;
             data.config = config;
+            data.i18n = this.response;
 
             this.response.render(this.template, data);
         }

@@ -25,12 +25,12 @@ var lang = getLocale();
         <div class="content">
             <div class="row">
                 <div class="col-sm-4 col-3">
-                    <h4 class="page-title">Item List</h4>
+                    <h4 class="page-title"><%= i18n.__("Item List") %></h4>
                 </div>
                 <% if(session.user.role == 'Admin') { %>
                     <div class="col-sm-8 col-9 text-right m-b-20">
                         <a href="/admin/item/add" class="btn btn btn-primary btn-rounded float-right">
-                            <i class="fa fa-plus"></i> Add New Item
+                            <i class="fa fa-plus"></i> <%= i18n.__("Add New Item") %>
                         </a>
                     </div>
                 <% } %>
@@ -41,14 +41,14 @@ var lang = getLocale();
                         <table class="table table-border table-striped custom-table datatable mb-0">
                             <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Picture</th>
-                                <th>Barcode</th>
-                                <th>Description</th>
-                                <th>Price ($)</th>
-                                <th>Commissions (%)</th>
-                                <th>CreatedAt</th>
-                                <th class="text-right">Action</th>
+                                <th><%= i18n.__("Name") %></th>
+                                <th><%= i18n.__("Picture") %></th>
+                                <th><%= i18n.__("Barcode") %></th>
+                                <th><%= i18n.__("Description") %></th>
+                                <th><%= i18n.__("Price") %></th>
+                                <th><%= i18n.__("Commissions (%)") %></th>
+                                <th><%= i18n.__("CreatedAt") %></th>
+                                <th class="text-right"><%= i18n.__("Action") %></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -64,19 +64,19 @@ var lang = getLocale();
                                     <td class="text-right">
                                         <% if(session.user.role == 'Doctor') {  %>
                                             <a class="btn btn-success" href="/admin/item/view?id=<%= items[i].itemId %>">
-                                                <i class="fa fa-eye m-r-5"></i> View Details
+                                                <i class="fa fa-eye m-r-5"></i> <%= i18n.__("View Details") %>
                                             </a>
                                         <% } else  { %>
                                             <a class="btn btn-primary" href="/admin/item/edit?id=<%= items[i].itemId %>">
-                                                <i class="fa fa-pencil m-r-5"></i> Edit
+                                                <i class="fa fa-pencil m-r-5"></i> <%= i18n.__("Edit") %>
                                             </a>
                                             <a class="btn btn-danger  ws-delete-link"
                                                href="#"
-                                               data-msg="Item"
+                                               data-msg="<%= i18n.__("Item") %>"
                                                data-url="/item/delete/<%= items[i].itemId %>"
                                                data-toggle="modal"
                                                data-target="#delete_box">
-                                                <i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                                <i class="fa fa-trash-o m-r-5"></i> <%= i18n.__("Delete") %></a>
                                         <% }  %>
 
                                     </td>

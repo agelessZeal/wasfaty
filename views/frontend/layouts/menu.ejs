@@ -1,0 +1,40 @@
+<%
+var lang = getLocale();
+var suffix = (lang == 'ar') ? 'Ar' : 'En';
+%>
+<div class="menu-list">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <button class="navbar-toggler ml-auto ws-toggle-btn" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse right" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item <%= (title == 'Home') ?'active':'' %>">
+                        <a class="nav-link" href="/"><%= i18n.__('Home') %></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link scroll" href="#ws-about"><%= i18n.__('About') %></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link scroll" href="#ws-services"><%= i18n.__('Services') %></a>
+                    </li>
+                    <li class="nav-item <%= (title == 'Product') ?'active':'' %>">
+                        <a class="nav-link" href="/product"><%= i18n.__('Products') %></a>
+                    </li>
+                    <% if(session.login) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard"><%= i18n.__('Dashboard') %></a>
+                        </li>
+                    <% } %>
+                    <li class="nav-item <%= (title == 'Contact Us') ?'active':'' %>">
+                        <a class="nav-link" href="/contact-us"><%= i18n.__('Contact Us') %></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/lang/<%= (lang == 'ar')? 'en':'ar' %>"><%= (lang == 'ar') ? i18n.__('English'):i18n.__('Arabic') %></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

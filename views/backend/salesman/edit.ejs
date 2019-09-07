@@ -11,7 +11,7 @@
         <div class="content">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <h4 class="page-title">Add Salesman</h4>
+                    <h4 class="page-title"><%= i18n.__("Add Salesman") %></h4>
                 </div>
             </div>
             <div class="row">
@@ -20,43 +20,43 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Name (English)<span class="text-danger">*</span></label>
+                                    <label><%= i18n.__("Name (English)") %><span class="text-danger">*</span></label>
                                     <input class="form-control" type="text" name="nameEn" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Name (Arabic)</label>
+                                    <label><%= i18n.__("Name (Arabic)") %></label>
                                     <input class="form-control" type="text" name="nameAr">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Email <span class="text-danger">*</span></label>
+                                    <label><%= i18n.__("Email") %> <span class="text-danger">*</span></label>
                                     <input class="form-control" type="email" name="email" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Company</label>
+                                    <label><%= i18n.__("Company") %></label>
                                     <input class="form-control" type="text" name="company">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Password</label>
+                                    <label><%= i18n.__("Password") %></label>
                                     <input class="form-control" type="password" name="password">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Confirm Password</label>
+                                    <label><%= i18n.__("Confirm Password") %></label>
                                     <input class="form-control" type="password" name="confirm_password">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Date of Birth</label>
+                                    <label><%= i18n.__("Date of Birth") %></label>
                                     <div class="cal-icon">
                                         <input type="text" class="form-control datetimepicker" name="birthDay">
                                     </div>
@@ -64,15 +64,15 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group gender-select">
-                                    <label class="gen-label">Gender:</label>
+                                    <label class="gen-label"><%= i18n.__("Gender") %></label>
                                     <div class="form-check-inline">
                                         <label class="form-check-label">
-                                            <input type="radio" name="gender" class="form-check-input">Male
+                                            <input type="radio" name="gender" class="form-check-input"><%= i18n.__("Male") %>
                                         </label>
                                     </div>
                                     <div class="form-check-inline">
                                         <label class="form-check-label">
-                                            <input type="radio" name="gender" class="form-check-input">Female
+                                            <input type="radio" name="gender" class="form-check-input"><%= i18n.__("Female") %>
                                         </label>
                                     </div>
                                 </div>
@@ -81,19 +81,19 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Nationality</label>
+                                            <label><%= i18n.__("Nationality") %></label>
                                             <input type="text" class="form-control" name="nationality">
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Phone </label>
+                                            <label><%= i18n.__("Phone") %></label>
                                             <input class="form-control" type="text" name="phone" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-6 col-lg-3">
                                         <div class="form-group">
-                                            <label for="country">Country</label>
+                                            <label for="<%= i18n.__("Doctors In") %>"></label>
                                             <select class="form-control select" name="country" id="country">
                                                 <% for(var key in countries) {
                                                     if(countries.hasOwnProperty(key)) { %>
@@ -107,13 +107,13 @@
                                     </div>
                                     <div class="col-sm-6 col-md-6 col-lg-3">
                                         <div class="form-group">
-                                            <label>City</label>
+                                            <label><%= i18n.__("City") %></label>
                                             <input type="text" class="form-control" name="city">
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Avatar</label>
+                                            <label><%= i18n.__("Avatar") %></label>
                                             <div class="profile-upload">
                                                 <div class="upload-img">
                                                     <img alt="" src="/assets/img/user.jpg">
@@ -129,22 +129,22 @@
 
                         </div>
                         <div class="form-group">
-                            <label class="display-block">Status</label>
+                            <label class="display-block"><%= i18n.__("Status") %></label>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="status" id="user_enabled" value="enabled" checked>
                                 <label class="form-check-label" for="user_enabled">
-                                    Active
+                                    <%= i18n.__("Active") %>
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="status" id="user_disabled" value="disabled">
                                 <label class="form-check-label" for="user_disabled">
-                                    Inactive
+                                    <%= i18n.__("Inactive") %>
                                 </label>
                             </div>
                         </div>
                         <div class="m-t-20 text-center">
-                            <button class="btn btn-primary submit-btn">Create</button>
+                            <button class="btn btn-primary submit-btn"><%= i18n.__("Create") %></button>
                         </div>
                     </form>
                 </div>
