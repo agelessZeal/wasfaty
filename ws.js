@@ -4,6 +4,7 @@ http = require('http');
 https = require('https');
 url = require('url');
 WebSocket = require('ws');
+let fs = require('fs');
 
 ///Create WebSocket Server for Announcement Notification
 let WS_msg = null, conn_msg = false;

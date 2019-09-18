@@ -179,7 +179,10 @@ module.exports = BaseController.extend({
         if(req.session.user.role != 'Salesman') {
             return res.redirect('/*');
         }
-        users = await UserModel.find({role: 'Doctor'});
+        users = await UserModel.aggregate([
+            {$match:{role: 'Doctor'}},
+            {$lookup: {from: 'specialists', localField: 'spec', foreignField: 'specId', as: 'spec'}},
+        ]);
         let retUsers = [];
         for (let i = 0; i<users.length; i++) {
             if (users[i].inviterEmailList.indexOf(req.session.user.email) > -1) {

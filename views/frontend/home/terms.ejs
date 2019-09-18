@@ -8,44 +8,15 @@
 <%
  var lang = getLocale();
  %>
-<body style="direction: <%= (lang == 'ar') ?'rtl':'ltr'; %>">
+
+<body>
 
 <div class="container" id="termsAndCondition">
     <div class="text-center">
         <a href="/"><img src="/assets/img/wasfaty_logo_color.png" alt="wasfaty-logo-color" class="ws-logo-color-img"></a>
         <h2><%= i18n.__('Terms & Conditions') %> </h2>
     </div>
-    <div style="min-height: 600px">
-        <p style="font-size: 24px">
-            1. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi
-            ut aliquip ex ea commo do consequt. Duis aute irure dolor in reprehenderit
-            in volutate velit esse cillum
-            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi
-            ut aliquip ex ea commo do consequt. Duis aute irure dolor in reprehenderit
-            in volutate velit esse cillum
-        </p>
-        <p style="font-size: 24px">
-            2. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi
-            ut aliquip ex ea commo do consequt. Duis aute irure dolor in reprehenderit
-            in volutate velit esse cillum
-            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi
-            ut aliquip ex ea commo do consequt. Duis aute irure dolor in reprehenderit
-            in volutate velit esse cillum
-        </p>
-        <p style="font-size: 24px">
-            3. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi
-            ut aliquip ex ea commo do consequt. Duis aute irure dolor in reprehenderit
-            in volutate velit esse cillum
-            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi
-            ut aliquip ex ea commo do consequt. Duis aute irure dolor in reprehenderit
-            in volutate velit esse cillum
-        </p>
+    <div class="terms-condition-body">
     </div>
 </div>
     <%- include ../layouts/social-links.ejs %>

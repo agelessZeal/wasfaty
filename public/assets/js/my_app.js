@@ -3,7 +3,7 @@ setTimeout(function () {
 }, 2500);
 var hideNotifications = function () {
     $('.alert').each(function () {
-        if($(this).attr('class').indexOf('alert-dismissible')<0) {
+        if ($(this).attr('class').indexOf('alert-dismissible') < 0) {
             $(this).slideUp(600, function () {
                 $(this).remove();
             })
@@ -12,28 +12,28 @@ var hideNotifications = function () {
 };
 
 
-
 function showPosition(position) {
+
     $('input[name="gpsLat"]').val(position.coords.latitude);
     $('input[name="gpsLong"]').val(position.coords.longitude);
 
     if (typeof marker != "undefined" && marker) {
-        marker.setPosition({lat:position.coords.latitude, lng:position.coords.longitude});
+        marker.setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
     }
 
     if (typeof map != "undefined" && map) {
         map.setCenter({
-            lat : position.coords.latitude,
-            lng : position.coords.longitude
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
         });
     }
 }
 
-function getMyLocation() {
+function getLocationByIP() {
     // Server Side Mode to get GPS Location
     $.ajax('/api/location', {
-        type:'get',
-        data:{},
+        type: 'get',
+        data: {},
     }).done(function (res) {
         showPosition({coords: {latitude: res.gpsLat, longitude: res.gpsLong}});
     }).fail(function (jqxhr, textStatus) {
@@ -42,9 +42,30 @@ function getMyLocation() {
         console.log('done');
     })
 }
+
+function getMyLocation() {
+
+    if (location.href.indexOf("https://") > -1) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, geoError);
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
+    } else {
+        getLocationByIP();
+    }
+}
+
+var geoError = function (code, message) {
+    console.log(code, message);
+    // Server Side Mode to get GPS Location
+    getLocationByIP();
+};
+
 getMyLocation();
 
 function onPrintOrderDetails() {
+
     //Get Order Details
     var orderId = $('input[name="orderId"]').val();
     var clientEmail = $('input[name="clientEmail"]').val();
@@ -53,7 +74,7 @@ function onPrintOrderDetails() {
     var insuranceType = $('#curInsType').val();
     var insuranceGrade = $('#curInsGrade').val();
     var insuranceCompany = $('#curInsCompany').val();
-    var orderRemark  = $('input[name="remark"]').val();
+    var orderRemark = $('input[name="remark"]').val();
     var totalPrice = $('#total-item-price').text();
 
     var itemDetails = [];
@@ -82,7 +103,7 @@ function onPrintOrderDetails() {
     });
 
     $.ajax('/orders/view/print', {
-        type:'post',
+        type: 'post',
         data: {
             orderId: orderId,
             clientEmail: clientEmail,
@@ -122,7 +143,7 @@ function genRandomString(length = 5) {
 }
 
 function genRandomPassword(length) {
-    if(!length) {
+    if (!length) {
         length = 5;
     }
     var pwd = genRandomString(length);

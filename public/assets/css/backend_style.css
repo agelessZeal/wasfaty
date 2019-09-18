@@ -1,12 +1,22 @@
 /*-----------------
 	1. General
 -----------------------*/
+#rateYo {
+    margin-bottom: 10px;
+}
 .ws-cards-wrapper {
     display: flex;
     flex-wrap: wrap;
     -ms-flex-wrap: wrap;
 }
-
+.ws-dash-widget {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+.ws-dash-widget-info {
+    display: inline-block;
+}
 .ws-cards-wrapper .ws-card-item {
     width: 19.2%;
     min-height: 120px;

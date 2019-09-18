@@ -89,7 +89,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="focus-label">PhoneNumber</label>
+                                            <label class="focus-label"><%= i18n.__("Phone") %></label>
                                             <input type="text" class="form-control floating"
                                                    name="phone" <%= (pg_mode=='view')?'disabled':'';%>
                                                    value="<%= user_info.phone %>" required>
@@ -97,7 +97,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="focus-label">Nationality</label>
+                                            <label class="focus-label"><%= i18n.__("Nationality") %></label>
                                             <select class="select form-control floating"
                                                     name="nationality" <%= (pg_mode=='view')?'disabled':'';%>>
                                                 <% for(var i = 0 ; i<nationalities.length; i++) { %>
@@ -156,7 +156,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="focus-label">Commissions</label>
+                                            <label class="focus-label"><%= i18n.__("Commissions (%)") %></label>
                                             <input type="text" class="form-control floating"
                                                    name="commissions" <%= (pg_mode =='edit' && session.user.role == 'Admin')?'':'disabled';%>
                                                    value="<%= (user_info.commissions)?user_info.commissions:0 %>">
@@ -264,7 +264,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="focus-label">Insurance Company</label>
+                                        <label class="focus-label"><%= i18n.__("Insurance Company") %></label>
                                         <select class="select form-control floating"
                                                 name="insuranceCompany" <%= (pg_mode=='view')?'disabled':'';%>>
                                             <% for(i = 0 ; i<ins_companies.length; i++) { %>

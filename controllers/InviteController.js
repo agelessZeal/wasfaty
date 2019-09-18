@@ -290,8 +290,11 @@ module.exports = BaseController.extend({
                 }
             }
 
+            let defaultCompany = await UserModel.findOne({role:'Company', isDefault: true});
             if (inviteInfo.senderRole == 'Admin' && inviteInfo.receiverRole == 'Salesman') {
-                let defaultCompany = await UserModel.findOne({role:'Company', isDefault: true});
+                userInfo.companyName = defaultCompany._id.toString();
+            }
+            if (inviteInfo.receiverRole == 'Pharmacy') {
                 userInfo.companyName = defaultCompany._id.toString();
             }
 

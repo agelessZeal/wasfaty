@@ -97,7 +97,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="focus-label">Nationality</label>
+                                            <label class="focus-label"><%= i18n.__("Nationality") %></label>
                                             <select class="select form-control floating"
                                                     name="nationality">
                                                 <% for(var i = 0 ; i<nationalities.length; i++) { %>
@@ -198,7 +198,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="focus-label">Insurance Company</label>
+                                    <label class="focus-label"><%= i18n.__("Insurance Company") %></label>
                                     <select class="select form-control floating"  name="insuranceCompany">
                                         <% for(i = 0 ; i<ins_companies.length; i++) { %>
                                             <option value="<%= ins_companies[i].name %>"
@@ -334,14 +334,16 @@
                 zoom: 16,
             };
             map = new google.maps.Map(document.getElementById("googleMapCompany"), mapProp);
+
+            marker = new google.maps.Marker({
+                position: userPosition,
+                map: map
+            });
+
         }
 
         myMap();
 
-        marker = new google.maps.Marker({
-            position: userPosition,
-            map: map
-        });
 
         google.maps.event.addListener(map, 'click', function(event) {
             marker.setPosition(event.latLng);
@@ -359,7 +361,10 @@
 <% if(session.user.role == 'Client') {  %>
     <script>
         var map, mapProp, marker;
-        getMyLocation();
+        setTimeout(function () {
+            getMyLocation();
+        }, 500);
+
     </script>
 <% } %>
 

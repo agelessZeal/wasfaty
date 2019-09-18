@@ -45,10 +45,9 @@
         <div class="content">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                    <div class="dash-widget" style="cursor: pointer" onclick="onClickTodayCommission()">
-                        <span class="dash-widget-bg2" style="background: #6955ce;"><i class="fa fa-line-chart"></i></span>
-                        <div class="dash-widget-info text-right">
-                            <h3><%= marketIndicator %></h3>
+                    <div class="dash-widget ws-dash-widget" style="cursor: pointer" onclick="onClickTodayCommission()">
+                        <div class="dash-widget-info ws-dash-widget-info text-center">
+                            <div id="rateYo" data-ratio="<%= marketIndicator %>" class="text-center"></div>
                             <span class="widget-title2" style="background: #6955ce;">
                                        <%= i18n.__("Market Indicator") %>
                                        <i class="fa fa-check" aria-hidden="true"></i>
@@ -259,6 +258,12 @@
         });
     }
 </script>
-
+<script>
+    var marketIndicatoar = $('#rateYo').attr('data-ratio');
+    $("#rateYo").rateYo({
+        rating: marketIndicatoar,
+        readOnly: true
+    });
+</script>
 </body>
 </html>

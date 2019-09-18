@@ -15,6 +15,7 @@ var formatTime = function (ts) {
     if (day<10){ day = '0' + day;}
     return year+"-"+month + "-"+day;
 }
+var lang = getLocale();
 %>
 <body>
 <div class="main-wrapper">
@@ -54,7 +55,7 @@ var formatTime = function (ts) {
                                     </td>
                                     <td><%= users[i].email %></td>
                                     <td><%= users[i].phone %></td>
-                                    <td><%= users[i].spec %></td>
+                                    <td><%= (users[i].spec.length>0)? users[i].spec[0]['name_' + lang]:'' %></td>
                                     <td><%= users[i].companyName %></td>
                                     <td><%= users[i].country %></td>
                                     <td><%= users[i].city %></td>

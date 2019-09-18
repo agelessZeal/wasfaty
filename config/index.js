@@ -19,11 +19,11 @@ let config = {
         domain: "127.0.0.1",
     },
 
-    contactEmail: '',
+    contactEmail: 'wasfationline@gmail.com',
 
     node_mail: {
-        mail_account: "", //Gmail
-        password: ""
+        mail_account: "wasfationline@gmail.com", //Gmail
+        password: "" // add password
     },
     userLevels: ['Salesman', 'Company', 'Pharmacy', 'Client', 'Doctor', 'Driver'], /// CallCenter
     masterItemNames: ['Dosage', 'Brand Name', 'Commercial Group', 'Main Classification', 'Sub Classification',

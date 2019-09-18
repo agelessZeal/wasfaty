@@ -382,6 +382,12 @@
 	"Error": "خطا",
 	"I have read and agree the ": "قرأت ووافقت على ",
 	"Terms & Conditions": "الشروط والاحكام",
-	"Market Indicator": "التقييم السوقي"
-
+	"Market Indicator": "التقييم السوقي",
+	"Company Item amount in this month": "Company Item amount in this month",
+	"Doctor Counts": "Doctor Counts",
+	"ClosedAt": "ClosedAt",
+	"Total Orders": "Total Orders",
+	"Order": "Order",
+	"Profile Information": "Profile Information",
+	"Today Closed Orders": "Today Closed Orders"
 }
